@@ -1,0 +1,521 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset="utf-8">
+<title>BÁO CÁO ĐỒ ÁN LẬP TRÌNH DI ĐỘNG - TRAVEL TICKET</title>
+<!--[if gte mso 9]>
+<xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+  @page {
+    size: 21.0cm 29.7cm; /* A4 */
+    margin: 2.0cm 2.0cm 2.0cm 2.0cm;
+    mso-page-orientation: portrait;
+  }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 13pt;
+    line-height: 1.45;
+    color: #111827;
+  }
+  .title-page {
+    text-align: center;
+    margin-top: 30pt;
+    margin-bottom: 40pt;
+  }
+  .school-header {
+    font-size: 14pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #1E3A8A;
+    margin-bottom: 4pt;
+  }
+  .sub-header {
+    font-size: 12pt;
+    color: #4B5563;
+    margin-bottom: 25pt;
+  }
+  .report-title {
+    font-size: 22pt;
+    font-weight: bold;
+    color: #1D4ED8;
+    text-transform: uppercase;
+    margin-top: 35pt;
+    margin-bottom: 10pt;
+  }
+  .report-subtitle {
+    font-size: 15pt;
+    font-style: italic;
+    color: #374151;
+    margin-bottom: 45pt;
+  }
+  .student-info {
+    font-size: 12.5pt;
+    margin-top: 50pt;
+    line-height: 1.8;
+    text-align: left;
+    display: inline-block;
+  }
+  h1 {
+    font-size: 16pt;
+    color: #1E40AF;
+    text-transform: uppercase;
+    border-bottom: 2px solid #2563EB;
+    padding-bottom: 4pt;
+    margin-top: 25pt;
+    margin-bottom: 10pt;
+    page-break-before: always;
+  }
+  h2 {
+    font-size: 14pt;
+    color: #1D4ED8;
+    margin-top: 16pt;
+    margin-bottom: 6pt;
+    border-left: 4px solid #3B82F6;
+    padding-left: 8pt;
+  }
+  h3 {
+    font-size: 13pt;
+    color: #1F2937;
+    margin-top: 12pt;
+    margin-bottom: 4pt;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10pt;
+    margin-bottom: 14pt;
+    font-size: 11pt;
+  }
+  th {
+    background-color: #1E40AF;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 8pt;
+    border: 1px solid #1E3A8A;
+    text-align: left;
+  }
+  td {
+    padding: 7pt;
+    border: 1px solid #D1D5DB;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td {
+    background-color: #F8FAFC;
+  }
+  .badge-pass {
+    background-color: #D1FAE5;
+    color: #065F46;
+    font-weight: bold;
+    padding: 2pt 6pt;
+    border-radius: 3pt;
+    display: inline-block;
+  }
+  .code-block {
+    background-color: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    border-left: 4px solid #2563EB;
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 10pt;
+    padding: 8pt;
+    margin: 8pt 0;
+    line-height: 1.35;
+  }
+  .qa-card {
+    background-color: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    border-left: 5px solid #16A34A;
+    padding: 10pt;
+    margin-top: 12pt;
+    margin-bottom: 12pt;
+  }
+  .qa-title {
+    font-size: 12.5pt;
+    font-weight: bold;
+    color: #15803D;
+    margin-bottom: 4pt;
+  }
+  .qa-ans {
+    font-size: 12pt;
+    color: #1F2937;
+    line-height: 1.5;
+  }
+  .note-box {
+    background-color: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-left: 5px solid #2563EB;
+    padding: 9pt;
+    margin: 10pt 0;
+    font-size: 12pt;
+  }
+</style>
+</head>
+<body>
+
+<!-- TRANG BÌA -->
+<div class="title-page">
+  <div class="school-header">BỘ CÔNG THƯƠNG<br>TRƯỜNG ĐẠI HỌC CÔNG NGHIỆP TP. HỒ CHÍ MINH</div>
+  <div class="sub-header">KHOA CÔNG NGHỆ THÔNG TIN</div>
+  
+  <br><br>
+  <div class="report-title">BÁO CÁO ĐỒ ÁN MÔN HỌC<br>LẬP TRÌNH DI ĐỘNG</div>
+  <div class="report-subtitle">Đề tài: Ứng dụng Đặt vé Du lịch & Trợ lý Săn vé Thông minh<br>(TRAVEL TICKET APP)</div>
+
+  <br><br><br>
+  <div class="student-info">
+    <p><b>Sinh viên thực hiện:</b> Nguyễn Đình Phi</p>
+    <p><b>Mã số sinh viên:</b> 21012345</p>
+    <p><b>Lớp học phần:</b> Lập trình Thiết bị Di động (Mobile Application Development)</p>
+    <p><b>Nền tảng phát triển:</b> React Native, Expo SDK 58, Expo Router, Tamagui</p>
+    <p><b>Giảng viên hướng dẫn:</b> [Quý Thầy/Cô Phụ trách Bộ Môn]</p>
+  </div>
+  
+  <br><br><br><br>
+  <p style="font-size: 12pt; color: #6B7280;">TP. Hồ Chí Minh, Năm 2026</p>
+</div>
+
+<!-- MỤC LỤC & BẢNG ĐỐI CHIẾU TIÊU CHÍ -->
+<h1>PHẦN 1: BẢNG ĐỐI CHIẾU 11 TIÊU CHÍ ĐÁNH GIÁ CỦA ĐỀ BÀI</h1>
+<p>Dự án được xây dựng bám sát 100% các yêu cầu kỹ thuật và nghiệp vụ theo đề bài quy định:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 5%;">STT</th>
+      <th style="width: 25%;">Tiêu chí yêu cầu</th>
+      <th style="width: 15%;">Trạng thái</th>
+      <th style="width: 25%;">Vị trí File mã nguồn</th>
+      <th style="width: 30%;">Mô tả chi tiết triển khai</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><b>1</b></td>
+      <td><b>Quy mô chức năng (10-15 màn hình)</b></td>
+      <td><span class="badge-pass">ĐẠT (12 màn hình)</span></td>
+      <td>Thư mục <code>app/</code></td>
+      <td>Đầy đủ 12 màn hình nghiệp vụ khép kín từ Onboarding, Đăng nhập/Đăng ký, Trang chủ, Lọc vé, AI Chatbot, Chi tiết vé, Chọn ghế, Thanh toán, E-Ticket và Quản lý vé.</td>
+    </tr>
+    <tr>
+      <td><b>2</b></td>
+      <td><b>Có Backend (MockAPI / JSON Server)</b></td>
+      <td><span class="badge-pass">ĐẠT (MockAPI.io)</span></td>
+      <td><code>services/api.ts</code></td>
+      <td>Kết nối 2 bảng dữ liệu thực tế tại MockAPI.io: <code>/tickets</code> (danh sách chuyến đi) và <code>/bookings</code> (đơn đặt chỗ), có sẵn Interceptor fallback khi offline.</td>
+    </tr>
+    <tr>
+      <td><b>3</b></td>
+      <td><b>Dùng Axios để gọi API</b></td>
+      <td><span class="badge-pass">ĐẠT (Axios Instance)</span></td>
+      <td><code>services/api.ts</code><br><code>services/ticketService.ts</code></td>
+      <td>Cấu hình Axios với baseURL tập trung, timeout 10000ms, bộ lọc headers JSON, xử lý trọn vẹn các phương thức GET, POST, DELETE.</td>
+    </tr>
+    <tr>
+      <td><b>4</b></td>
+      <td><b>Nền tảng Expo Project</b></td>
+      <td><span class="badge-pass">ĐẠT (Expo SDK 58)</span></td>
+      <td><code>app.json</code>, <code>package.json</code></td>
+      <td>Khởi tạo dự án chuẩn Expo, sử dụng kiến trúc điều hướng File-based Routing hiện đại của <b>Expo Router</b>.</td>
+    </tr>
+    <tr>
+      <td><b>5</b></td>
+      <td><b>Build & Phân phối qua Internet</b></td>
+      <td><span class="badge-pass">ĐẠT (EAS Build)</span></td>
+      <td><code>eas.json</code></td>
+      <td>Cấu hình sẵn profile preview với <code>"buildType": "apk"</code> giúp xuất file APK độc lập cài trực tiếp lên điện thoại Android qua link tải Internet.</td>
+    </tr>
+    <tr>
+      <td><b>6</b></td>
+      <td><b>AI Basic (Tư vấn & Săn vé)</b></td>
+      <td><span class="badge-pass">ĐẠT (Gemini API)</span></td>
+      <td><code>services/api.ts</code><br><code>app/(tabs)/ai-assistant.tsx</code></td>
+      <td>Tích hợp mô hình <b>Google Gemini 2.5 Flash</b> gọi trực tiếp qua Axios với kỹ thuật Prompt Engineering đưa dữ liệu vé thực tế vào làm ngữ cảnh tư vấn.</td>
+    </tr>
+    <tr>
+      <td><b>7</b></td>
+      <td><b>Redux Toolkit & TanStack Query</b></td>
+      <td><span class="badge-pass">ĐẠT (Tích hợp cả hai)</span></td>
+      <td><code>store/bookingSlice.ts</code><br><code>app/_layout.tsx</code></td>
+      <td>Kết hợp hoàn hảo mô hình Server State (TanStack Query xử lý cache, loading, mutate) và Client State (Redux Toolkit quản lý user, draft vé, ghế chọn, Dark mode).</td>
+    </tr>
+    <tr>
+      <td><b>8</b></td>
+      <td><b>Chạy trên thiết bị thật (Real Device)</b></td>
+      <td><span class="badge-pass">ĐẠT (Expo Go + APK)</span></td>
+      <td>Toàn bộ dự án</td>
+      <td>Hỗ trợ kết nối mượt mà qua Expo Go trên iPhone/Android qua mạng LAN hoặc chế độ <code>--tunnel</code>, kèm xuất file cài đặt APK.</td>
+    </tr>
+    <tr>
+      <td><b>9</b></td>
+      <td><b>Giao diện Thích ứng (Responsive)</b></td>
+      <td><span class="badge-pass">ĐẠT (1 cột &rarr; 2 cột)</span></td>
+      <td><code>app/(tabs)/home.tsx</code><br><code>app/(tabs)/search.tsx</code></td>
+      <td>Sử dụng hook <code>useWindowDimensions</code> tính toán breakpoint <code>width &gt;= 768</code>. Màn hình dọc hiển thị 1 cột; khi xoay ngang hoặc trên iPad/Tablet tự động chuyển sang lưới 2 cột (48%).</td>
+    </tr>
+    <tr>
+      <td><b>10</b></td>
+      <td><b>Hiệu ứng chuyển động (Animation basic)</b></td>
+      <td><span class="badge-pass">ĐẠT</span></td>
+      <td>Components & Screens</td>
+      <td>Hiệu ứng phản hồi chạm (Press feedback), chuyển động toggle switch giao diện, hiệu ứng chọn ghế trực quan.</td>
+    </tr>
+    <tr>
+      <td><b>11</b></td>
+      <td><b>Tamagui UI Framework</b></td>
+      <td><span class="badge-pass">ĐẠT (Tamagui v3)</span></td>
+      <td><code>tamagui.config.ts</code></td>
+      <td>Sử dụng đầy đủ các UI primitive của Tamagui: YStack, XStack, Card, Button, Input, Separator, Switch, Spinner kèm hỗ trợ Dark/Light Theme.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- KIẾN TRÚC CÔNG NGHỆ -->
+<h1>PHẦN 2: KIẾN TRÚC CÔNG NGHỆ VÀ GIẢI PHÁP KỸ THUẬT</h1>
+
+<h2>1. Nền tảng Expo & Expo Router (File-based Routing)</h2>
+<p>Ứng dụng sử dụng <b>Expo Router</b> - chuẩn điều hướng mới nhất của hệ sinh thái React Native:</p>
+<ul>
+  <li><b>Nguyên lý hoạt động:</b> Cấu trúc thư mục trong <code>app/</code> sẽ tự động ánh xạ thành các tuyến đường (routes).</li>
+  <li><b>Nhóm định tuyến (Route Groups):</b> Sử dụng cú pháp đóng mở ngoặc đơn như <code>(auth)</code> và <code>(tabs)</code> để gom nhóm các màn hình có cùng ngữ cảnh (ví dụ: nhóm đăng nhập/đăng ký hoặc nhóm có thanh Bottom Tabs) mà không làm biến đổi cấu trúc URL đường dẫn.</li>
+  <li><b>Tuyến động (Dynamic Routes):</b> Màn hình chi tiết chuyến đi được đặt tên là <code>app/ticket/[id].tsx</code>. Khi người dùng bấm vào vé, ứng dụng gọi <code>router.push(`/ticket/${item.id}`)</code> và màn hình đích sử dụng hook <code>useLocalSearchParams()</code> để trích xuất mã ID và tải chi tiết vé.</li>
+</ul>
+
+<h2>2. UI Framework Tamagui & Khả năng Responsive linh hoạt</h2>
+<p>Tamagui cung cấp hệ thống giao diện tối ưu hóa hiệu năng, giảm thiểu re-render không cần thiết:</p>
+<div class="code-block">
+// Cách triển khai Responsive bằng useWindowDimensions<br>
+const { width } = useWindowDimensions();<br>
+const isWide = width &gt;= 768; // Ngưỡng nhận diện Tablet / Xoay ngang<br><br>
+&lt;Card<br>
+&nbsp;&nbsp;width={isWide ? '48%' : '100%'} // 2 cột nếu xoay ngang, 1 cột nếu màn dọc<br>
+&nbsp;&nbsp;borderWidth={1}<br>
+&nbsp;&nbsp;borderColor="gray5"<br>
+&nbsp;&nbsp;br="$4"<br>
+&gt;<br>
+&nbsp;&nbsp;{/* Nội dung chuyến vé */}<br>
+&lt;/Card&gt;
+</div>
+<p><b>Cơ chế Xoay ngang:</b> Trong file cấu hình <code>app.json</code>, thuộc tính <code>"orientation": "default"</code> cho phép thiết bị di động tự do xoay ngang hoặc dọc, đáp ứng trọn vẹn tiêu chí kiểm thử Responsive trên thiết bị thật.</p>
+
+<h2>3. Mô hình Quản lý State: Phân tách Server State và Client State</h2>
+<p>Đây là điểm nhấn kỹ thuật quan trọng của đồ án, thể hiện tư duy thiết kế phần mềm bài bản:</p>
+<ul>
+  <li>
+    <b>TanStack Query (React Query) - Quản lý Server State:</b>
+    <ul>
+      <li>Dùng hook <code>useQuery</code> để truy xuất dữ liệu từ MockAPI (<code>/tickets</code> và <code>/bookings</code>). Tự động lưu cache, quản lý vòng đời dữ liệu, xử lý trạng thái chờ <code>isLoading</code> và bắt lỗi <code>isError</code>.</li>
+      <li>Dùng hook <code>useMutation</code> cho các hành động thay đổi dữ liệu: Khi thanh toán thành công (POST <code>/bookings</code>) hoặc khi hủy vé (DELETE <code>/bookings/:id</code>), gọi lệnh <code>queryClient.invalidateQueries({ queryKey: ['bookings'] })</code> để làm mới danh sách tức thời.</li>
+    </ul>
+  </li>
+  <li>
+    <b>Redux Toolkit - Quản lý Client State:</b>
+    <ul>
+      <li>Xây dựng tại <code>store/bookingSlice.ts</code> và <code>store/store.ts</code>.</li>
+      <li>Quản lý trạng thái nội bộ của thiết bị: Tài khoản đang đăng nhập (<code>user</code>), đối tượng chuyến vé đang chọn tạm thời (<code>selectedTicket</code>), danh sách các ghế đang click chọn (<code>selectedSeats: string[]</code>), và chế độ giao diện sáng tối (<code>themeMode</code>).</li>
+    </ul>
+  </li>
+</ul>
+
+<h2>4. Tích hợp Trí tuệ Nhân tạo Basic (Google Gemini 2.5 Flash API)</h2>
+<ul>
+  <li><b>Cơ chế hoạt động:</b> Gọi trực tiếp API Endpoint <code>https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent</code> thông qua thư viện Axios.</li>
+  <li>
+    <b>Prompt Engineering (Kỹ thuật mớm ngữ cảnh):</b> Thay vì hỏi chung chung, ứng dụng gắn kèm toàn bộ danh sách vé hiện hữu trong hệ thống vào `system prompt`. Nhờ vậy, AI hiểu rõ kho dữ liệu vé thực tế và đưa ra gợi ý sát với nhu cầu:
+    <div class="code-block">
+const systemPrompt = `Bạn là trợ lý đặt vé du lịch thông minh của Travel Ticket.<br>
+Dữ liệu vé hiện có: ${JSON.stringify(availableTickets)}.<br>
+Hãy tư vấn ngắn gọn lịch trình (2-3 câu) và gợi ý mã vé phù hợp nhất với yêu cầu: "${prompt}"`;
+    </div>
+  </li>
+  <li><b>Heuristic Rule-based Engine (Cơ chế dự phòng):</b> Nếu không có Internet hoặc chưa nhập API Key, hàm tự động phân tích từ khóa (địa điểm, giá rẻ, loại xe) để trả về phản hồi hợp lý, giúp phần demo trước hội đồng luôn thành công 100%.</li>
+</ul>
+
+<!-- DANH MỤC 12 MÀN HÌNH -->
+<h1>PHẦN 3: DANH MỤC 12 MÀN HÌNH & QUY TRÌNH NGHIỆP VỤ</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 5%;">STT</th>
+      <th style="width: 25%;">Tên màn hình</th>
+      <th style="width: 25%;">Đường dẫn File</th>
+      <th style="width: 45%;">Chức năng & Nhiệm vụ nghiệp vụ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Splash / Onboarding</td>
+      <td><code>app/index.tsx</code></td>
+      <td>Màn hình chào mừng, giới thiệu các tính năng cốt lõi (Máy bay, Xe khách, Tàu hỏa, Trợ lý AI) kèm nút dẫn sang Đăng nhập.</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Đăng nhập (Login)</td>
+      <td><code>app/(auth)/login.tsx</code></td>
+      <td>Cho phép người dùng đăng nhập bằng tên và email; kích hoạt action Redux <code>setUser</code> và điều hướng về Trang chủ.</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Đăng ký (Register)</td>
+      <td><code>app/(auth)/register.tsx</code></td>
+      <td>Tạo tài khoản mới, kiểm tra tính hợp lệ dữ liệu và cập nhật thông tin người dùng vào hệ thống.</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Trang chủ (Home)</td>
+      <td><code>app/(tabs)/home.tsx</code></td>
+      <td>Hiển thị banner khuyến mãi, bộ lọc loại phương tiện (✈️ Máy bay, 🚌 Xe khách, 🚆 Tàu hỏa) và danh sách chuyến đi Responsive 1-2 cột.</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Tìm kiếm & Lọc giá</td>
+      <td><code>app/(tabs)/search.tsx</code></td>
+      <td>Tìm vé theo từ khóa (Điểm đi, Điểm đến, Hãng vận tải) kết hợp lọc nhanh theo các mức giá (Dưới 500k, Dưới 1 triệu).</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Trợ lý AI Du lịch</td>
+      <td><code>app/(tabs)/ai-assistant.tsx</code></td>
+      <td>Giao diện Chat trực quan với AI, hỗ trợ người dùng lên kế hoạch ngân sách và đề xuất mã vé tối ưu nhất.</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Vé của tôi (My Tickets)</td>
+      <td><code>app/(tabs)/my-tickets.tsx</code></td>
+      <td>Quản lý danh sách các vé đã đặt từ MockAPI; cho phép mở vé điện tử hoặc thực hiện hủy vé ngay trên giao diện.</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Hồ sơ cá nhân (Profile)</td>
+      <td><code>app/(tabs)/profile.tsx</code></td>
+      <td>Xem thông tin sinh viên/khách hàng, công tắc chuyển đổi chế độ giao diện Sáng / Tối (Dark/Light mode) và nút Đăng xuất.</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Chi tiết chuyến đi</td>
+      <td><code>app/ticket/[id].tsx</code></td>
+      <td>Xem chi tiết giờ chạy, thời gian di chuyển, số lượng ghế trống, mô tả tiện nghi và quy định chính sách hoàn/hủy vé.</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Sơ đồ chọn ghế ngồi</td>
+      <td><code>app/booking/seat-selection.tsx</code></td>
+      <td>Sơ đồ ghế ma trận trực quan (A1 đến C4), tự động vô hiệu hóa các ghế đã có người đặt, tính tổng tiền tự động theo số ghế chọn.</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Xác nhận & Thanh toán</td>
+      <td><code>app/booking/checkout.tsx</code></td>
+      <td>Tóm tắt hành trình, nhập số điện thoại hành khách, hỗ trợ nhập mã giảm giá voucher (TRAVEL50, IUH), gửi lệnh POST lên MockAPI.</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Vé điện tử (E-Ticket)</td>
+      <td><code>app/booking/e-ticket.tsx</code></td>
+      <td>Hiển thị thông báo thành công, thông tin chuyến đi, thông tin hành khách và mã QR Code phục vụ làm thủ tục check-in lên xe/máy bay.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- LUỒNG DỮ LIỆU TỔNG THỂ -->
+<h1>PHẦN 4: LUỒNG DỮ LIỆU VÀ QUY TRÌNH ĐẶT VÉ TỪ A-Z</h1>
+
+<p>Quy trình luồng dữ liệu (Data Flow Walkthrough) khi người dùng trải nghiệm ứng dụng:</p>
+<ol>
+  <li><b>Bước 1 - Khám phá & Chọn vé:</b> Người dùng xem danh sách chuyến đi tại Trang chủ (hoặc Tìm kiếm). Khi chạm vào một vé, hàm <code>dispatch(setSelectedTicket(item))</code> lưu thông tin chuyến vé vào Redux Store và mở màn hình Chi tiết vé <code>ticket/[id]</code>.</li>
+  <li><b>Bước 2 - Chọn vị trí ghế:</b> Người dùng nhấn "Tiếp tục: Chọn ghế ngồi". Màn hình <code>booking/seat-selection</code> đọc thông tin vé từ Redux, lấy mảng các ghế đã đặt (<code>bookedSeats</code>) để làm mờ. Mỗi khi người dùng bấm vào ghế còn trống, action <code>toggleSeat(seat)</code> cập nhật danh sách <code>selectedSeats</code> và tự động tính tổng tiền thanh toán theo công thức: <code>Tổng tiền = Số ghế chọn &times; Đơn giá</code>.</li>
+  <li><b>Bước 3 - Thanh toán & Gửi dữ liệu:</b> Người dùng chuyển sang màn hình <code>booking/checkout</code>, nhập số điện thoại và áp mã voucher (nếu có). Khi bấm "Thanh toán & Xuất vé điện tử", hook <code>useMutation</code> thực thi lệnh HTTP <code>POST /bookings</code> lên MockAPI.</li>
+  <li><b>Bước 4 - Hoàn tất & Xuất vé:</b> Sau khi MockAPI xác nhận thành công (trả về HTTP 201 Created), hook kích hoạt <code>queryClient.invalidateQueries({ queryKey: ['bookings'] })</code> để đồng bộ dữ liệu vào danh sách "Vé của tôi", đồng thời dọn dẹp giỏ vé trong Redux bằng <code>clearBookingDraft()</code> và điều hướng người dùng sang màn hình <code>booking/e-ticket</code> hiển thị mã QR Code check-in.</li>
+</ol>
+
+<!-- BỘ CÂU HỎI VẤN ĐÁP CỦA GIÁO VIÊN -->
+<h1>PHẦN 5: BỘ CÂU HỎI VẤN ĐÁP (FAQ) & HƯỚNG DẪN TRẢ LỜI ĐẠT ĐIỂM TỐI ĐA</h1>
+
+<div class="note-box">
+  <b>Lời dặn của Giảng viên:</b> <i>"Có thể dùng AI để hỗ trợ làm bài. Tuy nhiên, nếu không giải thích được thì vẫn không được tính điểm những phần không giải thích được."</i><br>
+  👉 Dưới đây là 8 câu hỏi cốt lõi mà Giảng viên thường đặt ra khi bảo vệ đồ án kèm câu trả lời chuẩn mực về mặt kỹ thuật:
+</div>
+
+<div class="qa-card">
+  <div class="qa-title">❓ Câu hỏi 1: Tại sao em lại dùng cả Redux Toolkit lẫn TanStack Query? Chúng có bị chồng chéo dữ liệu không?</div>
+  <div class="qa-ans">
+    <b>Trả lời:</b> Dạ thưa Thầy/Cô, việc kết hợp cả hai không hề bị chồng chéo mà đây là mô hình phân tách kiến trúc chuẩn (Separation of Concerns) trong các ứng dụng React Native chuyên nghiệp:<br>
+    - <b>TanStack Query quản lý Server State:</b> Chịu trách nhiệm fetch dữ liệu từ MockAPI, lưu cache, quản lý vòng đời dữ liệu, xử lý loading/error, và tự động đồng bộ lại giao diện khi có thao tác thêm/xóa vé thông qua <code>invalidateQueries</code>.<br>
+    - <b>Redux Toolkit quản lý Client State:</b> Chịu trách nhiệm lưu trữ các dữ liệu mang tính tương tác nội bộ tại máy người dùng mà Server chưa cần biết, bao gồm: mảng ghế đang chọn tạm thời (<code>selectedSeats</code>), thông tin người dùng trong phiên (<code>user</code>), và trạng thái chuyển đổi chế độ giao diện Sáng/Tối (<code>themeMode</code>).
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-title">❓ Câu hỏi 2: Em làm thế nào để giao diện ứng dụng tự thích ứng Responsive khi xoay ngang hoặc chạy trên Tablet/iPad?</div>
+  <div class="qa-ans">
+    <b>Trả lời:</b> Dạ thưa Thầy/Cô:<br>
+    1. Đầu tiên, trong file <code>app.json</code> em cấu hình thuộc tính <code>"orientation": "default"</code> để cho phép hệ điều hành tự do xoay màn hình thiết bị.<br>
+    2. Trong code màn hình [home.tsx](file:///c:/LapTrinhDiDong/travel-ticket/app/(tabs)/home.tsx), em sử dụng hook <code>useWindowDimensions()</code> để liên tục lắng nghe độ rộng thực tế của màn hình.<br>
+    3. Em định nghĩa biến kiểm tra <code>const isWide = width &gt;= 768;</code>. Khi màn hình ở dạng dọc trên điện thoại (width &lt; 768px), thẻ vé chiếm <code>width: '100%'</code> (hiển thị 1 cột). Khi xoay ngang điện thoại hoặc chạy trên màn hình lớn Tablet, độ rộng tự động chuyển thành <code>width: '48%'</code> trong khối bọc <code>XStack flexWrap="wrap" jc="space-between"</code>, từ đó tạo thành bố cục lưới 2 cột vô cùng cân đối.
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-title">❓ Câu hỏi 3: Tính năng Trợ lý AI hoạt động như thế nào? Làm sao AI biết được các chuyến xe đang có trong app?</div>
+  <div class="qa-ans">
+    <b>Trả lời:</b> Dạ thưa Thầy/Cô:<br>
+    - Tính năng AI được xây dựng tích hợp trực tiếp mô hình <b>Gemini 2.5 Flash</b> thông qua REST API bằng thư viện Axios.<br>
+    - Điểm đặc biệt là em đã áp dụng kỹ thuật <b>In-Context Learning (Prompt Engineering)</b>: Mỗi khi người dùng đặt câu hỏi, ứng dụng sẽ lấy danh sách vé thực tế hiện có (<code>availableTickets</code>) chuyển thành chuỗi JSON và lồng vào `system prompt` gửi lên cho Gemini. Vì vậy, AI nắm rõ thông tin lịch trình, mức giá và hãng xe thực tế trong hệ thống để đưa ra câu trả lời chính xác.<br>
+    - Ngoài ra, em còn lập trình thêm <b>thuật toán lọc vé thông minh nội bộ (Heuristic Engine)</b> dự phòng để đảm bảo tính năng AI vẫn phản hồi gợi ý vé tốt ngay cả khi mất mạng hoặc không có API Key.
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-title">❓ Câu hỏi 4: Khi người dùng bấm nút Hủy vé, dữ liệu trên màn hình được làm mới như thế nào mà không cần tải lại app?</div>
+  <div class="qa-ans">
+    <b>Trả lời:</b> Dạ thưa Thầy/Cô:<br>
+    Tại màn hình [my-tickets.tsx](file:///c:/LapTrinhDiDong/travel-ticket/app/(tabs)/my-tickets.tsx), em sử dụng hook <code>useMutation</code> của TanStack Query để gửi yêu cầu <code>DELETE /bookings/:id</code> lên MockAPI. Trong hàm callback <code>onSuccess</code>, em gọi <code>queryClient.invalidateQueries({ queryKey: ['bookings'] })</code>. Lệnh này sẽ đánh dấu bộ nhớ đệm của danh sách vé là cũ và kích hoạt TanStack Query tự động re-fetch ngầm dữ liệu mới nhất từ MockAPI, từ đó vé bị hủy sẽ ngay lập tức biến mất khỏi màn hình một cách mượt mà.
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-title">❓ Câu hỏi 5: Expo Router khác gì so với React Navigation truyền thống?</div>
+  <div class="qa-ans">
+    <b>Trả lời:</b> Dạ thưa Thầy/Cô:<br>
+    - React Navigation truyền thống yêu cầu phải đăng ký từng màn hình thủ công trong các cấu trúc <code>createStackNavigator</code> hay <code>NavigationContainer</code>, dễ dẫn đến cấu hình dài dòng và khó quản lý khi ứng dụng lớn.<br>
+    - <b>Expo Router</b> được xây dựng trên nền tảng File-based Routing tương tự Next.js trong Web. Mỗi file tạo trong thư mục <code>app/</code> tự động trở thành một màn hình, hỗ trợ sẵn deep linking, phân luồng bằng thư mục cha con và tối ưu hóa việc quản lý mã nguồn rõ ràng, dễ bảo trì hơn rất nhiều.
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-title">❓ Câu hỏi 6: Em phân phối ứng dụng này qua Internet như thế nào nếu không đưa lên Google Play Store?</div>
+  <div class="qa-ans">
+    <b>Trả lời:</b> Dạ thưa Thầy/Cô, em sử dụng dịch vụ đám mây <b>EAS Build (Expo Application Services)</b>:<br>
+    - Trong file <code>eas.json</code>, em thiết lập hồ sơ <code>preview</code> với định dạng xuất <code>"buildType": "apk"</code>.<br>
+    - Khi chạy lệnh <code>npx eas build -p android --profile preview</code>, máy chủ đám mây của Expo sẽ biên dịch dự án và trả về một đường link tải file <code>.apk</code> trực tiếp qua mạng internet. Người dùng hoặc thầy cô chỉ cần mở link hoặc quét mã QR là có thể tải và cài đặt ứng dụng vào máy thật để chấm điểm ngay.
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-title">❓ Câu hỏi 7: Làm sao ứng dụng có thể chuyển đổi mượt mà giữa chế độ Sáng và Tối (Dark/Light mode)?</div>
+  <div class="qa-ans">
+    <b>Trả lời:</b> Dạ thưa Thầy/Cô:<br>
+    - Toàn bộ ứng dụng được bọc bởi <code>&lt;TamaguiProvider config={tamaguiConfig} defaultTheme={themeMode}&gt;</code> trong file <code>app/_layout.tsx</code>.<br>
+    - Biến <code>themeMode</code> được lưu trữ trong Redux Store. Khi người dùng bật tắt công tắc Switch tại màn hình Profile, action <code>toggleTheme()</code> sẽ đảo trạng thái giữa 'light' và 'dark'. TamaguiProvider lắng nghe sự thay đổi này và tự động chuyển đổi bảng màu tokens (nền, chữ, viền card) trên toàn bộ các màn hình tức thì.
+  </div>
+</div>
+
+<div class="qa-card">
+  <div class="qa-title">❓ Câu hỏi 8: Nếu trong quá trình chấm thi máy chủ MockAPI gặp sự cố hoặc mất mạng thì ứng dụng của em có bị crash không?</div>
+  <div class="qa-ans">
+    <b>Trả lời:</b> Dạ thưa Thầy/Cô, ứng dụng của em hoàn toàn không bị crash vì em đã xây dựng cơ chế <b>Axios Interceptor Fallback</b> tại file <code>services/api.ts</code>. Nếu cuộc gọi đến MockAPI bị lỗi mạng hoặc trả về dữ liệu rỗng, interceptor sẽ tự động cung cấp bộ dữ liệu dự phòng <code>DEFAULT_TICKETS</code> chuẩn. Nhờ vậy, mọi tính năng lọc vé, xem chi tiết, chọn ghế và trải nghiệm giao diện vẫn diễn ra ổn định và trơn tru.
+  </div>
+</div>
+
+<br><br>
+<p style="text-align: right; font-style: italic; color: #4B5563;">Hết Báo cáo. Chúc bạn bảo vệ đồ án thành công rực rỡ!</p>
+
+</body>
+</html>
+

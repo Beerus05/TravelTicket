@@ -5,7 +5,7 @@ import { RootState } from '../../store/store';
 import { setSelectedTicket } from '../../store/bookingSlice';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { api, DEFAULT_TICKETS } from '../../services/api';
+import { ticketService } from '../../services/ticketService';
 
 export default function TicketDetailScreen() {
   const router = useRouter();
@@ -16,17 +16,11 @@ export default function TicketDetailScreen() {
   const { data: fetchedTicket } = useQuery({
     queryKey: ['ticket', id],
     queryFn: async () => {
-      try {
-        const res = await api.get(`/tickets/${id}`);
-        return res.data;
-      } catch {
-        return DEFAULT_TICKETS.find((t) => t.id === id) || DEFAULT_TICKETS[0];
-      }
+      return await ticketService.getTicketById(String(id));
     },
-    enabled: !reduxTicket,
   });
 
-  const ticket = reduxTicket || fetchedTicket;
+  const ticket = fetchedTicket || reduxTicket;
 
   if (!ticket) {
     return (

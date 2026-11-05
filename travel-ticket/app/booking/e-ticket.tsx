@@ -2,7 +2,7 @@ import React from 'react';
 import { YStack, XStack, Text, Card, Button, Separator, ScrollView } from 'tamagui';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { api } from '../../services/api';
+import { ticketService } from '../../services/ticketService';
 import { CheckCircle, QrCode } from '../../components/Icons';
 
 export default function ETicketScreen() {
@@ -12,12 +12,8 @@ export default function ETicketScreen() {
   const { data: booking } = useQuery({
     queryKey: ['booking', bookingId],
     queryFn: async () => {
-      try {
-        const res = await api.get(`/bookings/${bookingId}`);
-        return res.data;
-      } catch {
-        return null;
-      }
+      if (!bookingId) return null;
+      return await ticketService.getBookingById(String(bookingId));
     },
     enabled: !!bookingId,
   });

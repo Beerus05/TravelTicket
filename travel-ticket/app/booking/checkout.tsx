@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { YStack, XStack, Input, Text, Button, Card, Spinner, ScrollView, Separator } from 'tamagui';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
-import { clearBookingDraft } from '../../store/bookingSlice';
+import { clearBookingDraft, addBookedSeatsToTicket } from '../../store/bookingSlice';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../services/api';
+import { ticketService } from '../../services/ticketService';
 import { useRouter } from 'expo-router';
 
 export default function CheckoutScreen() {
@@ -32,19 +32,15 @@ export default function CheckoutScreen() {
 
   const createBookingMutation = useMutation({
     mutationFn: async (newBooking: any) => {
-      try {
-        const response = await api.post('/bookings', newBooking);
-        return response.data;
-      } catch (err) {
-        console.warn('Lỗi gửi POST MockAPI, tạo booking giả lập thành công:', err);
-        return {
-          ...newBooking,
-          id: Math.floor(1000 + Math.random() * 9000).toString(),
-        };
-      }
+      return await ticketService.createBooking(newBooking);
     },
     onSuccess: (data) => {
+      if (selectedTicket) {
+        dispatch(addBookedSeatsToTicket({ ticketId: selectedTicket.id, seats: selectedSeats }));
+      }
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      queryClient.invalidateQueries({ queryKey: ['ticket'] });
       dispatch(clearBookingDraft());
       router.replace({ pathname: '/booking/e-ticket', params: { bookingId: data.id } });
     },

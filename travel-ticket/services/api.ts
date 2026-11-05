@@ -95,20 +95,130 @@ export const DEFAULT_TICKETS = [
   },
 ];
 
-// Interceptor xử lý fallback tự động nếu API chưa có data hoặc lỗi
+// Danh sách Booking trong bộ nhớ để đồng bộ trạng thái đặt ghế lập tức
+export let LOCAL_BOOKINGS: any[] = [
+  {
+    id: '1001',
+    ticketId: '1',
+    ticketCode: 'FUTA-DL01',
+    route: 'TP.HCM ➔ Đà Lạt',
+    departureTime: '08:00 - 15/11/2026',
+    passengerName: 'Nguyễn Đình Phi',
+    passengerPhone: '0901234567',
+    seats: ['A1', 'B2'],
+    totalPrice: 640000,
+    status: 'Confirmed',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: '1002',
+    ticketId: '2',
+    ticketCode: 'VN-1380',
+    route: 'TP.HCM ➔ Đà Lạt',
+    departureTime: '09:30 - 15/11/2026',
+    passengerName: 'Nguyễn Đình Phi',
+    passengerPhone: '0901234567',
+    seats: ['A2', 'C1'],
+    totalPrice: 2500000,
+    status: 'Confirmed',
+    createdAt: new Date().toISOString(),
+  },
+];
+
+// Thêm booking mới vào bộ nhớ cục bộ và khóa các ghế vừa đặt
+export const addLocalBooking = (booking: any) => {
+  const newBooking = {
+    ...booking,
+    id: booking.id || Math.floor(1000 + Math.random() * 9000).toString(),
+    status: booking.status || 'Confirmed',
+    createdAt: booking.createdAt || new Date().toISOString(),
+  };
+
+  const existingIdx = LOCAL_BOOKINGS.findIndex((b) => b.id === newBooking.id);
+  if (existingIdx >= 0) {
+    LOCAL_BOOKINGS[existingIdx] = newBooking;
+  } else {
+    LOCAL_BOOKINGS.unshift(newBooking);
+  }
+
+  // Khóa ghế trong DEFAULT_TICKETS
+  const ticket = DEFAULT_TICKETS.find(
+    (t) => String(t.id) === String(newBooking.ticketId) || t.code === newBooking.ticketCode
+  );
+  if (ticket) {
+    const seatsToBook: string[] = Array.isArray(newBooking.seats) ? newBooking.seats : [newBooking.seats];
+    ticket.bookedSeats = Array.from(new Set([...(ticket.bookedSeats || []), ...seatsToBook]));
+    ticket.availableSeats = Math.max(0, 24 - ticket.bookedSeats.length);
+  }
+
+  return newBooking;
+};
+
+// Hủy booking và giải phóng ghế để người khác có thể đặt lại
+export const cancelLocalBooking = (id: string) => {
+  const booking = LOCAL_BOOKINGS.find((b) => String(b.id) === String(id));
+  if (booking) {
+    booking.status = 'Cancelled';
+    const ticket = DEFAULT_TICKETS.find(
+      (t) => String(t.id) === String(booking.ticketId) || t.code === booking.ticketCode
+    );
+    if (ticket && ticket.bookedSeats) {
+      const seatsToFree: string[] = Array.isArray(booking.seats) ? booking.seats : [booking.seats];
+      ticket.bookedSeats = ticket.bookedSeats.filter((s) => !seatsToFree.includes(s));
+      ticket.availableSeats = Math.max(0, 24 - ticket.bookedSeats.length);
+    }
+  }
+};
+
+// Interceptor xử lý fallback tự động và đồng bộ trạng thái với MockAPI
 api.interceptors.response.use(
   (response) => {
-    // Nếu get /tickets trả về mảng rỗng, fallback sang DEFAULT_TICKETS để giao diện luôn đầy đủ
-    if (response.config.url?.includes('/tickets') && (!response.data || response.data.length === 0)) {
+    // Nếu get /tickets trả về mảng rỗng, fallback sang DEFAULT_TICKETS
+    if (response.config.url?.endsWith('/tickets') && (!response.data || response.data.length === 0)) {
       return { ...response, data: DEFAULT_TICKETS };
+    }
+    // Nếu get /bookings trả về mảng rỗng, fallback sang LOCAL_BOOKINGS
+    if (response.config.url?.endsWith('/bookings') && (!response.data || response.data.length === 0)) {
+      return { ...response, data: LOCAL_BOOKINGS };
     }
     return response;
   },
   (error) => {
-    if (error.config?.url?.includes('/tickets')) {
-      console.warn('MockAPI /tickets không khả dụng, sử dụng dữ liệu mặc định');
+    const url = error.config?.url || '';
+    const method = (error.config?.method || 'get').toLowerCase();
+
+    // Fallback cho Tickets
+    if (url.includes('/tickets')) {
+      if (url.match(/\/tickets\/\w+/)) {
+        const id = url.split('/').pop();
+        const item = DEFAULT_TICKETS.find((t) => t.id === id) || DEFAULT_TICKETS[0];
+        return Promise.resolve({ data: item, status: 200, statusText: 'OK', headers: {}, config: error.config });
+      }
       return Promise.resolve({ data: DEFAULT_TICKETS, status: 200, statusText: 'OK', headers: {}, config: error.config });
     }
+
+    // Fallback cho Bookings
+    if (url.includes('/bookings')) {
+      if (method === 'post') {
+        const body = typeof error.config?.data === 'string' ? JSON.parse(error.config.data) : error.config?.data;
+        const saved = addLocalBooking(body);
+        return Promise.resolve({ data: saved, status: 201, statusText: 'Created', headers: {}, config: error.config });
+      }
+      if (method === 'delete') {
+        const id = url.split('/').pop();
+        if (id) cancelLocalBooking(id);
+        return Promise.resolve({ data: { success: true }, status: 200, statusText: 'OK', headers: {}, config: error.config });
+      }
+      if (url.match(/\/bookings\/\w+/)) {
+        const id = url.split('/').pop();
+        const found = LOCAL_BOOKINGS.find((b) => String(b.id) === String(id));
+        if (found) {
+          return Promise.resolve({ data: found, status: 200, statusText: 'OK', headers: {}, config: error.config });
+        }
+      }
+      return Promise.resolve({ data: LOCAL_BOOKINGS, status: 200, statusText: 'OK', headers: {}, config: error.config });
+    }
+
     return Promise.reject(error);
   }
 );

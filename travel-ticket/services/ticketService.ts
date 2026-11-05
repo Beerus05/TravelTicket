@@ -1,4 +1,4 @@
-import { api, DEFAULT_TICKETS } from './api';
+import { api, DEFAULT_TICKETS, LOCAL_BOOKINGS, addLocalBooking, cancelLocalBooking } from './api';
 import { Ticket, Booking } from '../store/bookingSlice';
 
 export const ticketService = {
@@ -18,7 +18,7 @@ export const ticketService = {
       const response = await api.get(`/tickets/${id}`);
       return response.data;
     } catch {
-      const found = DEFAULT_TICKETS.find((t) => t.id === id);
+      const found = DEFAULT_TICKETS.find((t) => String(t.id) === String(id));
       return found || null;
     }
   },
@@ -40,21 +40,47 @@ export const ticketService = {
     await api.delete(`/tickets/${id}`);
   },
 
-  // Lấy danh sách bookings
+  // Lấy danh sách bookings (tự động đồng bộ với các vé đã đặt)
   getAllBookings: async (): Promise<Booking[]> => {
-    const response = await api.get('/bookings');
-    return response.data;
+    try {
+      const response = await api.get('/bookings');
+      return response.data && response.data.length > 0 ? response.data : LOCAL_BOOKINGS;
+    } catch {
+      return LOCAL_BOOKINGS;
+    }
   },
 
-  // Tạo booking mới
+  // Lấy chi tiết booking theo ID
+  getBookingById: async (id: string): Promise<Booking | null> => {
+    try {
+      const response = await api.get(`/bookings/${id}`);
+      return response.data;
+    } catch {
+      const found = LOCAL_BOOKINGS.find((b) => String(b.id) === String(id));
+      return found || null;
+    }
+  },
+
+  // Tạo booking mới và đồng bộ ghế đã đặt
   createBooking: async (booking: Booking): Promise<Booking> => {
-    const response = await api.post('/bookings', booking);
-    return response.data;
+    // Lưu ngay vào local memory để cập nhật ghế tức thì
+    const localSaved = addLocalBooking(booking);
+    try {
+      const response = await api.post('/bookings', booking);
+      return response.data || localSaved;
+    } catch {
+      return localSaved;
+    }
   },
 
-  // Hủy / Xóa booking
+  // Hủy / Xóa booking và mở lại ghế trống
   cancelBooking: async (id: string): Promise<void> => {
-    await api.delete(`/bookings/${id}`);
+    cancelLocalBooking(id);
+    try {
+      await api.delete(`/bookings/${id}`);
+    } catch {
+      // Đã giải phóng ghế trong bộ nhớ cục bộ
+    }
   },
 };
 

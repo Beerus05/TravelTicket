@@ -25,16 +25,18 @@ export const SeatMap: React.FC<SeatMapProps> = ({
       {/* Chú thích màu sắc ghế */}
       <XStack gap="$4" jc="center" ai="center" mb="$2" flexWrap="wrap">
         <XStack ai="center" gap="$2">
-          <YStack w={18} h={18} br="$2" bg="$gray4" borderWidth={1} borderColor="$gray6" />
-          <Text fontSize="$2" color="$gray11">Trống</Text>
+          <YStack w={18} h={18} br="$2" bg="gray3" borderWidth={1} borderColor="gray6" />
+          <Text fontSize="$3" color="gray11">Trống</Text>
         </XStack>
         <XStack ai="center" gap="$2">
-          <YStack w={18} h={18} br="$2" bg="$blue10" />
-          <Text fontSize="$2" color="$gray11">Đang chọn</Text>
+          <YStack w={18} h={18} br="$2" bg="blue10" />
+          <Text fontSize="$3" color="blue10" fontWeight="bold">Đang chọn</Text>
         </XStack>
         <XStack ai="center" gap="$2">
-          <YStack w={18} h={18} br="$2" bg="$gray7" />
-          <Text fontSize="$2" color="$gray11">Đã đặt</Text>
+          <YStack w={18} h={18} br="$2" bg="gray6" ai="center" jc="center" borderWidth={1} borderColor="gray7">
+            <Text fontSize={9} color="gray10" fontWeight="bold">✕</Text>
+          </YStack>
+          <Text fontSize="$3" color="gray10">Đã đặt (Khóa)</Text>
         </XStack>
       </XStack>
 
@@ -44,15 +46,18 @@ export const SeatMap: React.FC<SeatMapProps> = ({
           const isBooked = bookedSeats.includes(seat);
           const isSelected = selectedSeats.includes(seat);
 
-          let bg = '$gray3';
+          let bg = 'gray3';
           let textColor = '$color';
+          let borderColor = 'gray5';
 
           if (isBooked) {
-            bg = '$gray7';
-            textColor = '$gray10';
+            bg = 'gray6';
+            textColor = 'gray9';
+            borderColor = 'gray7';
           } else if (isSelected) {
-            bg = '$blue10';
+            bg = 'blue10';
             textColor = 'white';
+            borderColor = 'blue10';
           }
 
           return (
@@ -60,12 +65,19 @@ export const SeatMap: React.FC<SeatMapProps> = ({
               key={seat}
               width="21%"
               disabled={isBooked}
+              opacity={isBooked ? 0.45 : 1}
               bg={bg}
               color={textColor}
+              borderWidth={1}
+              borderColor={borderColor}
               size="sm"
-              onPress={() => onToggleSeat(seat)}
+              onPress={() => {
+                if (!isBooked) {
+                  onToggleSeat(seat);
+                }
+              }}
             >
-              {seat}
+              {isBooked ? `✕ ${seat}` : seat}
             </Button>
           );
         })}

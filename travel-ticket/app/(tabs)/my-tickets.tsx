@@ -1,7 +1,7 @@
 import React from 'react';
 import { YStack, XStack, Text, Card, Button, ScrollView, Spinner } from 'tamagui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../services/api';
+import { ticketService } from '../../services/ticketService';
 import { useRouter } from 'expo-router';
 
 export default function MyTicketsScreen() {
@@ -10,22 +10,17 @@ export default function MyTicketsScreen() {
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['bookings'],
-    queryFn: async () => {
-      try {
-        const res = await api.get('/bookings');
-        return res.data || [];
-      } catch {
-        return [];
-      }
-    },
+    queryFn: ticketService.getAllBookings,
   });
 
   const cancelMutation = useMutation({
     mutationFn: async (id: string) => {
-      await api.delete(`/bookings/${id}`);
+      await ticketService.cancelBooking(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      queryClient.invalidateQueries({ queryKey: ['tickets'] });
+      queryClient.invalidateQueries({ queryKey: ['ticket'] });
     },
   });
 
@@ -101,12 +96,14 @@ export default function MyTicketsScreen() {
                 </Button>
                 <Button
                   size="sm"
-                  theme="red"
+                  theme={b.status === 'Cancelled' ? undefined : 'red'}
+                  bg={b.status === 'Cancelled' ? 'gray4' : undefined}
                   f={1}
+                  disabled={b.status === 'Cancelled' || cancelMutation.isPending}
+                  opacity={b.status === 'Cancelled' ? 0.5 : 1}
                   onPress={() => cancelMutation.mutate(b.id)}
-                  disabled={cancelMutation.isPending}
                 >
-                  Hủy vé
+                  {b.status === 'Cancelled' ? 'Đã hủy' : 'Hủy vé'}
                 </Button>
               </XStack>
             </Card>

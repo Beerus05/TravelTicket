@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { YStack, XStack, Text, Button, Card, ScrollView } from 'tamagui';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 import { toggleSeat } from '../../store/bookingSlice';
 import { useRouter } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
+import { ticketService } from '../../services/ticketService';
 import { SeatMap } from '../../components/SeatMap';
 
 export default function SeatSelectionScreen() {
@@ -11,9 +13,46 @@ export default function SeatSelectionScreen() {
   const dispatch = useDispatch();
   const { selectedTicket, selectedSeats } = useSelector((state: RootState) => state.booking);
 
-  const bookedSeats: string[] = selectedTicket?.bookedSeats || ['A1', 'B2'];
+  // Lấy toàn bộ bookings từ server / local memory để xác định ghế đã được đặt
+  const { data: bookings = [] } = useQuery({
+    queryKey: ['bookings'],
+    queryFn: ticketService.getAllBookings,
+  });
+
+  // Gộp tất cả ghế đã đặt từ thông tin chuyến đi và các đơn booking thành công
+  const bookedSeats: string[] = useMemo(() => {
+    const seatSet = new Set<string>(selectedTicket?.bookedSeats || []);
+
+    bookings.forEach((b: any) => {
+      const isMatch =
+        (b.ticketId && String(b.ticketId) === String(selectedTicket?.id)) ||
+        (b.ticketCode && b.ticketCode === selectedTicket?.code);
+      if (isMatch && b.status !== 'Cancelled') {
+        const seats: string[] = Array.isArray(b.seats) ? b.seats : [b.seats];
+        seats.forEach((s) => {
+          if (s) seatSet.add(s);
+        });
+      }
+    });
+
+    return Array.from(seatSet);
+  }, [selectedTicket, bookings]);
+
+  // Lọc chỉ những ghế người dùng đang chọn mà CHƯA bị ai đặt trước
+  const validSelectedSeats = useMemo(() => {
+    return selectedSeats.filter((seat) => !bookedSeats.includes(seat));
+  }, [selectedSeats, bookedSeats]);
+
   const ticketPrice = Number(selectedTicket?.price || 300000);
-  const totalPrice = selectedSeats.length * ticketPrice;
+  const totalPrice = validSelectedSeats.length * ticketPrice;
+
+  const handleToggleSeat = (seat: string) => {
+    // Nếu ghế đã có người đặt -> không cho chọn
+    if (bookedSeats.includes(seat)) {
+      return;
+    }
+    dispatch(toggleSeat(seat));
+  };
 
   return (
     <YStack f={1} p="$4" bg="$background" jc="space-between">
@@ -23,15 +62,18 @@ export default function SeatSelectionScreen() {
             p="$4"
             w="100%"
             borderWidth={1}
-            borderColor="$gray5"
+            borderColor="gray5"
             br="$4"
             gap="$1"
           >
             <Text fontSize="$5" fontWeight="bold">
               Chuyến: {selectedTicket?.from || 'TP.HCM'} ➔ {selectedTicket?.to || 'Đà Lạt'}
             </Text>
-            <Text color="$blue10">
+            <Text color="blue10">
               {selectedTicket?.brand || 'Phương Trang'} - Mã: {selectedTicket?.code || 'FUTA-01'}
+            </Text>
+            <Text color="gray10" fontSize="$2">
+              Đã đặt: {bookedSeats.length} ghế | Còn trống: {Math.max(0, 12 - bookedSeats.length)} ghế
             </Text>
           </Card>
 
@@ -41,8 +83,8 @@ export default function SeatSelectionScreen() {
 
           <SeatMap
             bookedSeats={bookedSeats}
-            selectedSeats={selectedSeats}
-            onToggleSeat={(seat) => dispatch(toggleSeat(seat))}
+            selectedSeats={validSelectedSeats}
+            onToggleSeat={handleToggleSeat}
           />
         </YStack>
       </ScrollView>
@@ -51,20 +93,20 @@ export default function SeatSelectionScreen() {
       <Card
         p="$4"
         borderWidth={1}
-        borderColor="$gray5"
+        borderColor="gray5"
         br="$4"
         gap="$3"
       >
         <XStack jc="space-between" ai="center">
-          <Text fontSize="$4" color="$gray11">Ghế đang chọn:</Text>
-          <Text fontSize="$4" fontWeight="bold" color="$blue10">
-            {selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Chưa chọn'}
+          <Text fontSize="$4" color="gray11">Ghế đang chọn:</Text>
+          <Text fontSize="$4" fontWeight="bold" color="blue10">
+            {validSelectedSeats.length > 0 ? validSelectedSeats.join(', ') : 'Chưa chọn'}
           </Text>
         </XStack>
 
         <XStack jc="space-between" ai="center">
           <Text fontSize="$5" fontWeight="600">Tổng thanh toán:</Text>
-          <Text fontSize="$7" fontWeight="bold" color="$red10">
+          <Text fontSize="$7" fontWeight="bold" color="red10">
             {totalPrice.toLocaleString('vi-VN')} đ
           </Text>
         </XStack>
@@ -72,11 +114,11 @@ export default function SeatSelectionScreen() {
         <Button
           size="md"
           theme="active"
-          disabled={selectedSeats.length === 0}
-          opacity={selectedSeats.length === 0 ? 0.5 : 1}
+          disabled={validSelectedSeats.length === 0}
+          opacity={validSelectedSeats.length === 0 ? 0.5 : 1}
           onPress={() => router.push('/booking/checkout')}
         >
-          Xác nhận & Thanh toán ({selectedSeats.length} ghế)
+          Xác nhận & Thanh toán ({validSelectedSeats.length} ghế)
         </Button>
       </Card>
     </YStack>

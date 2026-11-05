@@ -67,12 +67,31 @@ const bookingSlice = createSlice({
       state.selectedTicket = null;
       state.selectedSeats = [];
     },
+    addBookedSeatsToTicket: (state, action: PayloadAction<{ ticketId: string; seats: string[] }>) => {
+      if (state.selectedTicket && String(state.selectedTicket.id) === String(action.payload.ticketId)) {
+        const current = state.selectedTicket.bookedSeats || [];
+        state.selectedTicket.bookedSeats = Array.from(new Set([...current, ...action.payload.seats]));
+      }
+    },
+    setBookedSeatsForTicket: (state, action: PayloadAction<{ ticketId: string; bookedSeats: string[] }>) => {
+      if (state.selectedTicket && String(state.selectedTicket.id) === String(action.payload.ticketId)) {
+        state.selectedTicket.bookedSeats = action.payload.bookedSeats;
+      }
+    },
     toggleTheme: (state) => {
       state.themeMode = state.themeMode === 'light' ? 'dark' : 'light';
     },
   },
 });
 
-export const { setUser, setSelectedTicket, toggleSeat, clearBookingDraft, toggleTheme } = bookingSlice.actions;
+export const {
+  setUser,
+  setSelectedTicket,
+  toggleSeat,
+  clearBookingDraft,
+  addBookedSeatsToTicket,
+  setBookedSeatsForTicket,
+  toggleTheme,
+} = bookingSlice.actions;
 export default bookingSlice.reducer;
 
