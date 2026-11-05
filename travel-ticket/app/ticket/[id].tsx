@@ -98,54 +98,45 @@ export default function TicketDetailScreen() {
           </YStack>
         </Card>
 
-        {/* Tiện ích & Dịch vụ đi kèm (Đã thu gọn nhỏ gọn, tinh tế) */}
-        <Card
-          p="$3.5"
+        {/* Tiện ích đi kèm (Thiết kế thanh mảnh, siêu gọn) */}
+        <XStack
+          px="$3"
+          py="$2.5"
+          bg="gray3"
+          br="$3"
           borderWidth={1}
           borderColor="gray5"
-          br="$4"
+          ai="center"
           gap="$2"
         >
-          <XStack ai="center" gap="$1.5">
-            <Text fontSize="$3.5" fontWeight="bold" color="$color">
-              ✨ Tiện ích đi kèm
-            </Text>
-          </XStack>
-
-          {/* Các chip tiện ích gọn gàng */}
-          <XStack gap="$1.5" flexWrap="wrap">
-            {amenities.map((item, idx) => (
-              <YStack key={idx} px="$2" py="$0.5" bg="gray3" br="$3" borderWidth={1} borderColor="gray5">
-                <Text fontSize="$2" color="gray11" fontWeight="600">
-                  {item}
-                </Text>
-              </YStack>
-            ))}
-          </XStack>
-
-          <Text color="gray10" fontSize="$2.5" lineHeight={18} mt="$0.5">
-            {ticket.description || 'Chuyến đi tiện nghi, phục vụ nước uống và khăn lạnh miễn phí. Đón trả đúng giờ.'}
+          <Text fontSize="$3">✨</Text>
+          <Text fontSize="$2.5" fontWeight="700" color="$color">
+            Tiện ích:
           </Text>
-        </Card>
+          <Text fontSize="$2.5" color="gray11" f={1}>
+            {amenities.join(' • ')}
+          </Text>
+        </XStack>
 
-        {/* Chính sách hoàn hủy */}
-        <Card
-          p="$3.5"
+        {/* Chính sách hoàn hủy gọn gàng */}
+        <XStack
+          px="$3"
+          py="$2.5"
+          bg="gray3"
+          br="$3"
           borderWidth={1}
           borderColor="gray5"
-          br="$4"
-          gap="$1.5"
+          ai="center"
+          gap="$2"
         >
-          <Text fontSize="$3.5" fontWeight="bold" color="$color">
-            📋 Chính sách hoàn / đổi vé
+          <Text fontSize="$3">📋</Text>
+          <Text fontSize="$2.5" fontWeight="700" color="$color">
+            Đổi / trả:
           </Text>
-          <Text color="gray10" fontSize="$2.5">
-            • Hoàn vé miễn phí trước giờ chạy 24h.
+          <Text fontSize="$2.5" color="gray11" f={1}>
+            Miễn phí trước 24h • Phí 10% trước 12h khởi hành
           </Text>
-          <Text color="gray10" fontSize="$2.5">
-            • Phí hoàn vé 10% nếu hủy trước 12h khởi hành.
-          </Text>
-        </Card>
+        </XStack>
 
         {/* Giá và nút chọn */}
         <Card
