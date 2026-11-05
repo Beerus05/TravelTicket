@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { YStack, XStack, Input, Button, Text, Card } from 'tamagui';
 import { useRouter } from 'expo-router';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../store/bookingSlice';
+import { setUser, clearBookingDraft } from '../../store/bookingSlice';
+import { useQueryClient } from '@tanstack/react-query';
 import { Ticket } from '../../components/Icons';
 
 export default function RegisterScreen() {
@@ -11,10 +12,13 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const handleRegister = () => {
     if (!name.trim() || !email.trim()) return;
-    dispatch(setUser({ name, email }));
+    queryClient.clear();
+    dispatch(clearBookingDraft());
+    dispatch(setUser({ name: name.trim(), email: email.trim() }));
     router.replace('/(tabs)/home');
   };
 

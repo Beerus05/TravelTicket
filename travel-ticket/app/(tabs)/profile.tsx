@@ -2,16 +2,20 @@ import React from 'react';
 import { YStack, XStack, Text, Card, Button, Separator, Switch } from 'tamagui';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
-import { setUser, toggleTheme } from '../../store/bookingSlice';
+import { setUser, toggleTheme, clearBookingDraft } from '../../store/bookingSlice';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
   const { user, themeMode } = useSelector((state: RootState) => state.booking);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const handleLogout = () => {
     dispatch(setUser(null));
+    dispatch(clearBookingDraft());
+    queryClient.clear();
     router.replace('/(auth)/login');
   };
 

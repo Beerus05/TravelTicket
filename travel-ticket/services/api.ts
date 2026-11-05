@@ -104,6 +104,7 @@ export let LOCAL_BOOKINGS: any[] = [
     route: 'TP.HCM ➔ Đà Lạt',
     departureTime: '08:00 - 15/11/2026',
     passengerName: 'Nguyễn Đình Phi',
+    passengerEmail: 'phi@student.iuh.edu.vn',
     passengerPhone: '0901234567',
     seats: ['A1', 'B2'],
     totalPrice: 640000,
@@ -117,6 +118,7 @@ export let LOCAL_BOOKINGS: any[] = [
     route: 'TP.HCM ➔ Đà Lạt',
     departureTime: '09:30 - 15/11/2026',
     passengerName: 'Nguyễn Đình Phi',
+    passengerEmail: 'phi@student.iuh.edu.vn',
     passengerPhone: '0901234567',
     seats: ['A2', 'C1'],
     totalPrice: 2500000,
@@ -130,6 +132,7 @@ export const addLocalBooking = (booking: any) => {
   const newBooking = {
     ...booking,
     id: booking.id || Math.floor(1000 + Math.random() * 9000).toString(),
+    passengerEmail: booking.passengerEmail || '',
     status: booking.status || 'Confirmed',
     createdAt: booking.createdAt || new Date().toISOString(),
   };

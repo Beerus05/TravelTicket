@@ -54,7 +54,8 @@ export default function CheckoutScreen() {
       ticketCode: selectedTicket.code,
       route: `${selectedTicket.from} ➔ ${selectedTicket.to}`,
       departureTime: selectedTicket.departureTime,
-      passengerName: user?.name || 'Nguyễn Đình Phi',
+      passengerName: user?.name || 'Hành khách',
+      passengerEmail: user?.email || '',
       passengerPhone: phone,
       seats: selectedSeats,
       totalPrice: finalPrice,
@@ -105,11 +106,11 @@ export default function CheckoutScreen() {
           <Text fontSize="$5" fontWeight="bold">2. Thông tin hành khách</Text>
           <XStack jc="space-between">
             <Text color="gray10">Họ và tên:</Text>
-            <Text fontWeight="600">{user?.name || 'Nguyễn Đình Phi'}</Text>
+            <Text fontWeight="600">{user?.name || 'Hành khách'}</Text>
           </XStack>
           <XStack jc="space-between">
             <Text color="gray10">Email:</Text>
-            <Text fontWeight="600">{user?.email || 'phi@student.iuh.edu.vn'}</Text>
+            <Text fontWeight="600">{user?.email || 'Chưa cập nhật'}</Text>
           </XStack>
           <YStack gap="$1">
             <Text color="gray10" fontSize="$3">Số điện thoại nhận vé:</Text>

@@ -2,21 +2,25 @@ import React, { useState } from 'react';
 import { YStack, XStack, Input, Button, Text, Card, ScrollView, Separator } from 'tamagui';
 import { useRouter } from 'expo-router';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../store/bookingSlice';
+import { setUser, clearBookingDraft } from '../../store/bookingSlice';
+import { useQueryClient } from '@tanstack/react-query';
 import { Ticket } from '../../components/Icons';
 
 export default function LoginScreen() {
-  const [name, setName] = useState('Nguyễn Đình Phi');
-  const [email, setEmail] = useState('phi@student.iuh.edu.vn');
-  const [password, setPassword] = useState('123456');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const router = useRouter();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const handleLogin = (customName?: string, customEmail?: string) => {
     const finalName = customName || name;
     const finalEmail = customEmail || email;
     if (!finalName.trim() || !finalEmail.trim()) return;
-    dispatch(setUser({ name: finalName, email: finalEmail }));
+    queryClient.clear();
+    dispatch(clearBookingDraft());
+    dispatch(setUser({ name: finalName.trim(), email: finalEmail.trim() }));
     router.replace('/(tabs)/home');
   };
 

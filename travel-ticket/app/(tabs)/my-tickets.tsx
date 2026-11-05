@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { YStack, XStack, Text, Card, Button, ScrollView, Spinner, Separator } from 'tamagui';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 import { ticketService } from '../../services/ticketService';
 import { useRouter } from 'expo-router';
 
 export default function MyTicketsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const user = useSelector((state: RootState) => state.booking.user);
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ['bookings'],
     queryFn: ticketService.getAllBookings,
   });
+
+  // Lọc chỉ hiển thị vé của tài khoản người dùng đang đăng nhập
+  const userBookings = useMemo(() => {
+    if (!user) return [];
+    const userEmail = (user.email || '').trim().toLowerCase();
+    const userName = (user.name || '').trim().toLowerCase();
+
+    return bookings.filter((b: any) => {
+      const bEmail = (b.passengerEmail || '').trim().toLowerCase();
+      const bName = (b.passengerName || '').trim().toLowerCase();
+
+      const matchEmail = Boolean(bEmail && userEmail && bEmail === userEmail);
+      const matchName = Boolean(bName && userName && bName === userName);
+
+      return matchEmail || matchName;
+    });
+  }, [bookings, user]);
 
   const cancelMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -36,11 +56,16 @@ export default function MyTicketsScreen() {
   return (
     <ScrollView f={1} p="$4" bg="$background">
       <YStack gap="$3">
-        <Text fontSize="$6" fontWeight="bold">
-          Vé đã đặt ({bookings.length})
-        </Text>
+        <XStack jc="space-between" ai="center">
+          <Text fontSize="$6" fontWeight="bold">
+            Vé của tôi ({userBookings.length})
+          </Text>
+          <Text fontSize="$2" color="gray10">
+            {user?.email || 'Tài khoản khách'}
+          </Text>
+        </XStack>
 
-        {bookings.length === 0 ? (
+        {userBookings.length === 0 ? (
           <Card
             p="$6"
             ai="center"
@@ -53,7 +78,7 @@ export default function MyTicketsScreen() {
             <Text fontSize="$8">🎫</Text>
             <Text fontSize="$6" fontWeight="bold">Bạn chưa có vé nào</Text>
             <Text color="gray10" ta="center">
-              Khám phá các chuyến đi ưu đãi và đặt chuyến đi đầu tiên ngay hôm nay!
+              Tài khoản này chưa đặt chuyến đi nào. Khám phá các chuyến đi ưu đãi và đặt chuyến đi đầu tiên ngay!
             </Text>
             <Button
               size="md"
@@ -63,12 +88,12 @@ export default function MyTicketsScreen() {
               onPress={() => router.push('/(tabs)/home')}
             >
               <Text color="#FFFFFF" fontWeight="bold">
-                Tìm chuyến đi ngay ➔
+                Khám phá chuyến đi ngay ➔
               </Text>
             </Button>
           </Card>
         ) : (
-          bookings.map((b: any) => {
+          userBookings.map((b: any) => {
             const isCancelled = b.status === 'Cancelled';
             return (
               <Card

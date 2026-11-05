@@ -24,6 +24,7 @@ export interface Booking {
   departureTime: string;
   passengerName: string;
   passengerPhone: string;
+  passengerEmail?: string;
   seats: string[];
   totalPrice: number;
   status: 'Confirmed' | 'Completed' | 'Cancelled' | string;
