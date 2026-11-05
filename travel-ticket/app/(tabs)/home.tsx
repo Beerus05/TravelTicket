@@ -4,13 +4,16 @@ import { useQuery } from '@tanstack/react-query';
 import { YStack, XStack, Text, Card, Button, Spinner, ScrollView } from 'tamagui';
 import { api, DEFAULT_TICKETS } from '../../services/api';
 import { useRouter } from 'expo-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 import { setSelectedTicket, Ticket } from '../../store/bookingSlice';
+import { TicketCard } from '../../components/TicketCard';
 
 export default function HomeScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { width } = useWindowDimensions();
+  const user = useSelector((state: RootState) => state.booking.user);
   const [filterType, setFilterType] = useState<string>('all');
 
   // Responsive: Tự động chia 2 cột trên Tablet/iPad hoặc khi xoay ngang (>= 768px)
@@ -48,18 +51,48 @@ export default function HomeScreen() {
 
   return (
     <ScrollView bg="$background" p="$4">
+      {/* Tiêu đề Travel Ticket & Lời chào */}
+      <YStack mb="$3">
+        <XStack ai="center" gap="$2" mb="$1">
+          <YStack w={36} h={36} br="$3" bg="#0066FF" jc="center" ai="center">
+            <Text fontSize="$4">✈️</Text>
+          </YStack>
+          <Text fontSize="$8" fontWeight="900" color="#0066FF" letterSpacing={0.5}>
+            TRAVEL TICKET
+          </Text>
+        </XStack>
+        <Text fontSize="$3" color="gray11">
+          Xin chào, <Text fontWeight="bold" color="$color">{user?.name || 'Nguyễn Đình Phi'}</Text> 👋
+        </Text>
+        <Text fontSize="$6" fontWeight="800" color="$color" mt="$1">
+          Khám phá chuyến đi hôm nay
+        </Text>
+      </YStack>
+
       {/* Banner Khuyến Mãi */}
       <Card
         p="$4"
-        bg="blue10"
-        br="$4"
+        bg="#0066FF"
+        br="$5"
         mb="$4"
+        gap="$2"
       >
+        <XStack ai="center" jc="space-between">
+          <YStack px="$2.5" py="$1" br="$10" bg="white">
+            <Text color="#0066FF" fontSize="$2" fontWeight="800">
+              ƯU ĐÃI ĐỘC QUYỀN
+            </Text>
+          </YStack>
+          <Text color="white" fontSize="$2" fontWeight="bold">
+            Mã: IUH (-100K)
+          </Text>
+        </XStack>
+
         <Text color="white" fontSize="$6" fontWeight="bold">
-          🎉 Siêu Giảm Giá Mùa Du Lịch
+          🎉 Mùa Du Lịch & Nghỉ Lễ 2026
         </Text>
-        <Text color="blue2" fontSize="$3" mt="$1">
-          Giảm đến 30% cho các tuyến xe khách & máy bay Đà Lạt, Nha Trang, Đà Nẵng!
+        <Text color="white" opacity={0.9} fontSize="$3">
+          Giảm đến 30% cho các tuyến Đà Lạt, Nha Trang, Đà Nẵng, Sapa. Đặt sớm giữ chỗ ngay!
         </Text>
       </Card>
 
@@ -73,67 +106,56 @@ export default function HomeScreen() {
           { key: 'flight', label: '✈️ Máy bay' },
           { key: 'bus', label: '🚌 Xe khách' },
           { key: 'train', label: '🚆 Tàu hỏa' },
-        ].map((cat) => (
-          <Button
-            key={cat.key}
-            size="sm"
-            theme={filterType === cat.key ? 'active' : undefined}
-            bg={filterType === cat.key ? 'blue10' : 'gray4'}
-            color={filterType === cat.key ? 'white' : '$color'}
-            onPress={() => setFilterType(cat.key)}
-          >
-            {cat.label}
-          </Button>
-        ))}
+        ].map((cat) => {
+          const isActive = filterType === cat.key;
+          return (
+            <Button
+              key={cat.key}
+              size="sm"
+              br="$10"
+              px="$3.5"
+              bg={isActive ? '#0066FF' : '#F1F5F9'}
+              borderWidth={1.5}
+              borderColor={isActive ? '#0066FF' : '#CBD5E1'}
+              pressStyle={{ opacity: 0.8 }}
+              onPress={() => setFilterType(cat.key)}
+            >
+              <Text
+                color={isActive ? '#FFFFFF' : '#1E293B'}
+                fontWeight={isActive ? 'bold' : '600'}
+                fontSize="$3"
+              >
+                {cat.label}
+              </Text>
+            </Button>
+          );
+        })}
       </XStack>
 
       {/* Tiêu đề Chuyến đi nổi bật */}
       <XStack jc="space-between" ai="center" mb="$3">
-        <Text fontSize="$7" fontWeight="bold">
-          Chuyến đi nổi bật
+        <Text fontSize="$6" fontWeight="bold">
+          Chuyến đi nổi bật ({filteredTickets?.length || 0})
         </Text>
-        <Text color="blue10" fontSize="$3" onPress={() => router.push('/(tabs)/search')}>
+        <Text
+          color="#0066FF"
+          fontSize="$3"
+          fontWeight="bold"
+          onPress={() => router.push('/(tabs)/search')}
+        >
           Xem tất cả ➔
         </Text>
       </XStack>
 
-      {/* Danh sách vé Responsive */}
-      <XStack flexWrap="wrap" gap="$4" jc="space-between">
+      {/* Danh sách vé Responsive bằng TicketCard */}
+      <XStack flexWrap="wrap" gap="$3" jc="space-between">
         {filteredTickets?.map((item: any) => (
-          <Card
+          <TicketCard
             key={item.id}
-            width={isWide ? '48%' : '100%'}
-            p="$4"
-            borderWidth={1}
-            borderColor="gray5"
-            br="$4"
-            onPress={() => handleSelectTicket(item)}
-          >
-            <XStack jc="space-between" ai="center">
-              <YStack gap="$1" f={1}>
-                <Text fontSize="$3" color="blue10" fontWeight="bold">
-                  {item.brand} ({item.code})
-                </Text>
-                <Text fontSize="$6" fontWeight="bold">
-                  {item.from} ➔ {item.to}
-                </Text>
-                <Text color="gray10" fontSize="$2">
-                  Giờ đi: {item.departureTime} ({item.duration})
-                </Text>
-                <Text fontSize="$5" color="red10" fontWeight="bold" mt="$2">
-                  {Number(item.price).toLocaleString('vi-VN')} đ
-                </Text>
-              </YStack>
-
-              <Button
-                size="sm"
-                theme="active"
-                onPress={() => handleSelectTicket(item)}
-              >
-                Chi tiết
-              </Button>
-            </XStack>
-          </Card>
+            ticket={item}
+            width={isWide ? '48.5%' : '100%'}
+            onSelect={handleSelectTicket}
+          />
         ))}
       </XStack>
     </ScrollView>

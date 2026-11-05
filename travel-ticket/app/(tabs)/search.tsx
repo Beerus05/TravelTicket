@@ -5,7 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import { api, DEFAULT_TICKETS } from '../../services/api';
 import { useRouter } from 'expo-router';
 import { useDispatch } from 'react-redux';
-import { setSelectedTicket } from '../../store/bookingSlice';
+import { setSelectedTicket, Ticket } from '../../store/bookingSlice';
+import { TicketCard } from '../../components/TicketCard';
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -46,11 +47,23 @@ export default function SearchScreen() {
     );
   }
 
+  const handleSelectTicket = (item: Ticket) => {
+    dispatch(setSelectedTicket(item));
+    router.push(`/ticket/${item.id}`);
+  };
+
   return (
-    <YStack f={1} p="$4" bg="$background" gap="$3">
+    <YStack f={1} p="$4" bg="$background" gap="$3.5">
+      {/* Ô tìm kiếm to gấp đôi */}
       <Input
-        size="$4"
-        placeholder="Nhập điểm đi, điểm đến hoặc hãng xe/máy bay..."
+        height={60}
+        fontSize="$5"
+        px="$4"
+        br="$4"
+        borderWidth={2}
+        borderColor="#0066FF"
+        bg="$background"
+        placeholder="🔍 Nhập điểm đi, điểm đến, hãng xe, máy bay..."
         value={keyword}
         onChangeText={setKeyword}
       />
@@ -61,50 +74,66 @@ export default function SearchScreen() {
           { label: 'Tất cả giá', val: null },
           { label: 'Dưới 500k', val: 500000 },
           { label: 'Dưới 1 triệu', val: 1000000 },
-        ].map((p, idx) => (
-          <Button
-            key={idx}
-            size="sm"
-            theme={maxPrice === p.val ? 'active' : undefined}
-            bg={maxPrice === p.val ? 'blue10' : 'gray4'}
-            color={maxPrice === p.val ? 'white' : '$color'}
-            onPress={() => setMaxPrice(p.val)}
-          >
-            {p.label}
-          </Button>
-        ))}
+          { label: 'Dưới 1.5 triệu', val: 1500000 },
+        ].map((p, idx) => {
+          const isActive = maxPrice === p.val;
+          return (
+            <Button
+              key={idx}
+              size="sm"
+              br="$10"
+              px="$3.5"
+              bg={isActive ? '#0066FF' : '#F1F5F9'}
+              borderWidth={1.5}
+              borderColor={isActive ? '#0066FF' : '#CBD5E1'}
+              pressStyle={{ opacity: 0.8 }}
+              onPress={() => setMaxPrice(p.val)}
+            >
+              <Text
+                color={isActive ? '#FFFFFF' : '#1E293B'}
+                fontWeight={isActive ? 'bold' : '600'}
+                fontSize="$3"
+              >
+                {p.label}
+              </Text>
+            </Button>
+          );
+        })}
       </XStack>
+
+      <Text fontSize="$3" color="gray11">
+        Tìm thấy <Text fontWeight="bold" color="#0066FF">{filtered.length}</Text> chuyến đi phù hợp
+      </Text>
 
       <ScrollView f={1}>
         <XStack flexWrap="wrap" gap="$3" jc="space-between">
           {filtered.map((item: any) => (
-            <Card
+            <TicketCard
               key={item.id}
-              width={isWide ? '48%' : '100%'}
-              p="$4"
-              borderWidth={1}
-              borderColor="gray5"
-              br="$4"
-              onPress={() => {
-                dispatch(setSelectedTicket(item));
-                router.push(`/ticket/${item.id}`);
-              }}
-            >
-              <Text fontWeight="bold" fontSize="$5">
-                {item.from} ➔ {item.to}
-              </Text>
-              <Text color="gray10">
-                {item.brand} ({item.code}) • {item.departureTime}
-              </Text>
-              <Text color="red10" fontWeight="bold" mt="$2">
-                {Number(item.price).toLocaleString('vi-VN')} đ
-              </Text>
-            </Card>
+              ticket={item}
+              width={isWide ? '48.5%' : '100%'}
+              onSelect={handleSelectTicket}
+            />
           ))}
           {filtered.length === 0 && (
-            <Text color="gray10" ta="center" w="100%" mt="$4">
-              Không tìm thấy chuyến đi phù hợp.
-            </Text>
+            <Card
+              p="$6"
+              w="100%"
+              ai="center"
+              gap="$2"
+              borderWidth={1}
+              borderColor="gray5"
+              br="$5"
+              mt="$4"
+            >
+              <Text fontSize="$8">🔎</Text>
+              <Text fontSize="$5" fontWeight="bold">
+                Không tìm thấy chuyến đi
+              </Text>
+              <Text color="gray10" ta="center">
+                Hãy thử đổi từ khóa tìm kiếm hoặc chọn mức giá khác xem sao nhé!
+              </Text>
+            </Card>
           )}
         </XStack>
       </ScrollView>

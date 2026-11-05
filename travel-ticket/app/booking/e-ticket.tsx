@@ -26,24 +26,24 @@ export default function ETicketScreen() {
         p="$5"
         borderWidth={1}
         borderColor="gray5"
-        br="$4"
+        br="$5"
         gap="$3"
         ai="center"
       >
         <CheckCircle size={56} color="#10B981" />
-        <Text fontSize="$7" fontWeight="bold" color="green10">
+        <Text fontSize="$7" fontWeight="900" color="green10">
           Đặt vé thành công!
         </Text>
-        <Text color="gray10" ta="center">
-          Vui lòng xuất trình mã vé điện tử bên dưới cho nhân viên soát vé khi lên xe hoặc qua cửa an ninh.
+        <Text color="gray10" ta="center" fontSize="$3">
+          Vui lòng xuất trình vé điện tử hoặc mã QR dưới đây khi lên phương tiện
         </Text>
 
-        <Separator my="$2" w="100%" />
+        <Separator borderColor="gray4" my="$1" w="100%" />
 
-        <YStack w="100%" gap="$2">
+        <YStack w="100%" gap="$2.5">
           <XStack jc="space-between">
             <Text color="gray10">Mã đặt chỗ:</Text>
-            <Text fontWeight="bold">#{booking?.id || bookingId || '8899'}</Text>
+            <Text fontWeight="800">#{booking?.id || bookingId || '8899'}</Text>
           </XStack>
           <XStack jc="space-between">
             <Text color="gray10">Hành trình:</Text>
@@ -55,42 +55,46 @@ export default function ETicketScreen() {
           </XStack>
           <XStack jc="space-between">
             <Text color="gray10">Giờ khởi hành:</Text>
-            <Text fontWeight="bold">{booking?.departureTime || '08:00 - 15/11/2026'}</Text>
+            <Text fontWeight="600">{booking?.departureTime || '08:00 - 15/11/2026'}</Text>
           </XStack>
           <XStack jc="space-between">
             <Text color="gray10">Hành khách:</Text>
-            <Text fontWeight="bold">{booking?.passengerName || 'Nguyễn Đình Phi'}</Text>
+            <Text fontWeight="600">{booking?.passengerName || 'Nguyễn Đình Phi'}</Text>
           </XStack>
           <XStack jc="space-between">
-            <Text color="gray10">Số ghế:</Text>
-            <Text fontWeight="bold" color="blue10">
+            <Text color="gray10">Số ghế ngồi:</Text>
+            <Text fontWeight="900" color="blue10">
               {Array.isArray(booking?.seats) ? booking.seats.join(', ') : (booking?.seats || 'A1')}
             </Text>
           </XStack>
           <XStack jc="space-between">
-            <Text color="gray10">Tổng tiền đã thanh toán:</Text>
-            <Text fontWeight="bold" color="red10">
+            <Text color="gray10">Tổng tiền đã trả:</Text>
+            <Text fontWeight="900" color="red10" fontSize="$5">
               {Number(booking?.totalPrice || 320000).toLocaleString('vi-VN')} đ
             </Text>
           </XStack>
         </YStack>
 
         {/* Khung giả lập QR Code */}
-        <YStack p="$4" bg="gray3" br="$4" mt="$3" ai="center" gap="$1" w="100%">
+        <YStack p="$4" bg="white" br="$4" mt="$2" ai="center" gap="$2" w="100%" borderWidth={1} borderColor="gray5">
           <QrCode size={110} color="#000" />
-          <Text fontSize="$2" color="gray11">
-            TRAVEL-TICKET-{bookingId || 'VERIFIED'}
+          <Text fontSize="$2" color="gray11" fontWeight="600">
+            MÃ VÉ: TRAVEL-TICKET-{bookingId || 'VERIFIED'}
           </Text>
         </YStack>
 
         <Button
           w="100%"
-          mt="$4"
-          size="md"
-          theme="active"
+          mt="$3"
+          size="lg"
+          bg="#0066FF"
+          pressStyle={{ bg: '#0052CC' }}
+          br="$4"
           onPress={() => router.replace('/(tabs)/my-tickets')}
         >
-          Xem danh sách Vé của tôi
+          <Text color="#FFFFFF" fontWeight="900" fontSize="$4">
+            Xem danh sách Vé của tôi ➔
+          </Text>
         </Button>
 
         <Button
@@ -99,7 +103,7 @@ export default function ETicketScreen() {
           borderWidth={0}
           onPress={() => router.replace('/(tabs)/home')}
         >
-          Về trang chủ
+          <Text color="blue10" fontWeight="bold">Về trang chủ</Text>
         </Button>
       </Card>
     </ScrollView>

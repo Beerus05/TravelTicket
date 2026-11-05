@@ -20,10 +20,13 @@ export const SeatMap: React.FC<SeatMapProps> = ({
   onToggleSeat,
   seatsList = ALL_DEFAULT_SEATS,
 }) => {
+  // Chia thành các hàng ghế: Row A, Row B, Row C
+  const rows = ['A', 'B', 'C'];
+
   return (
     <YStack gap="$4" ai="center" w="100%">
       {/* Chú thích màu sắc ghế */}
-      <XStack gap="$4" jc="center" ai="center" mb="$2" flexWrap="wrap">
+      <XStack gap="$4" jc="center" ai="center" mb="$1" flexWrap="wrap">
         <XStack ai="center" gap="$2">
           <YStack w={18} h={18} br="$2" bg="gray3" borderWidth={1} borderColor="gray6" />
           <Text fontSize="$3" color="gray11">Trống</Text>
@@ -40,48 +43,94 @@ export const SeatMap: React.FC<SeatMapProps> = ({
         </XStack>
       </XStack>
 
-      {/* Lưới ghế */}
-      <XStack flexWrap="wrap" gap="$3" jc="center" maxWidth={360}>
-        {seatsList.map((seat) => {
-          const isBooked = bookedSeats.includes(seat);
-          const isSelected = selectedSeats.includes(seat);
+      {/* Đầu xe / Buồng lái */}
+      <YStack
+        w="100%"
+        maxWidth={340}
+        py="$2"
+        bg="gray3"
+        br="$3"
+        ai="center"
+        borderWidth={1}
+        borderColor="gray5"
+      >
+        <Text fontSize="$2" color="gray10" fontWeight="600">
+          🚗 PHÍA TRƯỚC / BUỒNG LÁI
+        </Text>
+      </YStack>
 
-          let bg = 'gray3';
-          let textColor = '$color';
-          let borderColor = 'gray5';
+      {/* Sơ đồ ghế phân hàng với lối đi ở giữa */}
+      <YStack gap="$3" w="100%" maxWidth={340}>
+        {rows.map((row) => {
+          const leftSeats = [`${row}1`, `${row}2`];
+          const rightSeats = [`${row}3`, `${row}4`];
 
-          if (isBooked) {
-            bg = 'gray6';
-            textColor = 'gray9';
-            borderColor = 'gray7';
-          } else if (isSelected) {
-            bg = 'blue10';
-            textColor = 'white';
-            borderColor = 'blue10';
-          }
+          const renderSeatButton = (seat: string) => {
+            const isBooked = bookedSeats.includes(seat);
+            const isSelected = selectedSeats.includes(seat);
+
+            let bg = '#F8FAFC';
+            let borderColor = '#CBD5E1';
+            let textColor = '#1E293B';
+
+            if (isBooked) {
+              bg = '#E2E8F0';
+              borderColor = '#CBD5E1';
+              textColor = '#94A3B8';
+            } else if (isSelected) {
+              bg = '#0066FF';
+              borderColor = '#0066FF';
+              textColor = '#FFFFFF';
+            }
+
+            return (
+              <Button
+                key={seat}
+                w={58}
+                h={44}
+                br="$3"
+                disabled={isBooked}
+                opacity={isBooked ? 0.55 : 1}
+                bg={bg}
+                borderWidth={1.5}
+                borderColor={borderColor}
+                pressStyle={{ opacity: 0.8 }}
+                size="sm"
+                onPress={() => {
+                  if (!isBooked) {
+                    onToggleSeat(seat);
+                  }
+                }}
+              >
+                <Text color={textColor} fontWeight={isSelected || isBooked ? 'bold' : '600'} fontSize="$3">
+                  {isBooked ? `✕ ${seat}` : seat}
+                </Text>
+              </Button>
+            );
+          };
 
           return (
-            <Button
-              key={seat}
-              width="21%"
-              disabled={isBooked}
-              opacity={isBooked ? 0.45 : 1}
-              bg={bg}
-              color={textColor}
-              borderWidth={1}
-              borderColor={borderColor}
-              size="sm"
-              onPress={() => {
-                if (!isBooked) {
-                  onToggleSeat(seat);
-                }
-              }}
-            >
-              {isBooked ? `✕ ${seat}` : seat}
-            </Button>
+            <XStack key={row} jc="space-between" ai="center" w="100%">
+              {/* 2 ghế bên trái */}
+              <XStack gap="$2">
+                {leftSeats.map(renderSeatButton)}
+              </XStack>
+
+              {/* Lối đi ở giữa */}
+              <YStack w={30} ai="center">
+                <Text fontSize="$2" color="gray10">
+                  {row}
+                </Text>
+              </YStack>
+
+              {/* 2 ghế bên phải */}
+              <XStack gap="$2">
+                {rightSeats.map(renderSeatButton)}
+              </XStack>
+            </XStack>
           );
         })}
-      </XStack>
+      </YStack>
     </YStack>
   );
 };

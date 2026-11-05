@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { YStack, XStack, Input, Button, Text, ScrollView, Card, Spinner } from 'tamagui';
 import { useQuery } from '@tanstack/react-query';
 import { api, askTravelAI, DEFAULT_TICKETS } from '../../services/api';
+import { Sparkles } from '../../components/Icons';
 
 export default function AIAssistantScreen() {
   const [prompt, setPrompt] = useState('');
@@ -25,9 +26,10 @@ export default function AIAssistantScreen() {
     },
   });
 
-  const handleSend = async () => {
-    if (!prompt.trim() || loading) return;
-    const userMsg = prompt.trim();
+  const handleSend = async (customPrompt?: string) => {
+    const textToSend = customPrompt || prompt;
+    if (!textToSend.trim() || loading) return;
+    const userMsg = textToSend.trim();
     setMessages((prev) => [...prev, { role: 'user', text: userMsg }]);
     setPrompt('');
     setLoading(true);
@@ -48,55 +50,110 @@ export default function AIAssistantScreen() {
     }
   };
 
+  const QUICK_PROMPTS = [
+    '🌸 Đi Đà Lạt dưới 500k',
+    '🏖️ Vé bay Đà Nẵng giá rẻ',
+    '🚆 Tàu hỏa Nha Trang ngắm biển',
+  ];
+
   return (
-    <YStack f={1} p="$4" bg="$background" gap="$3">
+    <YStack f={1} p="$3" bg="$background" gap="$3">
+      {/* Header nhỏ */}
+      <Card p="$3" br="$4" bg="blue3" borderWidth={1} borderColor="blue5">
+        <XStack ai="center" gap="$2.5">
+          <Sparkles color="#0066FF" size={22} />
+          <YStack f={1}>
+            <Text fontSize="$3" fontWeight="bold" color="blue10">
+              Trợ lý AI Du lịch & Săn vé
+            </Text>
+            <Text fontSize="$2" color="gray11">
+              Hỗ trợ tư vấn lịch trình, so sánh giá vé và phương tiện tức thì
+            </Text>
+          </YStack>
+        </XStack>
+      </Card>
+
+      {/* Danh sách tin nhắn */}
       <ScrollView f={1}>
-        <YStack gap="$3">
+        <YStack gap="$3" py="$2">
           {messages.map((m, index) => (
             <Card
               key={index}
-              p="$3"
+              p="$3.5"
               alignSelf={m.role === 'user' ? 'flex-end' : 'flex-start'}
-              bg={m.role === 'user' ? 'blue10' : 'gray4'}
+              bg={m.role === 'user' ? 'blue10' : 'gray3'}
               maxWidth="88%"
               borderWidth={1}
-              borderColor="gray5"
+              borderColor={m.role === 'user' ? 'blue10' : 'gray5'}
               br="$4"
             >
+              {m.role === 'ai' && (
+                <Text fontSize="$2" fontWeight="bold" color="blue10" mb="$1">
+                  🤖 Trợ lý AI
+                </Text>
+              )}
               <Text
                 color={m.role === 'user' ? 'white' : '$color'}
                 fontSize="$3"
-                lineHeight={20}
+                lineHeight={22}
               >
                 {m.text}
               </Text>
             </Card>
           ))}
+
           {loading && (
             <XStack ai="center" gap="$2" p="$2">
               <Spinner size="small" color="blue10" />
-              <Text color="gray10" fontSize="$2">AI đang phân tích vé và lịch trình...</Text>
+              <Text color="gray10" fontSize="$2">AI đang phân tích vé và lịch trình phù hợp...</Text>
             </XStack>
           )}
         </YStack>
       </ScrollView>
 
+      {/* Gợi ý câu hỏi nhanh */}
+      <XStack gap="$1.5" flexWrap="wrap">
+        {QUICK_PROMPTS.map((q, idx) => (
+          <Button
+            key={idx}
+            size="xs"
+            br="$10"
+            bg="#F1F5F9"
+            borderWidth={1}
+            borderColor="#CBD5E1"
+            pressStyle={{ opacity: 0.8 }}
+            onPress={() => handleSend(q)}
+          >
+            <Text fontSize="$2" color="#1E293B" fontWeight="600">{q}</Text>
+          </Button>
+        ))}
+      </XStack>
+
+      {/* Thanh nhập liệu */}
       <XStack gap="$2" ai="center">
         <Input
           f={1}
-          placeholder="VD: Đi Đà Lạt cuối tuần ngân sách 2 triệu..."
+          br="$10"
+          px="$3.5"
+          placeholder="Nhập yêu cầu (VD: Đi Đà Lạt 2 ngày 1 đêm...)"
           value={prompt}
           onChangeText={setPrompt}
-          onSubmitEditing={handleSend}
+          onSubmitEditing={() => handleSend()}
           returnKeyType="send"
         />
         <Button
-          theme="active"
+          bg="#0066FF"
+          pressStyle={{ bg: '#0052CC' }}
           size="md"
-          onPress={handleSend}
+          br="$10"
+          px="$4"
+          onPress={() => handleSend()}
           disabled={loading || !prompt.trim()}
+          opacity={loading || !prompt.trim() ? 0.6 : 1}
         >
-          Gửi
+          <Text color="#FFFFFF" fontWeight="bold">
+            Gửi
+          </Text>
         </Button>
       </XStack>
     </YStack>
