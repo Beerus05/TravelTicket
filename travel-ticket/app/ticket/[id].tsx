@@ -53,122 +53,163 @@ export default function TicketDetailScreen() {
   const amenities = getAmenityTags(ticket.type);
 
   return (
-    <ScrollView f={1} bg="$background" p="$3.5">
-      <YStack gap="$3">
-        {/* Thẻ hành trình chính */}
-        <Card
-          p="$4"
-          borderWidth={1}
-          borderColor="gray5"
-          br="$4"
-          gap="$2.5"
-        >
-          <XStack jc="space-between" ai="center">
-            <YStack px="$2.5" py="$0.5" br="$10" bg="blue3">
-              <Text fontSize="$2" fontWeight="bold" color="blue10">
-                {ticket.brand}
+    <YStack f={1} bg="$background" p="$4" jc="space-between">
+      <ScrollView f={1} showsVerticalScrollIndicator={false}>
+        <YStack gap="$3" pb="$2">
+          {/* Thẻ hành trình chính */}
+          <Card
+            p="$4"
+            borderWidth={1}
+            borderColor="gray5"
+            br="$5"
+            gap="$2.5"
+          >
+            <XStack jc="space-between" ai="center">
+              <YStack px="$2.5" py="$1" br="$10" bg="blue3">
+                <Text fontSize="$2" fontWeight="bold" color="blue10">
+                  {ticket.brand}
+                </Text>
+              </YStack>
+              <Text fontSize="$3" color="gray10" fontWeight="600">
+                Mã: {ticket.code}
               </Text>
+            </XStack>
+
+            <Text fontSize="$7" fontWeight="900" color="$color">
+              {ticket.from} ➔ {ticket.to}
+            </Text>
+
+            <Separator borderColor="gray4" my="$1" />
+
+            <YStack gap="$2">
+              <XStack jc="space-between">
+                <Text color="gray10" fontSize="$3">Giờ khởi hành:</Text>
+                <Text fontWeight="600" fontSize="$3">{ticket.departureTime}</Text>
+              </XStack>
+              <XStack jc="space-between">
+                <Text color="gray10" fontSize="$3">Thời gian di chuyển:</Text>
+                <Text fontWeight="600" fontSize="$3">{ticket.duration}</Text>
+              </XStack>
+              <XStack jc="space-between">
+                <Text color="gray10" fontSize="$3">Số ghế còn trống:</Text>
+                <Text fontWeight="bold" color="green10" fontSize="$3">
+                  {ticket.availableSeats || 12} ghế
+                </Text>
+              </XStack>
             </YStack>
-            <Text fontSize="$2" color="gray10" fontWeight="600">
-              Mã: {ticket.code}
+          </Card>
+
+          {/* Lịch trình đón trả trực quan */}
+          <Card
+            p="$4"
+            borderWidth={1}
+            borderColor="gray5"
+            br="$5"
+            gap="$2.5"
+          >
+            <Text fontSize="$4" fontWeight="bold" color="$color">
+              📍 Lộ trình chuyến đi
+            </Text>
+
+            <YStack gap="$2">
+              <XStack ai="flex-start" gap="$2.5">
+                <Text fontSize="$4">🟢</Text>
+                <YStack f={1}>
+                  <Text fontWeight="bold" fontSize="$3">Điểm xuất phát: {ticket.from}</Text>
+                  <Text color="gray10" fontSize="$2.5">Bến xe / Sân bay trung tâm • Khởi hành {ticket.departureTime.split(' - ')[0] || 'đúng giờ'}</Text>
+                </YStack>
+              </XStack>
+
+              <YStack ml="$2" pl="$2" borderLeftWidth={1.5} borderLeftColor="gray5" py="$1">
+                <Text color="blue10" fontSize="$2" fontWeight="600">
+                  ⏱️ {ticket.duration} di chuyển êm ái, an toàn
+                </Text>
+              </YStack>
+
+              <XStack ai="flex-start" gap="$2.5">
+                <Text fontSize="$4">🔴</Text>
+                <YStack f={1}>
+                  <Text fontWeight="bold" fontSize="$3">Điểm đến: {ticket.to}</Text>
+                  <Text color="gray10" fontSize="$2.5">Trả khách tại trung tâm thị xã / thành phố</Text>
+                </YStack>
+              </XStack>
+            </YStack>
+          </Card>
+
+          {/* Tiện ích đi kèm */}
+          <XStack
+            px="$3.5"
+            py="$2.5"
+            bg="gray3"
+            br="$4"
+            borderWidth={1}
+            borderColor="gray5"
+            ai="center"
+            gap="$2"
+          >
+            <Text fontSize="$3.5">✨</Text>
+            <Text fontSize="$3" fontWeight="700" color="$color">
+              Tiện ích:
+            </Text>
+            <Text fontSize="$2.5" color="gray11" f={1}>
+              {amenities.join(' • ')}
             </Text>
           </XStack>
 
-          <Text fontSize="$7" fontWeight="900" color="$color">
-            {ticket.from} ➔ {ticket.to}
-          </Text>
-
-          <Separator borderColor="gray4" my="$0.5" />
-
-          <YStack gap="$1.5">
-            <XStack jc="space-between">
-              <Text color="gray10" fontSize="$3">Giờ khởi hành:</Text>
-              <Text fontWeight="600" fontSize="$3">{ticket.departureTime}</Text>
-            </XStack>
-            <XStack jc="space-between">
-              <Text color="gray10" fontSize="$3">Thời gian di chuyển:</Text>
-              <Text fontWeight="600" fontSize="$3">{ticket.duration}</Text>
-            </XStack>
-            <XStack jc="space-between">
-              <Text color="gray10" fontSize="$3">Số ghế còn trống:</Text>
-              <Text fontWeight="bold" color="green10" fontSize="$3">
-                {ticket.availableSeats || 12} ghế
-              </Text>
-            </XStack>
-          </YStack>
-        </Card>
-
-        {/* Tiện ích đi kèm (Thiết kế thanh mảnh, siêu gọn) */}
-        <XStack
-          px="$3"
-          py="$2.5"
-          bg="gray3"
-          br="$3"
-          borderWidth={1}
-          borderColor="gray5"
-          ai="center"
-          gap="$2"
-        >
-          <Text fontSize="$3">✨</Text>
-          <Text fontSize="$2.5" fontWeight="700" color="$color">
-            Tiện ích:
-          </Text>
-          <Text fontSize="$2.5" color="gray11" f={1}>
-            {amenities.join(' • ')}
-          </Text>
-        </XStack>
-
-        {/* Chính sách hoàn hủy gọn gàng */}
-        <XStack
-          px="$3"
-          py="$2.5"
-          bg="gray3"
-          br="$3"
-          borderWidth={1}
-          borderColor="gray5"
-          ai="center"
-          gap="$2"
-        >
-          <Text fontSize="$3">📋</Text>
-          <Text fontSize="$2.5" fontWeight="700" color="$color">
-            Đổi / trả:
-          </Text>
-          <Text fontSize="$2.5" color="gray11" f={1}>
-            Miễn phí trước 24h • Phí 10% trước 12h khởi hành
-          </Text>
-        </XStack>
-
-        {/* Giá và nút chọn */}
-        <Card
-          p="$3.5"
-          borderWidth={1}
-          borderColor="gray5"
-          br="$4"
-          gap="$2"
-        >
-          <XStack jc="space-between" ai="center">
-            <YStack>
-              <Text color="gray10" fontSize="$2">Giá vé trọn gói:</Text>
-              <Text fontSize="$7" color="red10" fontWeight="900">
-                {Number(ticket.price).toLocaleString('vi-VN')} đ
-              </Text>
-            </YStack>
-
-            <Button
-              size="md"
-              bg="#0066FF"
-              pressStyle={{ bg: '#0052CC' }}
-              br="$4"
-              px="$4"
-              onPress={handleContinue}
-            >
-              <Text color="#FFFFFF" fontWeight="900" fontSize="$4">
-                Chọn chỗ ngồi ➔
-              </Text>
-            </Button>
+          {/* Chính sách hoàn hủy */}
+          <XStack
+            px="$3.5"
+            py="$2.5"
+            bg="gray3"
+            br="$4"
+            borderWidth={1}
+            borderColor="gray5"
+            ai="center"
+            gap="$2"
+          >
+            <Text fontSize="$3.5">🛡️</Text>
+            <Text fontSize="$3" fontWeight="700" color="$color">
+              Bảo đảm:
+            </Text>
+            <Text fontSize="$2.5" color="gray11" f={1}>
+              Bảo hiểm hành khách • Hoàn 100% trước 24h
+            </Text>
           </XStack>
-        </Card>
-      </YStack>
-    </ScrollView>
+        </YStack>
+      </ScrollView>
+
+      {/* Thanh cố định dưới đáy màn hình iPhone */}
+      <Card
+        p="$4"
+        borderWidth={1}
+        borderColor="gray5"
+        br="$5"
+        gap="$2"
+        mt="$2"
+        bg="$background"
+      >
+        <XStack jc="space-between" ai="center">
+          <YStack>
+            <Text color="gray10" fontSize="$2">Giá vé trọn gói:</Text>
+            <Text fontSize="$8" color="red10" fontWeight="900">
+              {Number(ticket.price).toLocaleString('vi-VN')} đ
+            </Text>
+          </YStack>
+
+          <Button
+            size="lg"
+            bg="#0066FF"
+            pressStyle={{ bg: '#0052CC' }}
+            br="$4"
+            px="$4"
+            onPress={handleContinue}
+          >
+            <Text color="#FFFFFF" fontWeight="900" fontSize="$4">
+              Chọn chỗ ngồi ➔
+            </Text>
+          </Button>
+        </XStack>
+      </Card>
+    </YStack>
   );
 }
