@@ -38,100 +38,127 @@ export default function TicketDetailScreen() {
     router.push('/booking/seat-selection');
   };
 
+  const getAmenityTags = (type?: string) => {
+    switch (type) {
+      case 'flight':
+        return ['✈️ Bay thẳng', '🧳 23kg hành lý', '🥪 Suất ăn nhẹ', '⚡ Check-in nhanh'];
+      case 'train':
+        return ['🚆 Giường nằm mềm', '❄️ Điều hòa 24/7', '🌅 Ngắm cảnh biển', '🍽️ Phục vụ ăn nhẹ'];
+      case 'bus':
+      default:
+        return ['🚌 Limousine', '🛜 Wifi miễn phí', '💧 Nước & khăn lạnh', '⚡ Sạc Type-C'];
+    }
+  };
+
+  const amenities = getAmenityTags(ticket.type);
+
   return (
-    <ScrollView f={1} bg="$background" p="$4">
-      <YStack gap="$4">
+    <ScrollView f={1} bg="$background" p="$3.5">
+      <YStack gap="$3">
         {/* Thẻ hành trình chính */}
         <Card
-          p="$5"
+          p="$4"
           borderWidth={1}
           borderColor="gray5"
-          br="$5"
-          gap="$3"
+          br="$4"
+          gap="$2.5"
         >
           <XStack jc="space-between" ai="center">
-            <XStack ai="center" gap="$2">
-              <YStack px="$2.5" py="$1" br="$10" bg="blue3">
-                <Text fontSize="$2" fontWeight="bold" color="blue10">
-                  {ticket.brand}
-                </Text>
-              </YStack>
-            </XStack>
-            <Text fontSize="$3" color="gray10" fontWeight="600">
+            <YStack px="$2.5" py="$0.5" br="$10" bg="blue3">
+              <Text fontSize="$2" fontWeight="bold" color="blue10">
+                {ticket.brand}
+              </Text>
+            </YStack>
+            <Text fontSize="$2" color="gray10" fontWeight="600">
               Mã: {ticket.code}
             </Text>
           </XStack>
 
-          <Text fontSize="$8" fontWeight="900" color="$color">
+          <Text fontSize="$7" fontWeight="900" color="$color">
             {ticket.from} ➔ {ticket.to}
           </Text>
 
-          <Separator borderColor="gray4" my="$1" />
+          <Separator borderColor="gray4" my="$0.5" />
 
-          <YStack gap="$2.5">
+          <YStack gap="$1.5">
             <XStack jc="space-between">
-              <Text color="gray10">Giờ khởi hành:</Text>
-              <Text fontWeight="600">{ticket.departureTime}</Text>
+              <Text color="gray10" fontSize="$3">Giờ khởi hành:</Text>
+              <Text fontWeight="600" fontSize="$3">{ticket.departureTime}</Text>
             </XStack>
             <XStack jc="space-between">
-              <Text color="gray10">Thời gian di chuyển:</Text>
-              <Text fontWeight="600">{ticket.duration}</Text>
+              <Text color="gray10" fontSize="$3">Thời gian di chuyển:</Text>
+              <Text fontWeight="600" fontSize="$3">{ticket.duration}</Text>
             </XStack>
             <XStack jc="space-between">
-              <Text color="gray10">Số ghế còn trống:</Text>
-              <Text fontWeight="bold" color="green10">
+              <Text color="gray10" fontSize="$3">Số ghế còn trống:</Text>
+              <Text fontWeight="bold" color="green10" fontSize="$3">
                 {ticket.availableSeats || 12} ghế
               </Text>
             </XStack>
           </YStack>
         </Card>
 
-        {/* Tiện ích & Mô tả */}
+        {/* Tiện ích & Dịch vụ đi kèm (Đã thu gọn nhỏ gọn, tinh tế) */}
         <Card
-          p="$4"
+          p="$3.5"
           borderWidth={1}
           borderColor="gray5"
-          br="$5"
+          br="$4"
           gap="$2"
         >
-          <Text fontSize="$5" fontWeight="bold">Dịch vụ & Tiện ích đi kèm</Text>
-          <Text color="gray11" lineHeight={22}>
-            {ticket.description || 'Chuyến đi tiện nghi, điều hòa 24/24, phục vụ nước uống và khăn lạnh miễn phí. Đón trả đúng giờ.'}
+          <XStack ai="center" gap="$1.5">
+            <Text fontSize="$3.5" fontWeight="bold" color="$color">
+              ✨ Tiện ích đi kèm
+            </Text>
+          </XStack>
+
+          {/* Các chip tiện ích gọn gàng */}
+          <XStack gap="$1.5" flexWrap="wrap">
+            {amenities.map((item, idx) => (
+              <YStack key={idx} px="$2" py="$0.5" bg="gray3" br="$3" borderWidth={1} borderColor="gray5">
+                <Text fontSize="$2" color="gray11" fontWeight="600">
+                  {item}
+                </Text>
+              </YStack>
+            ))}
+          </XStack>
+
+          <Text color="gray10" fontSize="$2.5" lineHeight={18} mt="$0.5">
+            {ticket.description || 'Chuyến đi tiện nghi, phục vụ nước uống và khăn lạnh miễn phí. Đón trả đúng giờ.'}
           </Text>
         </Card>
 
         {/* Chính sách hoàn hủy */}
         <Card
-          p="$4"
+          p="$3.5"
           borderWidth={1}
           borderColor="gray5"
-          br="$5"
-          gap="$2"
+          br="$4"
+          gap="$1.5"
         >
-          <Text fontSize="$5" fontWeight="bold">Chính sách hoàn / đổi vé</Text>
-          <Text color="gray11" fontSize="$3">
-            • Hoàn vé miễn phí 100% trước giờ khởi hành 24 tiếng.
+          <Text fontSize="$3.5" fontWeight="bold" color="$color">
+            📋 Chính sách hoàn / đổi vé
           </Text>
-          <Text color="gray11" fontSize="$3">
-            • Phí hoàn vé 10% nếu yêu cầu hủy trước giờ khởi hành 12 tiếng.
+          <Text color="gray10" fontSize="$2.5">
+            • Hoàn vé miễn phí trước giờ chạy 24h.
           </Text>
-          <Text color="gray11" fontSize="$3">
-            • Không áp dụng hoàn hủy sau khi phương tiện đã bắt đầu hành trình.
+          <Text color="gray10" fontSize="$2.5">
+            • Phí hoàn vé 10% nếu hủy trước 12h khởi hành.
           </Text>
         </Card>
 
         {/* Giá và nút chọn */}
         <Card
-          p="$4"
+          p="$3.5"
           borderWidth={1}
           borderColor="gray5"
-          br="$5"
+          br="$4"
           gap="$2"
         >
           <XStack jc="space-between" ai="center">
             <YStack>
-              <Text color="gray10" fontSize="$2">Giá vé niêm yết:</Text>
-              <Text fontSize="$8" color="red10" fontWeight="900">
+              <Text color="gray10" fontSize="$2">Giá vé trọn gói:</Text>
+              <Text fontSize="$7" color="red10" fontWeight="900">
                 {Number(ticket.price).toLocaleString('vi-VN')} đ
               </Text>
             </YStack>
