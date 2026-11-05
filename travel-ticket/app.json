@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Travel Ticket",
+    "slug": "travel-ticket",
+    "version": "1.0.0",
+    "orientation": "default",
+    "scheme": "travelticket",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "userInterfaceStyle": "automatic",
+    "icon": "./assets/images/icon.png",
+    "ios": {
+      "bundleIdentifier": "com.nguyendinhphi.travelticket",
+      "icon": "./assets/expo.icon"
+    },
+    "android": {
+      "package": "com.nguyendinhphi.travelticket",
+      "adaptiveIcon": {
+        "backgroundColor": "#208AEF",
+        "foregroundImage": "./assets/images/android-icon-foreground.png"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#208AEF",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 76
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
