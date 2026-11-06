@@ -57,17 +57,17 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, width = '100%', 
       <XStack jc="space-between" ai="center" mb="$3">
         <XStack ai="center" gap="$2">
           <YStack px="$2.5" py="$1" br="$10" bg={badge.bg}>
-            <Text fontSize="$2" fontWeight="bold" color={badge.color}>
+            <Text fontSize={12} fontWeight="bold" color={badge.color}>
               {badge.label}
             </Text>
           </YStack>
-          <Text fontSize="$3" fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>
+          <Text fontSize={14} fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>
             {ticket.brand}
           </Text>
         </XStack>
 
         <YStack px="$2" py="$1" br="$3" bg={isDark ? '#334155' : '#F1F5F9'}>
-          <Text fontSize="$2" color={isDark ? '#CBD5E1' : '#475569'} fontWeight="600">
+          <Text fontSize={11} color={isDark ? '#CBD5E1' : '#475569'} fontWeight="600">
             {ticket.code}
           </Text>
         </YStack>
@@ -76,28 +76,28 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, width = '100%', 
       {/* Hành trình chính */}
       <XStack jc="space-between" ai="center" mb="$2">
         <YStack>
-          <Text fontSize="$6" fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
+          <Text fontSize={18} fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
             {ticket.from}
           </Text>
-          <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'}>
+          <Text fontSize={12} color={isDark ? '#94A3B8' : '#64748B'}>
             Điểm khởi hành
           </Text>
         </YStack>
 
         <YStack ai="center" px="$2">
-          <Text color={isDark ? '#38BDF8' : '#0066FF'} fontSize="$4" fontWeight="bold">
+          <Text color={isDark ? '#38BDF8' : '#0066FF'} fontSize={16} fontWeight="bold">
             ➔
           </Text>
-          <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'}>
+          <Text fontSize={12} color={isDark ? '#94A3B8' : '#64748B'}>
             {ticket.duration}
           </Text>
         </YStack>
 
         <YStack ai="flex-end">
-          <Text fontSize="$6" fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
+          <Text fontSize={18} fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
             {ticket.to}
           </Text>
-          <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'}>
+          <Text fontSize={12} color={isDark ? '#94A3B8' : '#64748B'}>
             Điểm đến
           </Text>
         </YStack>
@@ -105,10 +105,10 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, width = '100%', 
 
       {/* Thông tin giờ đi & ghế trống */}
       <XStack jc="space-between" ai="center" mb="$3">
-        <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2">
+        <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize={12}>
           🕒 Giờ đi: <Text fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>{ticket.departureTime}</Text>
         </Text>
-        <Text color={isDark ? '#4ADE80' : '#16A34A'} fontSize="$2" fontWeight="600">
+        <Text color={isDark ? '#4ADE80' : '#16A34A'} fontSize={12} fontWeight="600">
           Còn {ticket.availableSeats ?? 10} / {ticket.totalSeats || 12} ghế
         </Text>
       </XStack>
@@ -118,10 +118,10 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, width = '100%', 
       {/* Giá tiền và nút chọn */}
       <XStack jc="space-between" ai="center">
         <YStack>
-          <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'}>
+          <Text fontSize={12} color={isDark ? '#94A3B8' : '#64748B'}>
             Giá vé trọn gói
           </Text>
-          <Text fontSize="$6" color={isDark ? '#F87171' : '#DC2626'} fontWeight="800">
+          <Text fontSize={20} color={isDark ? '#F87171' : '#DC2626'} fontWeight="800">
             {Number(ticket.price).toLocaleString('vi-VN')} đ
           </Text>
         </YStack>
@@ -134,7 +134,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, width = '100%', 
           px="$3.5"
           onPress={() => onSelect(ticket)}
         >
-          <Text color="#FFFFFF" fontWeight="bold" fontSize="$3">
+          <Text color="#FFFFFF" fontWeight="bold" fontSize={13}>
             Chọn chuyến ➔
           </Text>
         </Button>

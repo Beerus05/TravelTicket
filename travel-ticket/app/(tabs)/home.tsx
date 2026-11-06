@@ -42,8 +42,8 @@ export default function HomeScreen() {
   if (isLoading) {
     return (
       <YStack f={1} jc="center" ai="center" bg="$background">
-        <Spinner size="large" color="blue10" />
-        <Text mt="$2" color="gray10">Đang tải danh sách vé...</Text>
+        <Spinner size="large" color="#0066FF" />
+        <Text mt="$2" color="#64748B">Đang tải danh sách vé...</Text>
       </YStack>
     );
   }

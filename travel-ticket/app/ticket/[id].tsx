@@ -84,12 +84,12 @@ export default function TicketDetailScreen() {
           px="$3"
           onPress={() => router.back()}
         >
-          <Text color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="bold" fontSize="$3">
+          <Text color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="bold" fontSize={13}>
             ❮ Quay lại
           </Text>
         </Button>
 
-        <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
+        <Text fontSize={18} fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
           Chi tiết chuyến đi
         </Text>
 
@@ -116,16 +116,16 @@ export default function TicketDetailScreen() {
                 borderWidth={1}
                 borderColor={isDark ? '#1D4ED8' : '#BFDBFE'}
               >
-                <Text fontSize="$2" fontWeight="bold" color={isDark ? '#93C5FD' : '#1D4ED8'}>
+                <Text fontSize={12} fontWeight="bold" color={isDark ? '#93C5FD' : '#1D4ED8'}>
                   {ticket.brand}
                 </Text>
               </YStack>
-              <Text fontSize="$3" color={isDark ? '#CBD5E1' : '#64748B'} fontWeight="600">
+              <Text fontSize={13} color={isDark ? '#CBD5E1' : '#64748B'} fontWeight="600">
                 Mã: {ticket.code}
               </Text>
             </XStack>
 
-            <Text fontSize="$7" fontWeight="900" color={isDark ? '#F8FAFC' : '#0F172A'}>
+            <Text fontSize={20} fontWeight="900" color={isDark ? '#F8FAFC' : '#0F172A'}>
               {ticket.from} ➔ {ticket.to}
             </Text>
 
@@ -133,16 +133,16 @@ export default function TicketDetailScreen() {
 
             <YStack gap="$2">
               <XStack jc="space-between">
-                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Giờ khởi hành:</Text>
-                <Text fontWeight="600" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>{ticket.departureTime}</Text>
+                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize={14}>Giờ khởi hành:</Text>
+                <Text fontWeight="600" fontSize={14} color={isDark ? '#F8FAFC' : '#0F172A'}>{ticket.departureTime}</Text>
               </XStack>
               <XStack jc="space-between">
-                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Thời gian di chuyển:</Text>
-                <Text fontWeight="600" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>{ticket.duration}</Text>
+                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize={14}>Thời gian di chuyển:</Text>
+                <Text fontWeight="600" fontSize={14} color={isDark ? '#F8FAFC' : '#0F172A'}>{ticket.duration}</Text>
               </XStack>
               <XStack jc="space-between">
-                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Số ghế còn trống:</Text>
-                <Text fontWeight="bold" color={isDark ? '#4ADE80' : '#16A34A'} fontSize="$3">
+                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize={14}>Số ghế còn trống:</Text>
+                <Text fontWeight="bold" color={isDark ? '#4ADE80' : '#16A34A'} fontSize={14}>
                   {ticket.availableSeats ?? 10} / {ticket.totalSeats || 12} ghế
                 </Text>
               </XStack>
@@ -164,24 +164,24 @@ export default function TicketDetailScreen() {
 
             <YStack gap="$2">
               <XStack ai="flex-start" gap="$2.5">
-                <Text fontSize="$4">🟢</Text>
+                <Text fontSize={16}>🟢</Text>
                 <YStack f={1}>
-                  <Text fontWeight="bold" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>Điểm xuất phát: {ticket.from}</Text>
-                  <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2.5">Bến xe / Sân bay trung tâm • Khởi hành {ticket.departureTime.split(' - ')[0] || 'đúng giờ'}</Text>
+                  <Text fontWeight="bold" fontSize={14} color={isDark ? '#F8FAFC' : '#0F172A'}>Điểm xuất phát: {ticket.from}</Text>
+                  <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize={12}>Bến xe / Sân bay trung tâm • Khởi hành {ticket.departureTime.split(' - ')[0] || 'đúng giờ'}</Text>
                 </YStack>
               </XStack>
 
               <YStack ml="$2" pl="$2" borderLeftWidth={1.5} borderLeftColor={isDark ? '#334155' : '#E2E8F0'} py="$1">
-                <Text color={isDark ? '#38BDF8' : '#0066FF'} fontSize="$2" fontWeight="600">
+                <Text color={isDark ? '#38BDF8' : '#0066FF'} fontSize={12} fontWeight="600">
                   ⏱️ {ticket.duration} di chuyển êm ái, an toàn
                 </Text>
               </YStack>
 
               <XStack ai="flex-start" gap="$2.5">
-                <Text fontSize="$4">🔴</Text>
+                <Text fontSize={16}>🔴</Text>
                 <YStack f={1}>
-                  <Text fontWeight="bold" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>Điểm đến: {ticket.to}</Text>
-                  <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2.5">Trả khách tại trung tâm thị xã / thành phố</Text>
+                  <Text fontWeight="bold" fontSize={14} color={isDark ? '#F8FAFC' : '#0F172A'}>Điểm đến: {ticket.to}</Text>
+                  <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize={12}>Trả khách tại trung tâm thị xã / thành phố</Text>
                 </YStack>
               </XStack>
             </YStack>
@@ -198,11 +198,11 @@ export default function TicketDetailScreen() {
             ai="center"
             gap="$2"
           >
-            <Text fontSize="$3.5">✨</Text>
-            <Text fontSize="$3" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
+            <Text fontSize={16}>✨</Text>
+            <Text fontSize={14} fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
               Tiện ích:
             </Text>
-            <Text fontSize="$2.5" color={isDark ? '#94A3B8' : '#64748B'} f={1}>
+            <Text fontSize={13} color={isDark ? '#94A3B8' : '#64748B'} f={1}>
               {amenities.join(' • ')}
             </Text>
           </XStack>
@@ -218,11 +218,11 @@ export default function TicketDetailScreen() {
             ai="center"
             gap="$2"
           >
-            <Text fontSize="$3.5">🛡️</Text>
-            <Text fontSize="$3" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
+            <Text fontSize={16}>🛡️</Text>
+            <Text fontSize={14} fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
               Bảo đảm:
             </Text>
-            <Text fontSize="$2.5" color={isDark ? '#94A3B8' : '#64748B'} f={1}>
+            <Text fontSize={13} color={isDark ? '#94A3B8' : '#64748B'} f={1}>
               Bảo hiểm hành khách • Hoàn 100% trước 24h
             </Text>
           </XStack>
@@ -243,8 +243,8 @@ export default function TicketDetailScreen() {
       >
         <XStack jc="space-between" ai="center">
           <YStack>
-            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2">Giá vé trọn gói:</Text>
-            <Text fontSize="$8" color={isDark ? '#F87171' : '#DC2626'} fontWeight="900">
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize={12}>Giá vé trọn gói:</Text>
+            <Text fontSize={22} color={isDark ? '#F87171' : '#DC2626'} fontWeight="900">
               {Number(ticket.price).toLocaleString('vi-VN')} đ
             </Text>
           </YStack>
@@ -257,7 +257,7 @@ export default function TicketDetailScreen() {
             px="$4"
             onPress={handleContinue}
           >
-            <Text color="#FFFFFF" fontWeight="900" fontSize="$4">
+            <Text color="#FFFFFF" fontWeight="900" fontSize={16}>
               Chọn chỗ ngồi ➔
             </Text>
           </Button>

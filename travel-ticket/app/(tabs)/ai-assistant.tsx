@@ -159,32 +159,33 @@ export default function AIAssistantScreen() {
 
               <YStack>
                 <XStack ai="center" gap="$2">
-                  <Text fontSize="$4" fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
+                  <Text fontSize={16} fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
                     Trợ lý Du lịch AI
                   </Text>
                   <YStack px="$2" py="$0.5" br="$10" bg={isDark ? '#064E3B' : '#DCFCE7'}>
-                    <Text fontSize="$1.5" fontWeight="bold" color={isDark ? '#4ADE80' : '#15803D'}>
+                    <Text fontSize={11} fontWeight="bold" color={isDark ? '#4ADE80' : '#15803D'}>
                       ● Trực tuyến
                     </Text>
                   </YStack>
                 </XStack>
-                <Text fontSize="$2.5" color={isDark ? '#94A3B8' : '#64748B'}>
+                <Text fontSize={12} color={isDark ? '#94A3B8' : '#64748B'}>
                   Tư vấn lộ trình & so sánh vé tự động
                 </Text>
               </YStack>
             </XStack>
 
             <Button
-              size="xs"
+              size="sm"
               bg={isDark ? '#334155' : '#F1F5F9'}
               borderWidth={1}
               borderColor={isDark ? '#475569' : '#CBD5E1'}
               pressStyle={{ opacity: 0.8 }}
               br="$3"
               px="$2.5"
+              py="$1"
               onPress={handleResetChat}
             >
-              <Text fontSize="$2" fontWeight="600" color={isDark ? '#CBD5E1' : '#475569'}>
+              <Text fontSize={12} fontWeight="600" color={isDark ? '#CBD5E1' : '#475569'}>
                 🔄 Làm mới
               </Text>
             </Button>
@@ -316,7 +317,7 @@ export default function AIAssistantScreen() {
 
         {/* Danh sách gợi ý câu hỏi nhanh (Gợi ý cuộn ngang tiện lợi) */}
         <YStack gap="$1.5">
-          <Text fontSize="$2" fontWeight="700" color={isDark ? '#94A3B8' : '#64748B'} px="$1">
+          <Text fontSize={12} fontWeight="700" color={isDark ? '#94A3B8' : '#64748B'} px="$1">
             💡 Gợi ý câu hỏi nhanh:
           </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -324,7 +325,7 @@ export default function AIAssistantScreen() {
               {QUICK_PROMPTS.map((q, idx) => (
                 <Button
                   key={idx}
-                  size="xs"
+                  size="sm"
                   br="$10"
                   bg={isDark ? '#1E293B' : '#FFFFFF'}
                   borderWidth={1}
@@ -334,7 +335,7 @@ export default function AIAssistantScreen() {
                   py="$1.5"
                   onPress={() => handleSend(q)}
                 >
-                  <Text fontSize="$2" color={isDark ? '#F8FAFC' : '#1E293B'} fontWeight="600">
+                  <Text fontSize={12} color={isDark ? '#F8FAFC' : '#1E293B'} fontWeight="600">
                     {q}
                   </Text>
                 </Button>
@@ -360,7 +361,7 @@ export default function AIAssistantScreen() {
             borderWidth={0}
             bg="transparent"
             px="$3"
-            fontSize="$3"
+            fontSize={14}
             color={isDark ? '#F8FAFC' : '#0F172A'}
             placeholderTextColor={isDark ? '#64748B' : '#94A3B8'}
             placeholder="Nhập yêu cầu (VD: Sóc Trăng, Đà Lạt, giá rẻ...)"
@@ -384,7 +385,7 @@ export default function AIAssistantScreen() {
           >
             <Text
               color={prompt.trim() ? '#FFFFFF' : (isDark ? '#64748B' : '#94A3B8')}
-              fontSize="$3.5"
+              fontSize={15}
               fontWeight="900"
             >
               ➤

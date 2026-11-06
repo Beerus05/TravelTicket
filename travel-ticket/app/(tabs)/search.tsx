@@ -48,7 +48,7 @@ export default function SearchScreen() {
   if (isLoading) {
     return (
       <YStack f={1} jc="center" ai="center" bg="$background">
-        <Spinner size="large" color="blue10" />
+        <Spinner size="large" color="#0066FF" />
       </YStack>
     );
   }

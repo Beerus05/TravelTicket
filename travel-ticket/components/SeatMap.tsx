@@ -39,11 +39,11 @@ export const SeatMap: React.FC<SeatMapProps> = ({
             borderWidth={1.5}
             borderColor={isDark ? '#475569' : '#CBD5E1'}
           />
-          <Text fontSize="$3" color={isDark ? '#94A3B8' : '#64748B'}>Trống</Text>
+          <Text fontSize={13} color={isDark ? '#94A3B8' : '#64748B'}>Trống</Text>
         </XStack>
         <XStack ai="center" gap="$2">
           <YStack w={18} h={18} br="$2" bg="#0066FF" />
-          <Text fontSize="$3" color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="bold">Đang chọn</Text>
+          <Text fontSize={13} color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="bold">Đang chọn</Text>
         </XStack>
         <XStack ai="center" gap="$2">
           <YStack
@@ -58,7 +58,7 @@ export const SeatMap: React.FC<SeatMapProps> = ({
           >
             <Text fontSize={9} color={isDark ? '#94A3B8' : '#64748B'} fontWeight="bold">✕</Text>
           </YStack>
-          <Text fontSize="$3" color={isDark ? '#94A3B8' : '#64748B'}>Đã đặt (Khóa)</Text>
+          <Text fontSize={13} color={isDark ? '#94A3B8' : '#64748B'}>Đã đặt (Khóa)</Text>
         </XStack>
       </XStack>
 
@@ -73,7 +73,7 @@ export const SeatMap: React.FC<SeatMapProps> = ({
         borderWidth={1}
         borderColor={isDark ? '#334155' : '#E2E8F0'}
       >
-        <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'} fontWeight="600">
+        <Text fontSize={12} color={isDark ? '#94A3B8' : '#64748B'} fontWeight="600">
           🚗 PHÍA TRƯỚC / BUỒNG LÁI
         </Text>
       </YStack>
@@ -121,7 +121,7 @@ export const SeatMap: React.FC<SeatMapProps> = ({
                   }
                 }}
               >
-                <Text color={textColor} fontWeight={isSelected || isBooked ? 'bold' : '600'} fontSize="$3">
+                <Text color={textColor} fontWeight={isSelected || isBooked ? 'bold' : '600'} fontSize={13}>
                   {isBooked ? `✕ ${seat}` : seat}
                 </Text>
               </Button>
@@ -137,7 +137,7 @@ export const SeatMap: React.FC<SeatMapProps> = ({
 
               {/* Lối đi ở giữa */}
               <YStack w={30} ai="center">
-                <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'}>
+                <Text fontSize={12} color={isDark ? '#94A3B8' : '#64748B'}>
                   {row}
                 </Text>
               </YStack>

@@ -85,6 +85,25 @@ const appFont = createFont({
 
 export const tamaguiConfig = createTamagui({
   ...config,
+  tokens: {
+    ...config.tokens,
+    color: {
+      ...config.tokens.color,
+      blue10: '#0066FF',
+      gray3: '#F1F5F9',
+      gray5: '#E2E8F0',
+      gray10: '#64748B',
+      gray11: '#475569',
+    },
+    size: {
+      ...config.tokens.size,
+      xs: 28,
+      sm: 36,
+      md: 44,
+      lg: 52,
+      xl: 60,
+    },
+  },
   fonts: {
     heading: appFont,
     body: appFont,
