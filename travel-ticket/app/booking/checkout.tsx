@@ -6,11 +6,13 @@ import { clearBookingDraft, addBookedSeatsToTicket } from '../../store/bookingSl
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ticketService } from '../../services/ticketService';
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function CheckoutScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const insets = useSafeAreaInsets();
   const { user, selectedTicket, selectedSeats } = useSelector((state: RootState) => state.booking);
 
   const [phone, setPhone] = useState('0901234567');
@@ -65,151 +67,183 @@ export default function CheckoutScreen() {
   };
 
   return (
-    <ScrollView f={1} bg="$background" p="$4">
-      <YStack gap="$4">
-        {/* Tóm tắt chuyến đi */}
-        <Card
-          p="$4"
-          borderWidth={1}
-          borderColor="gray5"
-          br="$5"
-          gap="$2"
-        >
-          <XStack jc="space-between" ai="center">
-            <Text fontSize="$5" fontWeight="bold">1. Thông tin hành trình</Text>
-            <YStack px="$2" py="$0.5" br="$3" bg="blue3">
-              <Text fontSize="$2" fontWeight="bold" color="blue10">
-                {selectedTicket?.code}
-              </Text>
-            </YStack>
-          </XStack>
-          <Text fontSize="$4" color="blue10" fontWeight="600">
-            {selectedTicket?.brand}
-          </Text>
-          <Text fontSize="$6" fontWeight="800" color="$color">
-            {selectedTicket?.from} ➔ {selectedTicket?.to}
-          </Text>
-          <Text color="gray10" fontSize="$3">🕒 Giờ đi: {selectedTicket?.departureTime}</Text>
-          <Text color="gray10" fontSize="$3">
-            💺 Ghế đã chọn: <Text fontWeight="bold" color="blue10">{selectedSeats.join(', ') || 'Chưa chọn'}</Text>
-          </Text>
-        </Card>
-
-        {/* Thông tin liên hệ */}
-        <Card
-          p="$4"
-          borderWidth={1}
-          borderColor="gray5"
-          br="$5"
-          gap="$3"
-        >
-          <Text fontSize="$5" fontWeight="bold">2. Thông tin hành khách</Text>
-          <XStack jc="space-between">
-            <Text color="gray10">Họ và tên:</Text>
-            <Text fontWeight="600">{user?.name || 'Hành khách'}</Text>
-          </XStack>
-          <XStack jc="space-between">
-            <Text color="gray10">Email:</Text>
-            <Text fontWeight="600">{user?.email || 'Chưa cập nhật'}</Text>
-          </XStack>
-          <YStack gap="$1">
-            <Text color="gray10" fontSize="$3">Số điện thoại nhận vé:</Text>
-            <Input
-              placeholder="Nhập số điện thoại"
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-              size="$4"
-              br="$3"
-            />
-          </YStack>
-        </Card>
-
-        {/* Mã giảm giá */}
-        <Card
-          p="$4"
-          borderWidth={1}
-          borderColor="gray5"
-          br="$5"
-          gap="$2"
-        >
-          <Text fontSize="$5" fontWeight="bold">3. Mã ưu đãi / Voucher</Text>
-          <XStack gap="$2">
-            <Input
-              f={1}
-              placeholder="Nhập TRAVEL50 hoặc IUH"
-              value={voucher}
-              onChangeText={setVoucher}
-              autoCapitalize="characters"
-              br="$3"
-            />
-            <Button
-              bg="#0066FF"
-              pressStyle={{ bg: '#0052CC' }}
-              size="md"
-              br="$3"
-              onPress={handleApplyVoucher}
-            >
-              <Text color="#FFFFFF" fontWeight="bold">Áp dụng</Text>
-            </Button>
-          </XStack>
-          {discount > 0 && (
-            <Text color="green10" fontSize="$3" fontWeight="600">
-              ✓ Đã áp dụng mã giảm giá {discount.toLocaleString('vi-VN')} đ!
-            </Text>
-          )}
-        </Card>
-
-        {/* Tóm tắt thanh toán */}
-        <Card
-          p="$4"
-          borderWidth={1}
-          borderColor="gray5"
-          br="$5"
-          gap="$2.5"
-        >
-          <Text fontSize="$5" fontWeight="bold">4. Chi tiết thanh toán</Text>
-          <XStack jc="space-between">
-            <Text color="gray10">Tạm tính ({selectedSeats.length} vé):</Text>
-            <Text fontWeight="600">{subtotal.toLocaleString('vi-VN')} đ</Text>
-          </XStack>
-          {discount > 0 && (
-            <XStack jc="space-between">
-              <Text color="green10">Giảm giá voucher:</Text>
-              <Text color="green10" fontWeight="600">-{discount.toLocaleString('vi-VN')} đ</Text>
-            </XStack>
-          )}
-          <Separator borderColor="gray4" my="$1" />
-          <XStack jc="space-between" ai="center">
-            <Text fontSize="$5" fontWeight="bold">Tổng thanh toán:</Text>
-            <Text fontSize="$7" fontWeight="900" color="red10">
-              {finalPrice.toLocaleString('vi-VN')} đ
-            </Text>
-          </XStack>
-        </Card>
-
-        {/* Nút thanh toán */}
+    <YStack f={1} bg="$background" pt={insets.top > 0 ? insets.top : 12}>
+      {/* Header điều hướng */}
+      <XStack
+        ai="center"
+        jc="space-between"
+        px="$4"
+        py="$2.5"
+        borderBottomWidth={1}
+        borderBottomColor="gray5"
+        bg="$background"
+      >
         <Button
-          size="lg"
-          bg="#0066FF"
-          pressStyle={{ bg: '#0052CC' }}
-          br="$4"
-          onPress={handleConfirm}
-          disabled={createBookingMutation.isPending || selectedSeats.length === 0}
-          opacity={selectedSeats.length === 0 ? 0.6 : 1}
+          size="sm"
+          bg="gray3"
+          pressStyle={{ bg: 'gray5' }}
+          br="$10"
+          px="$3"
+          onPress={() => router.back()}
         >
-          {createBookingMutation.isPending ? (
-            <XStack gap="$2" ai="center">
-              <Spinner color="white" />
-              <Text color="#FFFFFF" fontWeight="bold">Đang xử lý xuất vé...</Text>
-            </XStack>
-          ) : (
-            <Text color="#FFFFFF" fontWeight="900" fontSize="$4">
-              Thanh toán & Xuất vé điện tử ➔
-            </Text>
-          )}
+          <Text color="#0066FF" fontWeight="bold" fontSize="$3">
+            ❮ Quay lại
+          </Text>
         </Button>
-      </YStack>
-    </ScrollView>
+
+        <Text fontSize="$5" fontWeight="bold" color="$color">
+          Xác nhận & Thanh toán
+        </Text>
+
+        <YStack w={75} />
+      </XStack>
+
+      <ScrollView f={1} px="$4" pt="$3" showsVerticalScrollIndicator={false}>
+        <YStack gap="$4" pb={Math.max(insets.bottom + 20, 32)}>
+          {/* Tóm tắt chuyến đi */}
+          <Card
+            p="$4"
+            borderWidth={1}
+            borderColor="gray5"
+            br="$5"
+            gap="$2"
+          >
+            <XStack jc="space-between" ai="center">
+              <Text fontSize="$5" fontWeight="bold">1. Thông tin hành trình</Text>
+              <YStack px="$2" py="$0.5" br="$3" bg="blue3">
+                <Text fontSize="$2" fontWeight="bold" color="blue10">
+                  {selectedTicket?.code}
+                </Text>
+              </YStack>
+            </XStack>
+            <Text fontSize="$4" color="blue10" fontWeight="600">
+              {selectedTicket?.brand}
+            </Text>
+            <Text fontSize="$6" fontWeight="800" color="$color">
+              {selectedTicket?.from} ➔ {selectedTicket?.to}
+            </Text>
+            <Text color="gray10" fontSize="$3">🕒 Giờ đi: {selectedTicket?.departureTime}</Text>
+            <Text color="gray10" fontSize="$3">
+              💺 Ghế đã chọn: <Text fontWeight="bold" color="blue10">{selectedSeats.join(', ') || 'Chưa chọn'}</Text>
+            </Text>
+          </Card>
+
+          {/* Thông tin liên hệ */}
+          <Card
+            p="$4"
+            borderWidth={1}
+            borderColor="gray5"
+            br="$5"
+            gap="$3"
+          >
+            <Text fontSize="$5" fontWeight="bold">2. Thông tin hành khách</Text>
+            <XStack jc="space-between">
+              <Text color="gray10">Họ và tên:</Text>
+              <Text fontWeight="600">{user?.name || 'Hành khách'}</Text>
+            </XStack>
+            <XStack jc="space-between">
+              <Text color="gray10">Email:</Text>
+              <Text fontWeight="600">{user?.email || 'Chưa cập nhật'}</Text>
+            </XStack>
+            <YStack gap="$1">
+              <Text color="gray10" fontSize="$3">Số điện thoại nhận vé:</Text>
+              <Input
+                placeholder="Nhập số điện thoại"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+                size="$4"
+                br="$3"
+              />
+            </YStack>
+          </Card>
+
+          {/* Mã giảm giá */}
+          <Card
+            p="$4"
+            borderWidth={1}
+            borderColor="gray5"
+            br="$5"
+            gap="$2"
+          >
+            <Text fontSize="$5" fontWeight="bold">3. Mã ưu đãi / Voucher</Text>
+            <XStack gap="$2">
+              <Input
+                f={1}
+                placeholder="Nhập TRAVEL50 hoặc IUH"
+                value={voucher}
+                onChangeText={setVoucher}
+                autoCapitalize="characters"
+                br="$3"
+              />
+              <Button
+                bg="#0066FF"
+                pressStyle={{ bg: '#0052CC' }}
+                size="md"
+                br="$3"
+                onPress={handleApplyVoucher}
+              >
+                <Text color="#FFFFFF" fontWeight="bold">Áp dụng</Text>
+              </Button>
+            </XStack>
+            {discount > 0 && (
+              <Text color="green10" fontSize="$3" fontWeight="600">
+                ✓ Đã áp dụng mã giảm giá {discount.toLocaleString('vi-VN')} đ!
+              </Text>
+            )}
+          </Card>
+
+          {/* Tóm tắt thanh toán */}
+          <Card
+            p="$4"
+            borderWidth={1}
+            borderColor="gray5"
+            br="$5"
+            gap="$2.5"
+          >
+            <Text fontSize="$5" fontWeight="bold">4. Chi tiết thanh toán</Text>
+            <XStack jc="space-between">
+              <Text color="gray10">Tạm tính ({selectedSeats.length} vé):</Text>
+              <Text fontWeight="600">{subtotal.toLocaleString('vi-VN')} đ</Text>
+            </XStack>
+            {discount > 0 && (
+              <XStack jc="space-between">
+                <Text color="green10">Giảm giá voucher:</Text>
+                <Text color="green10" fontWeight="600">-{discount.toLocaleString('vi-VN')} đ</Text>
+              </XStack>
+            )}
+            <Separator borderColor="gray4" my="$1" />
+            <XStack jc="space-between" ai="center">
+              <Text fontSize="$5" fontWeight="bold">Tổng thanh toán:</Text>
+              <Text fontSize="$7" fontWeight="900" color="red10">
+                {finalPrice.toLocaleString('vi-VN')} đ
+              </Text>
+            </XStack>
+          </Card>
+
+          {/* Nút thanh toán */}
+          <Button
+            size="lg"
+            bg="#0066FF"
+            pressStyle={{ bg: '#0052CC' }}
+            br="$4"
+            onPress={handleConfirm}
+            disabled={createBookingMutation.isPending || selectedSeats.length === 0}
+            opacity={selectedSeats.length === 0 ? 0.6 : 1}
+          >
+            {createBookingMutation.isPending ? (
+              <XStack gap="$2" ai="center">
+                <Spinner color="white" />
+                <Text color="#FFFFFF" fontWeight="bold">Đang xử lý xuất vé...</Text>
+              </XStack>
+            ) : (
+              <Text color="#FFFFFF" fontWeight="900" fontSize="$4">
+                Thanh toán & Xuất vé điện tử ➔
+              </Text>
+            )}
+          </Button>
+        </YStack>
+      </ScrollView>
+    </YStack>
   );
 }

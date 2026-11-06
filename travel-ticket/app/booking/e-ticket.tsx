@@ -4,10 +4,12 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { ticketService } from '../../services/ticketService';
 import { CheckCircle, QrCode } from '../../components/Icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ETicketScreen() {
   const { bookingId } = useLocalSearchParams();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const { data: booking } = useQuery({
     queryKey: ['booking', bookingId],
@@ -19,7 +21,18 @@ export default function ETicketScreen() {
   });
 
   return (
-    <ScrollView f={1} bg="$background" contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center', padding: 16 }}>
+    <ScrollView
+      f={1}
+      bg="$background"
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingTop: Math.max(insets.top + 16, 32),
+        paddingBottom: Math.max(insets.bottom + 16, 32),
+      }}
+    >
       <Card
         w="100%"
         maxWidth={440}

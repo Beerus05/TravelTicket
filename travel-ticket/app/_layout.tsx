@@ -36,10 +36,10 @@ function AppNavigation() {
         <Stack.Screen name="(auth)/login" />
         <Stack.Screen name="(auth)/register" />
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="ticket/[id]" options={{ headerShown: true, title: 'Chi tiết chuyến đi' }} />
-        <Stack.Screen name="booking/seat-selection" options={{ headerShown: true, title: 'Chọn chỗ ngồi' }} />
-        <Stack.Screen name="booking/checkout" options={{ headerShown: true, title: 'Xác nhận & Thanh toán' }} />
-        <Stack.Screen name="booking/e-ticket" options={{ headerShown: true, title: 'Vé điện tử' }} />
+        <Stack.Screen name="ticket/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/seat-selection" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/checkout" options={{ headerShown: false }} />
+        <Stack.Screen name="booking/e-ticket" options={{ headerShown: false }} />
       </Stack>
     </TamaguiProvider>
   );

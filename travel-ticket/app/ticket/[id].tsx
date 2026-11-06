@@ -6,10 +6,12 @@ import { setSelectedTicket } from '../../store/bookingSlice';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { ticketService } from '../../services/ticketService';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TicketDetailScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams();
   const reduxTicket = useSelector((state: RootState) => state.booking.selectedTicket);
 
@@ -53,9 +55,39 @@ export default function TicketDetailScreen() {
   const amenities = getAmenityTags(ticket.type);
 
   return (
-    <YStack f={1} bg="$background" p="$4" jc="space-between">
-      <ScrollView f={1} showsVerticalScrollIndicator={false}>
-        <YStack gap="$3" pb="$2">
+    <YStack f={1} bg="$background" jc="space-between" pt={insets.top > 0 ? insets.top : 12}>
+      {/* Header điều hướng trên cùng chuẩn iOS */}
+      <XStack
+        ai="center"
+        jc="space-between"
+        px="$4"
+        py="$2.5"
+        borderBottomWidth={1}
+        borderBottomColor="gray5"
+        bg="$background"
+      >
+        <Button
+          size="sm"
+          bg="gray3"
+          pressStyle={{ bg: 'gray5' }}
+          br="$10"
+          px="$3"
+          onPress={() => router.back()}
+        >
+          <Text color="#0066FF" fontWeight="bold" fontSize="$3">
+            ❮ Quay lại
+          </Text>
+        </Button>
+
+        <Text fontSize="$5" fontWeight="bold" color="$color">
+          Chi tiết chuyến đi
+        </Text>
+
+        <YStack w={75} />
+      </XStack>
+
+      <ScrollView f={1} px="$4" pt="$3" showsVerticalScrollIndicator={false}>
+        <YStack gap="$3" pb="$3">
           {/* Thẻ hành trình chính */}
           <Card
             p="$4"
@@ -185,7 +217,9 @@ export default function TicketDetailScreen() {
         borderColor="gray5"
         br="$5"
         gap="$2"
-        mt="$2"
+        mx="$4"
+        mt="$1"
+        mb={Math.max(insets.bottom, 12)}
         bg="$background"
       >
         <XStack jc="space-between" ai="center">

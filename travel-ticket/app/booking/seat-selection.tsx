@@ -7,10 +7,12 @@ import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { ticketService } from '../../services/ticketService';
 import { SeatMap } from '../../components/SeatMap';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function SeatSelectionScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
   const { selectedTicket, selectedSeats } = useSelector((state: RootState) => state.booking);
 
   // Lấy toàn bộ bookings từ server / local memory để xác định ghế đã được đặt
@@ -55,8 +57,38 @@ export default function SeatSelectionScreen() {
   };
 
   return (
-    <YStack f={1} p="$4" bg="$background" jc="space-between">
-      <ScrollView f={1}>
+    <YStack f={1} bg="$background" jc="space-between" pt={insets.top > 0 ? insets.top : 12}>
+      {/* Header điều hướng */}
+      <XStack
+        ai="center"
+        jc="space-between"
+        px="$4"
+        py="$2.5"
+        borderBottomWidth={1}
+        borderBottomColor="gray5"
+        bg="$background"
+      >
+        <Button
+          size="sm"
+          bg="gray3"
+          pressStyle={{ bg: 'gray5' }}
+          br="$10"
+          px="$3"
+          onPress={() => router.back()}
+        >
+          <Text color="#0066FF" fontWeight="bold" fontSize="$3">
+            ❮ Quay lại
+          </Text>
+        </Button>
+
+        <Text fontSize="$5" fontWeight="bold" color="$color">
+          Chọn chỗ ngồi
+        </Text>
+
+        <YStack w={75} />
+      </XStack>
+
+      <ScrollView f={1} px="$4" pt="$3">
         <YStack gap="$4" ai="center">
           <Card
             p="$4"
@@ -103,6 +135,10 @@ export default function SeatSelectionScreen() {
         borderColor="gray5"
         br="$5"
         gap="$2.5"
+        mx="$4"
+        mt="$1"
+        mb={Math.max(insets.bottom, 12)}
+        bg="$background"
       >
         <XStack jc="space-between" ai="center">
           <Text fontSize="$4" color="gray11">Ghế đang chọn:</Text>
