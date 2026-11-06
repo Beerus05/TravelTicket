@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { YStack, XStack, Text, Button, Card, ScrollView, Separator } from 'tamagui';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
 import { setSelectedTicket } from '../../store/bookingSlice';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { ticketService } from '../../services/ticketService';
+import { ticketService, getTicketWithDynamicSeats } from '../../services/ticketService';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TicketDetailScreen() {
@@ -23,7 +23,16 @@ export default function TicketDetailScreen() {
     },
   });
 
-  const ticket = fetchedTicket || reduxTicket;
+  const { data: bookings = [] } = useQuery({
+    queryKey: ['bookings'],
+    queryFn: ticketService.getAllBookings,
+  });
+
+  const rawTicket = fetchedTicket || reduxTicket;
+  const ticket = useMemo(() => {
+    if (!rawTicket) return null;
+    return getTicketWithDynamicSeats(rawTicket, bookings);
+  }, [rawTicket, bookings]);
 
   if (!ticket) {
     return (
@@ -134,7 +143,7 @@ export default function TicketDetailScreen() {
               <XStack jc="space-between">
                 <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Số ghế còn trống:</Text>
                 <Text fontWeight="bold" color={isDark ? '#4ADE80' : '#16A34A'} fontSize="$3">
-                  {ticket.availableSeats || 12} ghế
+                  {ticket.availableSeats ?? 10} / {ticket.totalSeats || 12} ghế
                 </Text>
               </XStack>
             </YStack>

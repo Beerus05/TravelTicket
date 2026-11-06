@@ -121,7 +121,7 @@ export default function SeatSelectionScreen() {
               Hãng: <Text fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>{selectedTicket?.brand || 'Phương Trang'}</Text>
             </Text>
             <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2">
-              Đã khóa: {bookedSeats.length} ghế • Còn trống: {Math.max(0, 12 - bookedSeats.length)} ghế
+              Đã khóa: {bookedSeats.length} ghế • Còn trống: {Math.max(0, (selectedTicket?.totalSeats || 12) - bookedSeats.length)} / {selectedTicket?.totalSeats || 12} ghế
             </Text>
           </Card>
 

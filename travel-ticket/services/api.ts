@@ -19,7 +19,8 @@ export const DEFAULT_TICKETS = [
     departureTime: '08:00 - 15/11/2026',
     duration: '6h 30m',
     price: 320000,
-    availableSeats: 16,
+    totalSeats: 12,
+    availableSeats: 10,
     bookedSeats: ['A1', 'B2'],
     description: 'Xe Limousine phòng nằm 34 phòng cao cấp, cổng sạc Type-C, wifi tốc độ cao, nước suối và khăn lạnh miễn phí.',
   },
@@ -33,7 +34,8 @@ export const DEFAULT_TICKETS = [
     departureTime: '09:30 - 15/11/2026',
     duration: '50m',
     price: 1250000,
-    availableSeats: 8,
+    totalSeats: 12,
+    availableSeats: 10,
     bookedSeats: ['A2', 'C1'],
     description: 'Chuyến bay thẳng Airbus A321, 23kg hành lý ký gửi, suất ăn nhẹ trên chuyến bay và hỗ trợ check-in online nhanh.',
   },
@@ -47,7 +49,8 @@ export const DEFAULT_TICKETS = [
     departureTime: '19:00 - 16/11/2026',
     duration: '7h 45m',
     price: 480000,
-    availableSeats: 12,
+    totalSeats: 12,
+    availableSeats: 10,
     bookedSeats: ['A3', 'C3'],
     description: 'Tàu hỏa Thống Nhất SE4, khoang 4 giường nằm mềm điều hòa, ngắm cảnh biển Bình Thuận - Khánh Hòa tuyệt đẹp.',
   },
@@ -61,7 +64,8 @@ export const DEFAULT_TICKETS = [
     departureTime: '06:15 - 17/11/2026',
     duration: '1h 20m',
     price: 890000,
-    availableSeats: 20,
+    totalSeats: 12,
+    availableSeats: 11,
     bookedSeats: ['B1'],
     description: 'Vé máy bay giá rẻ, hành trình đúng giờ, tiện lợi cho các chuyến du lịch biển miền Trung.',
   },
@@ -75,6 +79,7 @@ export const DEFAULT_TICKETS = [
     departureTime: '22:00 - 18/11/2026',
     duration: '5h 30m',
     price: 400000,
+    totalSeats: 12,
     availableSeats: 10,
     bookedSeats: ['A4', 'B4'],
     description: 'Cabin đôi cao cấp, chạy đường cao tốc Hà Nội - Lào Cai êm ái, đón trả tận nơi tại trung tâm thị xã Sapa.',
@@ -89,7 +94,8 @@ export const DEFAULT_TICKETS = [
     departureTime: '06:45 - 19/11/2026',
     duration: '3h 50m',
     price: 250000,
-    availableSeats: 18,
+    totalSeats: 12,
+    availableSeats: 11,
     bookedSeats: ['C2'],
     description: 'Tàu du lịch Sài Gòn - Phan Thiết chuyên dụng, ghế ngồi mềm điều hòa, phục vụ ăn sáng nhẹ.',
   },
@@ -151,7 +157,8 @@ export const addLocalBooking = (booking: any) => {
   if (ticket) {
     const seatsToBook: string[] = Array.isArray(newBooking.seats) ? newBooking.seats : [newBooking.seats];
     ticket.bookedSeats = Array.from(new Set([...(ticket.bookedSeats || []), ...seatsToBook]));
-    ticket.availableSeats = Math.max(0, 24 - ticket.bookedSeats.length);
+    const total = ticket.totalSeats || 12;
+    ticket.availableSeats = Math.max(0, total - ticket.bookedSeats.length);
   }
 
   return newBooking;
@@ -168,7 +175,8 @@ export const cancelLocalBooking = (id: string) => {
     if (ticket && ticket.bookedSeats) {
       const seatsToFree: string[] = Array.isArray(booking.seats) ? booking.seats : [booking.seats];
       ticket.bookedSeats = ticket.bookedSeats.filter((s) => !seatsToFree.includes(s));
-      ticket.availableSeats = Math.max(0, 24 - ticket.bookedSeats.length);
+      const total = ticket.totalSeats || 12;
+      ticket.availableSeats = Math.max(0, total - ticket.bookedSeats.length);
     }
   }
 };

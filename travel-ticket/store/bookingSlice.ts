@@ -10,6 +10,7 @@ export interface Ticket {
   departureTime: string;
   duration: string;
   price: number;
+  totalSeats?: number;
   availableSeats?: number;
   bookedSeats?: string[];
   description?: string;

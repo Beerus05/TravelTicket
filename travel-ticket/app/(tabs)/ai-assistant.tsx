@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { api, askTravelAI, DEFAULT_TICKETS } from '../../services/api';
+import { ticketService } from '../../services/ticketService';
 import { Sparkles } from '../../components/Icons';
 
 export default function AIAssistantScreen() {
@@ -21,14 +22,7 @@ export default function AIAssistantScreen() {
 
   const { data: tickets = DEFAULT_TICKETS } = useQuery({
     queryKey: ['tickets'],
-    queryFn: async () => {
-      try {
-        const res = await api.get('/tickets');
-        return res.data && res.data.length > 0 ? res.data : DEFAULT_TICKETS;
-      } catch {
-        return DEFAULT_TICKETS;
-      }
-    },
+    queryFn: ticketService.getAllTickets,
   });
 
   const handleSend = async (customPrompt?: string) => {

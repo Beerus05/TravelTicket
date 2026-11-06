@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { YStack, XStack, Input, Button, Text, Card, ScrollView, Spinner } from 'tamagui';
 import { useQuery } from '@tanstack/react-query';
-import { api, DEFAULT_TICKETS } from '../../services/api';
+import { DEFAULT_TICKETS } from '../../services/api';
+import { ticketService, getTicketWithDynamicSeats } from '../../services/ticketService';
 import { useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedTicket, Ticket } from '../../store/bookingSlice';
@@ -22,17 +23,19 @@ export default function SearchScreen() {
 
   const { data: tickets = DEFAULT_TICKETS, isLoading } = useQuery({
     queryKey: ['tickets'],
-    queryFn: async () => {
-      try {
-        const res = await api.get('/tickets');
-        return res.data && res.data.length > 0 ? res.data : DEFAULT_TICKETS;
-      } catch {
-        return DEFAULT_TICKETS;
-      }
-    },
+    queryFn: ticketService.getAllTickets,
   });
 
-  const filtered = tickets.filter((t: any) => {
+  const { data: bookings = [] } = useQuery({
+    queryKey: ['bookings'],
+    queryFn: ticketService.getAllBookings,
+  });
+
+  const liveTickets = useMemo(() => {
+    return (tickets || []).map((t: any) => getTicketWithDynamicSeats(t, bookings));
+  }, [tickets, bookings]);
+
+  const filtered = liveTickets.filter((t: any) => {
     const matchKey =
       t.from.toLowerCase().includes(keyword.toLowerCase()) ||
       t.to.toLowerCase().includes(keyword.toLowerCase()) ||

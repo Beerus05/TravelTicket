@@ -1,26 +1,66 @@
 import { api, DEFAULT_TICKETS, LOCAL_BOOKINGS, addLocalBooking, cancelLocalBooking } from './api';
 import { Ticket, Booking } from '../store/bookingSlice';
 
+// Hàm tính toán số ghế trống và danh sách ghế đã đặt theo thời gian thực
+export const getTicketWithDynamicSeats = (ticket: any, bookings: any[] = LOCAL_BOOKINGS): Ticket => {
+  if (!ticket) return ticket;
+  const seatSet = new Set<string>(ticket.bookedSeats || []);
+
+  bookings.forEach((b: any) => {
+    const isMatch =
+      (b.ticketId && String(b.ticketId) === String(ticket.id)) ||
+      (b.ticketCode && b.ticketCode === ticket.code);
+    if (isMatch && b.status !== 'Cancelled') {
+      const seats = Array.isArray(b.seats) ? b.seats : [b.seats];
+      seats.forEach((s: string) => {
+        if (s) seatSet.add(s);
+      });
+    }
+  });
+
+  const bookedSeats = Array.from(seatSet);
+  const totalSeats = ticket.totalSeats || 12;
+  const availableSeats = Math.max(0, totalSeats - bookedSeats.length);
+
+  return {
+    ...ticket,
+    totalSeats,
+    bookedSeats,
+    availableSeats,
+  };
+};
+
 export const ticketService = {
-  // Lấy danh sách tất cả chuyến vé
+  // Lấy danh sách tất cả chuyến vé (kèm số ghế trống tính toán chuẩn xác)
   getAllTickets: async (): Promise<Ticket[]> => {
+    let list = DEFAULT_TICKETS;
     try {
       const response = await api.get('/tickets');
-      return response.data || DEFAULT_TICKETS;
+      if (response.data && response.data.length > 0) {
+        list = response.data;
+      }
     } catch {
-      return DEFAULT_TICKETS;
+      list = DEFAULT_TICKETS;
     }
+    const bookings = await ticketService.getAllBookings();
+    return list.map((t) => getTicketWithDynamicSeats(t, bookings));
   },
 
-  // Lấy chi tiết chuyến đi theo ID
+  // Lấy chi tiết chuyến đi theo ID (kèm số ghế trống cập nhật)
   getTicketById: async (id: string): Promise<Ticket | null> => {
+    let found: any = null;
     try {
       const response = await api.get(`/tickets/${id}`);
-      return response.data;
+      if (response.data) found = response.data;
     } catch {
-      const found = DEFAULT_TICKETS.find((t) => String(t.id) === String(id));
-      return found || null;
+      found = null;
     }
+    if (!found) {
+      found = DEFAULT_TICKETS.find((t) => String(t.id) === String(id));
+    }
+    if (!found) return null;
+    const bookings = await ticketService.getAllBookings();
+    return getTicketWithDynamicSeats(found, bookings);
   },
 
   // Tạo chuyến vé mới (POST)

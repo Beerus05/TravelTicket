@@ -109,7 +109,7 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, width = '100%', 
           🕒 Giờ đi: <Text fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>{ticket.departureTime}</Text>
         </Text>
         <Text color={isDark ? '#4ADE80' : '#16A34A'} fontSize="$2" fontWeight="600">
-          Còn {ticket.availableSeats || 12} ghế
+          Còn {ticket.availableSeats ?? 10} / {ticket.totalSeats || 12} ghế
         </Text>
       </XStack>
 
