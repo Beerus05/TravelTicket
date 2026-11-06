@@ -1,7 +1,7 @@
 import { getDefaultTamaguiConfig } from '@tamagui/config-default';
 import { createTamagui } from 'tamagui';
 
-const config = getDefaultTamaguiConfig();
+const { animations: _animations, ...config } = getDefaultTamaguiConfig();
 
 export const tamaguiConfig = createTamagui({
   ...config,

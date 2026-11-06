@@ -96,7 +96,7 @@ export default function ProfileScreen() {
             checked={isDark}
             onCheckedChange={() => dispatch(toggleTheme())}
           >
-            <Switch.Thumb animation="quick" />
+            <Switch.Thumb />
           </Switch>
         </XStack>
 
