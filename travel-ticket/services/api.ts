@@ -99,6 +99,51 @@ export const DEFAULT_TICKETS = [
     bookedSeats: ['C2'],
     description: 'Tàu du lịch Sài Gòn - Phan Thiết chuyên dụng, ghế ngồi mềm điều hòa, phục vụ ăn sáng nhẹ.',
   },
+  {
+    id: '7',
+    from: 'TP.HCM',
+    to: 'Sóc Trăng',
+    brand: 'Phương Trang',
+    code: 'FUTA-ST08',
+    type: 'bus',
+    departureTime: '07:30 - 15/11/2026',
+    duration: '4h 30m',
+    price: 190000,
+    totalSeats: 12,
+    availableSeats: 10,
+    bookedSeats: ['A1', 'B2'],
+    description: 'Xe Limousine phòng nằm cao cấp chạy tuyến TP.HCM đi Sóc Trăng, dừng trạm Cái Bè, máy lạnh, wifi, nước suối.',
+  },
+  {
+    id: '8',
+    from: 'TP.HCM',
+    to: 'Cần Thơ',
+    brand: 'Vũ Linh Limousine',
+    code: 'VL-CT02',
+    type: 'bus',
+    departureTime: '06:00 - 16/11/2026',
+    duration: '3h 15m',
+    price: 165000,
+    totalSeats: 12,
+    availableSeats: 11,
+    bookedSeats: ['C1'],
+    description: 'Xe limousine 9 chỗ cao cấp chạy cao tốc Trung Lương - Mỹ Thuận, đón trả tận nơi trung tâm TP. Cần Thơ.',
+  },
+  {
+    id: '9',
+    from: 'TP.HCM',
+    to: 'Hà Nội',
+    brand: 'Vietnam Airlines',
+    code: 'VN-208',
+    type: 'flight',
+    departureTime: '06:30 - 20/11/2026',
+    duration: '2h 10m',
+    price: 1850000,
+    totalSeats: 12,
+    availableSeats: 10,
+    bookedSeats: ['A1', 'C4'],
+    description: 'Chuyến bay thẳng Tân Sơn Nhất đi Nội Bài, Boeing 787 Dreamliner hiện đại, phục vụ suất ăn nóng.',
+  },
 ];
 
 // Danh sách Booking trong bộ nhớ để đồng bộ trạng thái đặt ghế lập tức
@@ -234,8 +279,58 @@ api.interceptors.response.use(
   }
 );
 
+// Hàm chuẩn hóa tiếng Việt loại bỏ dấu để tìm kiếm thông minh
+export const normalizeVietnamese = (str: string) => {
+  return (str || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase()
+    .trim();
+};
+
+export interface AIResponse {
+  text: string;
+  tickets?: any[];
+}
+
 // 2. Hàm gọi AI Basic (Gemini API qua Axios với fallback thông minh)
-export const askTravelAI = async (prompt: string, availableTickets: any[]) => {
+export const askTravelAI = async (prompt: string, availableTickets: any[]): Promise<AIResponse> => {
+  const normPrompt = normalizeVietnamese(prompt);
+
+  // Tìm các chuyến khớp với điểm đến hoặc điểm xuất phát
+  let matched = availableTickets.filter((t) => {
+    const toNorm = normalizeVietnamese(t.to);
+    const fromNorm = normalizeVietnamese(t.from);
+    const brandNorm = normalizeVietnamese(t.brand);
+    const codeNorm = normalizeVietnamese(t.code);
+    return (
+      normPrompt.includes(toNorm) ||
+      normPrompt.includes(fromNorm) ||
+      normPrompt.includes(brandNorm) ||
+      normPrompt.includes(codeNorm)
+    );
+  });
+
+  // Phân loại theo phương tiện nếu người dùng nhắc đến
+  if (normPrompt.includes('may bay') || normPrompt.includes('bay') || normPrompt.includes('flight')) {
+    const flights = (matched.length > 0 ? matched : availableTickets).filter((t) => t.type === 'flight');
+    if (flights.length > 0) matched = flights;
+  } else if (normPrompt.includes('xe') || normPrompt.includes('limousine') || normPrompt.includes('bus')) {
+    const buses = (matched.length > 0 ? matched : availableTickets).filter((t) => t.type === 'bus');
+    if (buses.length > 0) matched = buses;
+  } else if (normPrompt.includes('tau') || normPrompt.includes('hoa') || normPrompt.includes('train')) {
+    const trains = (matched.length > 0 ? matched : availableTickets).filter((t) => t.type === 'train');
+    if (trains.length > 0) matched = trains;
+  }
+
+  // Phân loại theo ngân sách tiết kiệm nếu có
+  if (normPrompt.includes('re') || normPrompt.includes('tiet kiem') || normPrompt.includes('gia re')) {
+    const cheap = (matched.length > 0 ? matched : availableTickets).filter((t) => Number(t.price) <= 500000);
+    if (cheap.length > 0) matched = cheap;
+  }
+
   const GEMINI_API_KEY = process.env.EXPO_PUBLIC_GEMINI_API_KEY || '';
   
   if (GEMINI_API_KEY && GEMINI_API_KEY !== 'YOUR_GEMINI_API_KEY') {
@@ -243,7 +338,8 @@ export const askTravelAI = async (prompt: string, availableTickets: any[]) => {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
       const systemPrompt = `Bạn là trợ lý đặt vé du lịch thông minh của ứng dụng Travel Ticket.
 Dữ liệu vé hiện có trong hệ thống: ${JSON.stringify(availableTickets)}.
-Hãy tư vấn ngắn gọn lịch trình (khoảng 2-3 câu) và gợi ý mã vé (mã code và hãng xe/máy bay) phù hợp nhất với yêu cầu: "${prompt}"`;
+Hãy tư vấn ngắn gọn lịch trình (khoảng 2-3 câu) và gợi ý mã vé (mã code và hãng xe/máy bay) phù hợp nhất với yêu cầu: "${prompt}".
+Nếu trong hệ thống không có chuyến đến địa điểm người dùng yêu cầu, hãy thông báo lịch sự rằng hiện chưa có tuyến đó và gợi ý các tuyến đang có sẵn.`;
 
       const response = await axios.post(
         url,
@@ -252,32 +348,40 @@ Hãy tư vấn ngắn gọn lịch trình (khoảng 2-3 câu) và gợi ý mã v
       );
 
       const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (text) return text;
+      if (text) {
+        return {
+          text,
+          tickets: matched.length > 0 ? matched.slice(0, 3) : availableTickets.slice(0, 3),
+        };
+      }
     } catch (err) {
       console.warn('Lỗi gọi Gemini API trực tiếp, kích hoạt thuật toán gợi ý nội bộ:', err);
     }
   }
 
-  // AI Thông minh nội bộ (Rule-based Travel AI Engine)
-  const lowerPrompt = prompt.toLowerCase();
-  const matched = availableTickets.filter((t) => {
-    return (
-      lowerPrompt.includes(t.to.toLowerCase()) ||
-      lowerPrompt.includes(t.from.toLowerCase()) ||
-      (lowerPrompt.includes('máy bay') && t.type === 'flight') ||
-      (lowerPrompt.includes('xe') && t.type === 'bus') ||
-      (lowerPrompt.includes('tàu') && t.type === 'train') ||
-      (lowerPrompt.includes('rẻ') && Number(t.price) <= 500000)
-    );
-  });
+  // Thuật toán Heuristic nội bộ thông minh:
+  // 1. Nếu tìm thấy chuyến khớp chính xác
+  if (matched.length > 0) {
+    const topPick = matched[0];
+    const priceFormatted = Number(topPick.price).toLocaleString('vi-VN');
+    return {
+      text: `🤖 [Trợ lý AI Travel Ticket]:
+Với nhu cầu "${prompt}", mình tìm thấy ${matched.length} chuyến đi rất phù hợp:
+✨ Tuyến: **${topPick.from} ➔ ${topPick.to}**
+🏢 Hãng: **${topPick.brand}** (Mã: **${topPick.code}**)
+🕒 Khởi hành: **${topPick.departureTime}** (${topPick.duration})
+💰 Giá vé: **${priceFormatted} đ** (Còn **${topPick.availableSeats || 10} / ${topPick.totalSeats || 12} ghế trống**)
+💡 Chạm trực tiếp vào thẻ chuyến đi bên dưới để xem chi tiết và đặt vé ngay nhé!`,
+      tickets: matched.slice(0, 3),
+    };
+  }
 
-  const topPick = matched.length > 0 ? matched[0] : availableTickets[0] || DEFAULT_TICKETS[0];
-  const priceFormatted = Number(topPick.price).toLocaleString('vi-VN');
-
-  return `🤖 [Trợ lý AI Travel Ticket]:
-Với nhu cầu "${prompt}", mình đề xuất bạn chuyến:
-✨ **${topPick.from} ➔ ${topPick.to}** cùng hãng **${topPick.brand}** (Mã: **${topPick.code}**).
-💰 Giá chỉ từ **${priceFormatted} đ**, khởi hành lúc ${topPick.departureTime}.
-💡 Mẹo: Bạn có thể vào tab "Tìm kiếm" hoặc chạm vào chuyến đi trên Trang chủ để chọn ghế và đặt vé ngay nhé!`;
+  // 2. Nếu KHÔNG có chuyến nào khớp với địa điểm yêu cầu
+  return {
+    text: `🤖 [Trợ lý AI Travel Ticket]:
+Rất tiếc, hiện tại hệ thống chưa có chuyến trực tiếp phù hợp với yêu cầu "${prompt}".
+💡 Dưới đây là các chuyến đi phổ biến đang có sẵn để bạn tham khảo và đặt vé ngay:`,
+    tickets: availableTickets.slice(0, 3),
+  };
 };
 
