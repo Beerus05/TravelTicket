@@ -13,7 +13,8 @@ export default function HomeScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
   const { width } = useWindowDimensions();
-  const user = useSelector((state: RootState) => state.booking.user);
+  const { user, themeMode } = useSelector((state: RootState) => state.booking);
+  const isDark = themeMode === 'dark';
   const [filterType, setFilterType] = useState<string>('all');
 
   // Responsive: Tự động chia 2 cột trên Tablet/iPad hoặc khi xoay ngang (>= 768px)
@@ -61,10 +62,10 @@ export default function HomeScreen() {
             TRAVEL TICKET
           </Text>
         </XStack>
-        <Text fontSize="$3" color="gray11">
-          Xin chào, <Text fontWeight="bold" color="$color">{user?.name || 'Nguyễn Đình Phi'}</Text> 👋
+        <Text fontSize="$3" color={isDark ? '#94A3B8' : '#64748B'}>
+          Xin chào, <Text fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>{user?.name || 'Nguyễn Đình Phi'}</Text> 👋
         </Text>
-        <Text fontSize="$6" fontWeight="800" color="$color" mt="$1">
+        <Text fontSize="$6" fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'} mt="$1">
           Khám phá chuyến đi hôm nay
         </Text>
       </YStack>
@@ -97,7 +98,7 @@ export default function HomeScreen() {
       </Card>
 
       {/* Danh mục phương tiện */}
-      <Text fontSize="$4" fontWeight="bold" mb="$2">
+      <Text fontSize="$4" fontWeight="bold" mb="$2" color={isDark ? '#F8FAFC' : '#0F172A'}>
         Danh mục phương tiện
       </Text>
       <XStack gap="$2" mb="$4" flexWrap="wrap">
@@ -114,14 +115,14 @@ export default function HomeScreen() {
               size="sm"
               br="$10"
               px="$3.5"
-              bg={isActive ? '#0066FF' : '#F1F5F9'}
+              bg={isActive ? '#0066FF' : (isDark ? '#1E293B' : '#F1F5F9')}
               borderWidth={1.5}
-              borderColor={isActive ? '#0066FF' : '#CBD5E1'}
+              borderColor={isActive ? '#0066FF' : (isDark ? '#334155' : '#CBD5E1')}
               pressStyle={{ opacity: 0.8 }}
               onPress={() => setFilterType(cat.key)}
             >
               <Text
-                color={isActive ? '#FFFFFF' : '#1E293B'}
+                color={isActive ? '#FFFFFF' : (isDark ? '#E2E8F0' : '#1E293B')}
                 fontWeight={isActive ? 'bold' : '600'}
                 fontSize="$3"
               >
@@ -134,11 +135,11 @@ export default function HomeScreen() {
 
       {/* Tiêu đề Chuyến đi nổi bật */}
       <XStack jc="space-between" ai="center" mb="$3">
-        <Text fontSize="$6" fontWeight="bold">
+        <Text fontSize="$6" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
           Chuyến đi nổi bật ({filteredTickets?.length || 0})
         </Text>
         <Text
-          color="#0066FF"
+          color={isDark ? '#38BDF8' : '#0066FF'}
           fontSize="$3"
           fontWeight="bold"
           onPress={() => router.push('/(tabs)/search')}

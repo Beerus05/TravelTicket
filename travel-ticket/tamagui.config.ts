@@ -3,7 +3,22 @@ import { createTamagui } from 'tamagui';
 
 const config = getDefaultTamaguiConfig();
 
-export const tamaguiConfig = createTamagui(config);
+export const tamaguiConfig = createTamagui({
+  ...config,
+  themes: {
+    ...config.themes,
+    light: {
+      ...config.themes.light,
+      background: '#F8FAFC',
+      color: '#0F172A',
+    },
+    dark: {
+      ...config.themes.dark,
+      background: '#0B0F19',
+      color: '#F8FAFC',
+    },
+  },
+});
 
 export default tamaguiConfig;
 

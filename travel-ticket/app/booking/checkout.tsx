@@ -13,7 +13,8 @@ export default function CheckoutScreen() {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const insets = useSafeAreaInsets();
-  const { user, selectedTicket, selectedSeats } = useSelector((state: RootState) => state.booking);
+  const { user, selectedTicket, selectedSeats, themeMode } = useSelector((state: RootState) => state.booking);
+  const isDark = themeMode === 'dark';
 
   const [phone, setPhone] = useState('0901234567');
   const [voucher, setVoucher] = useState('');
@@ -75,23 +76,23 @@ export default function CheckoutScreen() {
         px="$4"
         py="$2.5"
         borderBottomWidth={1}
-        borderBottomColor="gray5"
+        borderBottomColor={isDark ? '#334155' : '#E2E8F0'}
         bg="$background"
       >
         <Button
           size="sm"
-          bg="gray3"
-          pressStyle={{ bg: 'gray5' }}
+          bg={isDark ? '#1E293B' : '#F1F5F9'}
+          pressStyle={{ bg: isDark ? '#334155' : '#E2E8F0' }}
           br="$10"
           px="$3"
           onPress={() => router.back()}
         >
-          <Text color="#0066FF" fontWeight="bold" fontSize="$3">
+          <Text color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="bold" fontSize="$3">
             ❮ Quay lại
           </Text>
         </Button>
 
-        <Text fontSize="$5" fontWeight="bold" color="$color">
+        <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
           Xác nhận & Thanh toán
         </Text>
 
@@ -104,27 +105,35 @@ export default function CheckoutScreen() {
           <Card
             p="$4"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
+            bg={isDark ? '#1E293B' : '#FFFFFF'}
             br="$5"
             gap="$2"
           >
             <XStack jc="space-between" ai="center">
-              <Text fontSize="$5" fontWeight="bold">1. Thông tin hành trình</Text>
-              <YStack px="$2" py="$0.5" br="$3" bg="blue3">
-                <Text fontSize="$2" fontWeight="bold" color="blue10">
+              <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>1. Thông tin hành trình</Text>
+              <YStack
+                px="$2"
+                py="$0.5"
+                br="$3"
+                bg={isDark ? '#1E3A8A' : '#EFF6FF'}
+                borderWidth={1}
+                borderColor={isDark ? '#1D4ED8' : '#BFDBFE'}
+              >
+                <Text fontSize="$2" fontWeight="bold" color={isDark ? '#93C5FD' : '#1D4ED8'}>
                   {selectedTicket?.code}
                 </Text>
               </YStack>
             </XStack>
-            <Text fontSize="$4" color="blue10" fontWeight="600">
+            <Text fontSize="$4" color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="600">
               {selectedTicket?.brand}
             </Text>
-            <Text fontSize="$6" fontWeight="800" color="$color">
+            <Text fontSize="$6" fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
               {selectedTicket?.from} ➔ {selectedTicket?.to}
             </Text>
-            <Text color="gray10" fontSize="$3">🕒 Giờ đi: {selectedTicket?.departureTime}</Text>
-            <Text color="gray10" fontSize="$3">
-              💺 Ghế đã chọn: <Text fontWeight="bold" color="blue10">{selectedSeats.join(', ') || 'Chưa chọn'}</Text>
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">🕒 Giờ đi: {selectedTicket?.departureTime}</Text>
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">
+              💺 Ghế đã chọn: <Text fontWeight="bold" color={isDark ? '#38BDF8' : '#0066FF'}>{selectedSeats.join(', ') || 'Chưa chọn'}</Text>
             </Text>
           </Card>
 
@@ -132,21 +141,22 @@ export default function CheckoutScreen() {
           <Card
             p="$4"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
+            bg={isDark ? '#1E293B' : '#FFFFFF'}
             br="$5"
             gap="$3"
           >
-            <Text fontSize="$5" fontWeight="bold">2. Thông tin hành khách</Text>
+            <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>2. Thông tin hành khách</Text>
             <XStack jc="space-between">
-              <Text color="gray10">Họ và tên:</Text>
-              <Text fontWeight="600">{user?.name || 'Hành khách'}</Text>
+              <Text color={isDark ? '#94A3B8' : '#64748B'}>Họ và tên:</Text>
+              <Text fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>{user?.name || 'Hành khách'}</Text>
             </XStack>
             <XStack jc="space-between">
-              <Text color="gray10">Email:</Text>
-              <Text fontWeight="600">{user?.email || 'Chưa cập nhật'}</Text>
+              <Text color={isDark ? '#94A3B8' : '#64748B'}>Email:</Text>
+              <Text fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>{user?.email || 'Chưa cập nhật'}</Text>
             </XStack>
             <YStack gap="$1">
-              <Text color="gray10" fontSize="$3">Số điện thoại nhận vé:</Text>
+              <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Số điện thoại nhận vé:</Text>
               <Input
                 placeholder="Nhập số điện thoại"
                 value={phone}
@@ -154,6 +164,10 @@ export default function CheckoutScreen() {
                 keyboardType="phone-pad"
                 size="$4"
                 br="$3"
+                bg={isDark ? '#0F172A' : '#FFFFFF'}
+                borderColor={isDark ? '#334155' : '#CBD5E1'}
+                color={isDark ? '#F8FAFC' : '#0F172A'}
+                placeholderTextColor={isDark ? '#94A3B8' : '#64748B'}
               />
             </YStack>
           </Card>
@@ -162,11 +176,12 @@ export default function CheckoutScreen() {
           <Card
             p="$4"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
+            bg={isDark ? '#1E293B' : '#FFFFFF'}
             br="$5"
             gap="$2"
           >
-            <Text fontSize="$5" fontWeight="bold">3. Mã ưu đãi / Voucher</Text>
+            <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>3. Mã ưu đãi / Voucher</Text>
             <XStack gap="$2">
               <Input
                 f={1}
@@ -175,6 +190,10 @@ export default function CheckoutScreen() {
                 onChangeText={setVoucher}
                 autoCapitalize="characters"
                 br="$3"
+                bg={isDark ? '#0F172A' : '#FFFFFF'}
+                borderColor={isDark ? '#334155' : '#CBD5E1'}
+                color={isDark ? '#F8FAFC' : '#0F172A'}
+                placeholderTextColor={isDark ? '#94A3B8' : '#64748B'}
               />
               <Button
                 bg="#0066FF"
@@ -187,7 +206,7 @@ export default function CheckoutScreen() {
               </Button>
             </XStack>
             {discount > 0 && (
-              <Text color="green10" fontSize="$3" fontWeight="600">
+              <Text color={isDark ? '#4ADE80' : '#16A34A'} fontSize="$3" fontWeight="600">
                 ✓ Đã áp dụng mã giảm giá {discount.toLocaleString('vi-VN')} đ!
               </Text>
             )}
@@ -197,25 +216,26 @@ export default function CheckoutScreen() {
           <Card
             p="$4"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
+            bg={isDark ? '#1E293B' : '#FFFFFF'}
             br="$5"
             gap="$2.5"
           >
-            <Text fontSize="$5" fontWeight="bold">4. Chi tiết thanh toán</Text>
+            <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>4. Chi tiết thanh toán</Text>
             <XStack jc="space-between">
-              <Text color="gray10">Tạm tính ({selectedSeats.length} vé):</Text>
-              <Text fontWeight="600">{subtotal.toLocaleString('vi-VN')} đ</Text>
+              <Text color={isDark ? '#94A3B8' : '#64748B'}>Tạm tính ({selectedSeats.length} vé):</Text>
+              <Text fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>{subtotal.toLocaleString('vi-VN')} đ</Text>
             </XStack>
             {discount > 0 && (
               <XStack jc="space-between">
-                <Text color="green10">Giảm giá voucher:</Text>
-                <Text color="green10" fontWeight="600">-{discount.toLocaleString('vi-VN')} đ</Text>
+                <Text color={isDark ? '#4ADE80' : '#16A34A'}>Giảm giá voucher:</Text>
+                <Text color={isDark ? '#4ADE80' : '#16A34A'} fontWeight="600">-{discount.toLocaleString('vi-VN')} đ</Text>
               </XStack>
             )}
-            <Separator borderColor="gray4" my="$1" />
+            <Separator borderColor={isDark ? '#334155' : '#E2E8F0'} my="$1" />
             <XStack jc="space-between" ai="center">
-              <Text fontSize="$5" fontWeight="bold">Tổng thanh toán:</Text>
-              <Text fontSize="$7" fontWeight="900" color="red10">
+              <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>Tổng thanh toán:</Text>
+              <Text fontSize="$7" fontWeight="900" color={isDark ? '#F87171' : '#DC2626'}>
                 {finalPrice.toLocaleString('vi-VN')} đ
               </Text>
             </XStack>

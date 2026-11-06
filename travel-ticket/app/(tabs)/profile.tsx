@@ -8,6 +8,7 @@ import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
   const { user, themeMode } = useSelector((state: RootState) => state.booking);
+  const isDark = themeMode === 'dark';
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -33,35 +34,45 @@ export default function ProfileScreen() {
         maxWidth={500}
         p="$5"
         borderWidth={1}
-        borderColor="gray5"
+        borderColor={isDark ? '#334155' : '#E2E8F0'}
+        bg={isDark ? '#1E293B' : '#FFFFFF'}
         br="$5"
         gap="$3.5"
       >
         {/* Avatar & Thông tin cơ bản */}
         <XStack gap="$3.5" ai="center">
           <YStack
-            w={64}
-            h={64}
+            w={68}
+            h={68}
             br="$10"
-            bg="blue10"
+            bg="#0066FF"
             jc="center"
             ai="center"
+            borderWidth={3}
+            borderColor={isDark ? '#38BDF8' : '#DBEAFE'}
           >
-            <Text color="white" fontSize="$6" fontWeight="900">
+            <Text color="#FFFFFF" fontSize="$7" fontWeight="900">
               {getInitials(user?.name)}
             </Text>
           </YStack>
 
           <YStack f={1} gap="$1">
-            <Text fontSize="$6" fontWeight="bold">
+            <Text fontSize="$6" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
               {user?.name || 'Nguyễn Đình Phi'}
             </Text>
-            <Text color="gray10" fontSize="$3">
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">
               {user?.email || 'phi@student.iuh.edu.vn'}
             </Text>
             <XStack mt="$1">
-              <YStack px="$2.5" py="$1" br="$10" bg="orange3">
-                <Text color="orange10" fontSize="$2" fontWeight="bold">
+              <YStack
+                px="$2.5"
+                py="$1"
+                br="$10"
+                bg={isDark ? '#451A03' : '#FEF3C7'}
+                borderWidth={1}
+                borderColor={isDark ? '#92400E' : '#FDE68A'}
+              >
+                <Text color={isDark ? '#FBBF24' : '#B45309'} fontSize="$2" fontWeight="bold">
                   ⭐ Thành viên Vàng (Gold)
                 </Text>
               </YStack>
@@ -69,43 +80,60 @@ export default function ProfileScreen() {
           </YStack>
         </XStack>
 
-        <Separator borderColor="gray4" my="$1" />
+        <Separator borderColor={isDark ? '#334155' : '#E2E8F0'} my="$1" />
 
         {/* Chuyển đổi Dark/Light mode */}
         <XStack jc="space-between" ai="center" py="$2">
           <YStack>
-            <Text fontWeight="600" fontSize="$4">Giao diện Ứng dụng</Text>
-            <Text fontSize="$2" color="gray10">
-              {themeMode === 'dark' ? 'Chế độ Tối (Dark mode)' : 'Chế độ Sáng (Light mode)'}
+            <Text fontWeight="600" fontSize="$4" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              Giao diện Ứng dụng
+            </Text>
+            <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'}>
+              {isDark ? 'Chế độ Tối (Dark mode)' : 'Chế độ Sáng (Light mode)'}
             </Text>
           </YStack>
           <Switch
-            checked={themeMode === 'dark'}
+            checked={isDark}
             onCheckedChange={() => dispatch(toggleTheme())}
           >
             <Switch.Thumb animation="quick" />
           </Switch>
         </XStack>
 
-        <Separator borderColor="gray4" my="$1" />
+        <Separator borderColor={isDark ? '#334155' : '#E2E8F0'} my="$1" />
 
         {/* Thông tin sinh viên & đề tài */}
-        <YStack gap="$2" bg="gray3" p="$3.5" br="$4">
+        <YStack
+          gap="$2"
+          bg={isDark ? '#0F172A' : '#F8FAFC'}
+          borderWidth={1}
+          borderColor={isDark ? '#334155' : '#E2E8F0'}
+          p="$3.5"
+          br="$4"
+        >
           <XStack jc="space-between">
-            <Text color="gray10" fontSize="$3">Sinh viên thực hiện:</Text>
-            <Text fontWeight="600" fontSize="$3">Nguyễn Đình Phi</Text>
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Sinh viên thực hiện:</Text>
+            <Text fontWeight="600" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              Nguyễn Đình Phi
+            </Text>
           </XStack>
           <XStack jc="space-between">
-            <Text color="gray10" fontSize="$3">Mã số sinh viên:</Text>
-            <Text fontWeight="600" fontSize="$3">21012345</Text>
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Mã số sinh viên:</Text>
+            <Text fontWeight="600" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              21012345
+            </Text>
           </XStack>
           <XStack jc="space-between">
-            <Text color="gray10" fontSize="$3">Trường:</Text>
-            <Text fontWeight="600" fontSize="$3">ĐH Công nghiệp TP.HCM (IUH)</Text>
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Trường:</Text>
+            <Text fontWeight="600" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              ĐH Công nghiệp TP.HCM (IUH)
+            </Text>
           </XStack>
           <XStack jc="space-between">
-            <Text color="gray10" fontSize="$3">Phiên bản nền tảng:</Text>
-            <Text fontWeight="600" fontSize="$3">Expo SDK 58 + Tamagui</Text>
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Phiên bản nền tảng:</Text>
+            <Text fontWeight="600" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              Expo SDK 58 + Tamagui
+            </Text>
           </XStack>
         </YStack>
 

@@ -1,5 +1,7 @@
 import React from 'react';
 import { YStack, XStack, Text, Button } from 'tamagui';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 export const ALL_DEFAULT_SEATS = [
   'A1', 'A2', 'A3', 'A4',
@@ -20,7 +22,8 @@ export const SeatMap: React.FC<SeatMapProps> = ({
   onToggleSeat,
   seatsList = ALL_DEFAULT_SEATS,
 }) => {
-  // Chia thành các hàng ghế: Row A, Row B, Row C
+  const themeMode = useSelector((state: RootState) => state.booking.themeMode);
+  const isDark = themeMode === 'dark';
   const rows = ['A', 'B', 'C'];
 
   return (
@@ -28,18 +31,34 @@ export const SeatMap: React.FC<SeatMapProps> = ({
       {/* Chú thích màu sắc ghế */}
       <XStack gap="$4" jc="center" ai="center" mb="$1" flexWrap="wrap">
         <XStack ai="center" gap="$2">
-          <YStack w={18} h={18} br="$2" bg="gray3" borderWidth={1} borderColor="gray6" />
-          <Text fontSize="$3" color="gray11">Trống</Text>
+          <YStack
+            w={18}
+            h={18}
+            br="$2"
+            bg={isDark ? '#1E293B' : '#F8FAFC'}
+            borderWidth={1.5}
+            borderColor={isDark ? '#475569' : '#CBD5E1'}
+          />
+          <Text fontSize="$3" color={isDark ? '#94A3B8' : '#64748B'}>Trống</Text>
         </XStack>
         <XStack ai="center" gap="$2">
-          <YStack w={18} h={18} br="$2" bg="blue10" />
-          <Text fontSize="$3" color="blue10" fontWeight="bold">Đang chọn</Text>
+          <YStack w={18} h={18} br="$2" bg="#0066FF" />
+          <Text fontSize="$3" color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="bold">Đang chọn</Text>
         </XStack>
         <XStack ai="center" gap="$2">
-          <YStack w={18} h={18} br="$2" bg="gray6" ai="center" jc="center" borderWidth={1} borderColor="gray7">
-            <Text fontSize={9} color="gray10" fontWeight="bold">✕</Text>
+          <YStack
+            w={18}
+            h={18}
+            br="$2"
+            bg={isDark ? '#334155' : '#E2E8F0'}
+            ai="center"
+            jc="center"
+            borderWidth={1}
+            borderColor={isDark ? '#475569' : '#CBD5E1'}
+          >
+            <Text fontSize={9} color={isDark ? '#94A3B8' : '#64748B'} fontWeight="bold">✕</Text>
           </YStack>
-          <Text fontSize="$3" color="gray10">Đã đặt (Khóa)</Text>
+          <Text fontSize="$3" color={isDark ? '#94A3B8' : '#64748B'}>Đã đặt (Khóa)</Text>
         </XStack>
       </XStack>
 
@@ -48,13 +67,13 @@ export const SeatMap: React.FC<SeatMapProps> = ({
         w="100%"
         maxWidth={340}
         py="$2"
-        bg="gray3"
+        bg={isDark ? '#1E293B' : '#F1F5F9'}
         br="$3"
         ai="center"
         borderWidth={1}
-        borderColor="gray5"
+        borderColor={isDark ? '#334155' : '#E2E8F0'}
       >
-        <Text fontSize="$2" color="gray10" fontWeight="600">
+        <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'} fontWeight="600">
           🚗 PHÍA TRƯỚC / BUỒNG LÁI
         </Text>
       </YStack>
@@ -69,14 +88,14 @@ export const SeatMap: React.FC<SeatMapProps> = ({
             const isBooked = bookedSeats.includes(seat);
             const isSelected = selectedSeats.includes(seat);
 
-            let bg = '#F8FAFC';
-            let borderColor = '#CBD5E1';
-            let textColor = '#1E293B';
+            let bg = isDark ? '#1E293B' : '#F8FAFC';
+            let borderColor = isDark ? '#334155' : '#CBD5E1';
+            let textColor = isDark ? '#F8FAFC' : '#1E293B';
 
             if (isBooked) {
-              bg = '#E2E8F0';
-              borderColor = '#CBD5E1';
-              textColor = '#94A3B8';
+              bg = isDark ? '#334155' : '#E2E8F0';
+              borderColor = isDark ? '#475569' : '#CBD5E1';
+              textColor = isDark ? '#64748B' : '#94A3B8';
             } else if (isSelected) {
               bg = '#0066FF';
               borderColor = '#0066FF';
@@ -118,7 +137,7 @@ export const SeatMap: React.FC<SeatMapProps> = ({
 
               {/* Lối đi ở giữa */}
               <YStack w={30} ai="center">
-                <Text fontSize="$2" color="gray10">
+                <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'}>
                   {row}
                 </Text>
               </YStack>

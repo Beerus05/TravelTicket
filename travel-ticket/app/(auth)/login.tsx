@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { YStack, XStack, Input, Button, Text, Card, ScrollView, Separator } from 'tamagui';
 import { useRouter } from 'expo-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUser, clearBookingDraft } from '../../store/bookingSlice';
+import { RootState } from '../../store/store';
 import { useQueryClient } from '@tanstack/react-query';
 import { Ticket } from '../../components/Icons';
 
@@ -13,6 +14,8 @@ export default function LoginScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const themeMode = useSelector((state: RootState) => state.booking.themeMode);
+  const isDark = themeMode === 'dark';
 
   const handleLogin = (customName?: string, customEmail?: string) => {
     const finalName = customName || name;
@@ -31,10 +34,10 @@ export default function LoginScreen() {
         maxWidth={450}
         p="$5"
         borderWidth={1}
-        borderColor="gray5"
+        borderColor={isDark ? '#334155' : '#E2E8F0'}
         br="$5"
         gap="$4"
-        bg="$background"
+        bg={isDark ? '#1E293B' : '#FFFFFF'}
       >
         {/* Banner thương hiệu trên cùng */}
         <YStack ai="center" gap="$2" pt="$2">
@@ -52,18 +55,18 @@ export default function LoginScreen() {
           <Text fontSize="$8" fontWeight="900" color="#0066FF" letterSpacing={0.5} ta="center">
             TRAVEL TICKET
           </Text>
-          <Text fontSize="$3" color="gray11" ta="center">
+          <Text fontSize="$3" color={isDark ? '#94A3B8' : '#64748B'} ta="center">
             Đặt vé Máy bay • Xe khách • Tàu hỏa & Trợ lý AI
           </Text>
         </YStack>
 
-        <Separator borderColor="gray4" />
+        <Separator borderColor={isDark ? '#334155' : '#E2E8F0'} />
 
         <YStack gap="$1">
-          <Text fontSize="$6" fontWeight="800" color="$color">
+          <Text fontSize="$6" fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
             Chào mừng trở lại!
           </Text>
-          <Text fontSize="$3" color="gray10">
+          <Text fontSize="$3" color={isDark ? '#94A3B8' : '#64748B'}>
             Vui lòng nhập thông tin để tiếp tục
           </Text>
         </YStack>
@@ -71,7 +74,7 @@ export default function LoginScreen() {
         {/* Các ô nhập liệu */}
         <YStack gap="$3">
           <YStack gap="$1.5">
-            <Text fontSize="$3" fontWeight="700" color="$color">
+            <Text fontSize="$3" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
               👤 Họ và tên hành khách
             </Text>
             <Input
@@ -82,12 +85,15 @@ export default function LoginScreen() {
               onChangeText={setName}
               br="$4"
               borderWidth={1.5}
-              borderColor="gray5"
+              borderColor={isDark ? '#334155' : '#CBD5E1'}
+              bg={isDark ? '#0F172A' : '#FFFFFF'}
+              color={isDark ? '#F8FAFC' : '#0F172A'}
+              placeholderTextColor={isDark ? '#94A3B8' : '#64748B'}
             />
           </YStack>
 
           <YStack gap="$1.5">
-            <Text fontSize="$3" fontWeight="700" color="$color">
+            <Text fontSize="$3" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
               ✉️ Địa chỉ Email
             </Text>
             <Input
@@ -98,14 +104,17 @@ export default function LoginScreen() {
               onChangeText={setEmail}
               br="$4"
               borderWidth={1.5}
-              borderColor="gray5"
+              borderColor={isDark ? '#334155' : '#CBD5E1'}
+              bg={isDark ? '#0F172A' : '#FFFFFF'}
+              color={isDark ? '#F8FAFC' : '#0F172A'}
+              placeholderTextColor={isDark ? '#94A3B8' : '#64748B'}
               keyboardType="email-address"
               autoCapitalize="none"
             />
           </YStack>
 
           <YStack gap="$1.5">
-            <Text fontSize="$3" fontWeight="700" color="$color">
+            <Text fontSize="$3" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
               🔒 Mật khẩu
             </Text>
             <Input
@@ -117,7 +126,10 @@ export default function LoginScreen() {
               secureTextEntry
               br="$4"
               borderWidth={1.5}
-              borderColor="gray5"
+              borderColor={isDark ? '#334155' : '#CBD5E1'}
+              bg={isDark ? '#0F172A' : '#FFFFFF'}
+              color={isDark ? '#F8FAFC' : '#0F172A'}
+              placeholderTextColor={isDark ? '#94A3B8' : '#64748B'}
             />
           </YStack>
         </YStack>
@@ -138,27 +150,27 @@ export default function LoginScreen() {
         {/* Nút Đăng nhập nhanh tài khoản mẫu */}
         <Button
           size="sm"
-          bg="#F1F5F9"
+          bg={isDark ? '#334155' : '#F1F5F9'}
           borderWidth={1}
-          borderColor="#CBD5E1"
-          pressStyle={{ bg: '#E2E8F0' }}
+          borderColor={isDark ? '#475569' : '#CBD5E1'}
+          pressStyle={{ bg: isDark ? '#475569' : '#E2E8F0' }}
           br="$3"
           onPress={() => handleLogin('Nguyễn Đình Phi', 'phi@student.iuh.edu.vn')}
         >
-          <Text color="#1E293B" fontWeight="bold" fontSize="$3">
+          <Text color={isDark ? '#F8FAFC' : '#1E293B'} fontWeight="bold" fontSize="$3">
             ⚡ Đăng nhập nhanh (Tài khoản mẫu IUH)
           </Text>
         </Button>
 
-        <Separator borderColor="gray4" />
+        <Separator borderColor={isDark ? '#334155' : '#E2E8F0'} />
 
         {/* Điều hướng Đăng ký */}
         <XStack jc="center" ai="center">
-          <Text color="gray11" fontSize="$3">
+          <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">
             Chưa có tài khoản?{' '}
           </Text>
           <Text
-            color="#0066FF"
+            color={isDark ? '#38BDF8' : '#0066FF'}
             fontSize="$3"
             fontWeight="bold"
             onPress={() => router.push('/(auth)/register')}

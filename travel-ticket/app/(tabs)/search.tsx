@@ -4,8 +4,9 @@ import { YStack, XStack, Input, Button, Text, Card, ScrollView, Spinner } from '
 import { useQuery } from '@tanstack/react-query';
 import { api, DEFAULT_TICKETS } from '../../services/api';
 import { useRouter } from 'expo-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedTicket, Ticket } from '../../store/bookingSlice';
+import { RootState } from '../../store/store';
 import { TicketCard } from '../../components/TicketCard';
 
 export default function SearchScreen() {
@@ -13,6 +14,8 @@ export default function SearchScreen() {
   const dispatch = useDispatch();
   const { width } = useWindowDimensions();
   const isWide = width >= 768;
+  const themeMode = useSelector((state: RootState) => state.booking.themeMode);
+  const isDark = themeMode === 'dark';
 
   const [keyword, setKeyword] = useState('');
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
@@ -61,8 +64,10 @@ export default function SearchScreen() {
         px="$4"
         br="$4"
         borderWidth={2}
-        borderColor="#0066FF"
-        bg="$background"
+        borderColor={isDark ? '#38BDF8' : '#0066FF'}
+        bg={isDark ? '#1E293B' : '#FFFFFF'}
+        color={isDark ? '#F8FAFC' : '#0F172A'}
+        placeholderTextColor={isDark ? '#94A3B8' : '#64748B'}
         placeholder="🔍 Nhập điểm đi, điểm đến, hãng xe, máy bay..."
         value={keyword}
         onChangeText={setKeyword}
@@ -83,14 +88,14 @@ export default function SearchScreen() {
               size="sm"
               br="$10"
               px="$3.5"
-              bg={isActive ? '#0066FF' : '#F1F5F9'}
+              bg={isActive ? '#0066FF' : (isDark ? '#1E293B' : '#F1F5F9')}
               borderWidth={1.5}
-              borderColor={isActive ? '#0066FF' : '#CBD5E1'}
+              borderColor={isActive ? '#0066FF' : (isDark ? '#334155' : '#CBD5E1')}
               pressStyle={{ opacity: 0.8 }}
               onPress={() => setMaxPrice(p.val)}
             >
               <Text
-                color={isActive ? '#FFFFFF' : '#1E293B'}
+                color={isActive ? '#FFFFFF' : (isDark ? '#E2E8F0' : '#1E293B')}
                 fontWeight={isActive ? 'bold' : '600'}
                 fontSize="$3"
               >
@@ -101,8 +106,8 @@ export default function SearchScreen() {
         })}
       </XStack>
 
-      <Text fontSize="$3" color="gray11">
-        Tìm thấy <Text fontWeight="bold" color="#0066FF">{filtered.length}</Text> chuyến đi phù hợp
+      <Text fontSize="$3" color={isDark ? '#94A3B8' : '#64748B'}>
+        Tìm thấy <Text fontWeight="bold" color={isDark ? '#38BDF8' : '#0066FF'}>{filtered.length}</Text> chuyến đi phù hợp
       </Text>
 
       <ScrollView f={1}>
@@ -122,15 +127,16 @@ export default function SearchScreen() {
               ai="center"
               gap="$2"
               borderWidth={1}
-              borderColor="gray5"
+              borderColor={isDark ? '#334155' : '#E2E8F0'}
+              bg={isDark ? '#1E293B' : '#FFFFFF'}
               br="$5"
               mt="$4"
             >
               <Text fontSize="$8">🔎</Text>
-              <Text fontSize="$5" fontWeight="bold">
+              <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
                 Không tìm thấy chuyến đi
               </Text>
-              <Text color="gray10" ta="center">
+              <Text color={isDark ? '#94A3B8' : '#64748B'} ta="center">
                 Hãy thử đổi từ khóa tìm kiếm hoặc chọn mức giá khác xem sao nhé!
               </Text>
             </Card>

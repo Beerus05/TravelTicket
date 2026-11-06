@@ -13,7 +13,8 @@ export default function SeatSelectionScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
-  const { selectedTicket, selectedSeats } = useSelector((state: RootState) => state.booking);
+  const { selectedTicket, selectedSeats, themeMode } = useSelector((state: RootState) => state.booking);
+  const isDark = themeMode === 'dark';
 
   // Lấy toàn bộ bookings từ server / local memory để xác định ghế đã được đặt
   const { data: bookings = [] } = useQuery({
@@ -65,23 +66,23 @@ export default function SeatSelectionScreen() {
         px="$4"
         py="$2.5"
         borderBottomWidth={1}
-        borderBottomColor="gray5"
+        borderBottomColor={isDark ? '#334155' : '#E2E8F0'}
         bg="$background"
       >
         <Button
           size="sm"
-          bg="gray3"
-          pressStyle={{ bg: 'gray5' }}
+          bg={isDark ? '#1E293B' : '#F1F5F9'}
+          pressStyle={{ bg: isDark ? '#334155' : '#E2E8F0' }}
           br="$10"
           px="$3"
           onPress={() => router.back()}
         >
-          <Text color="#0066FF" fontWeight="bold" fontSize="$3">
+          <Text color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="bold" fontSize="$3">
             ❮ Quay lại
           </Text>
         </Button>
 
-        <Text fontSize="$5" fontWeight="bold" color="$color">
+        <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
           Chọn chỗ ngồi
         </Text>
 
@@ -94,29 +95,37 @@ export default function SeatSelectionScreen() {
             p="$4"
             w="100%"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
+            bg={isDark ? '#1E293B' : '#FFFFFF'}
             br="$5"
             gap="$1.5"
           >
             <XStack jc="space-between" ai="center">
-              <Text fontSize="$5" fontWeight="800" color="$color">
+              <Text fontSize="$5" fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
                 {selectedTicket?.from || 'TP.HCM'} ➔ {selectedTicket?.to || 'Đà Lạt'}
               </Text>
-              <YStack px="$2" py="$0.5" br="$3" bg="blue3">
-                <Text color="blue10" fontSize="$2" fontWeight="bold">
+              <YStack
+                px="$2"
+                py="$0.5"
+                br="$3"
+                bg={isDark ? '#1E3A8A' : '#EFF6FF'}
+                borderWidth={1}
+                borderColor={isDark ? '#1D4ED8' : '#BFDBFE'}
+              >
+                <Text color={isDark ? '#93C5FD' : '#1D4ED8'} fontSize="$2" fontWeight="bold">
                   {selectedTicket?.code || 'FUTA-01'}
                 </Text>
               </YStack>
             </XStack>
-            <Text color="gray11" fontSize="$3">
-              Hãng: <Text fontWeight="600" color="$color">{selectedTicket?.brand || 'Phương Trang'}</Text>
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">
+              Hãng: <Text fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>{selectedTicket?.brand || 'Phương Trang'}</Text>
             </Text>
-            <Text color="gray10" fontSize="$2">
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2">
               Đã khóa: {bookedSeats.length} ghế • Còn trống: {Math.max(0, 12 - bookedSeats.length)} ghế
             </Text>
           </Card>
 
-          <Text fontSize="$6" fontWeight="bold" ta="center">
+          <Text fontSize="$6" fontWeight="bold" ta="center" color={isDark ? '#F8FAFC' : '#0F172A'}>
             Sơ đồ chọn chỗ ngồi
           </Text>
 
@@ -132,24 +141,24 @@ export default function SeatSelectionScreen() {
       <Card
         p="$4"
         borderWidth={1}
-        borderColor="gray5"
+        borderColor={isDark ? '#334155' : '#E2E8F0'}
         br="$5"
         gap="$2.5"
         mx="$4"
         mt="$1"
         mb={Math.max(insets.bottom, 12)}
-        bg="$background"
+        bg={isDark ? '#1E293B' : '#FFFFFF'}
       >
         <XStack jc="space-between" ai="center">
-          <Text fontSize="$4" color="gray11">Ghế đang chọn:</Text>
-          <Text fontSize="$4" fontWeight="800" color="blue10">
+          <Text fontSize="$4" color={isDark ? '#94A3B8' : '#64748B'}>Ghế đang chọn:</Text>
+          <Text fontSize="$4" fontWeight="800" color={isDark ? '#38BDF8' : '#0066FF'}>
             {validSelectedSeats.length > 0 ? validSelectedSeats.join(', ') : 'Chưa chọn'}
           </Text>
         </XStack>
 
         <XStack jc="space-between" ai="center">
-          <Text fontSize="$5" fontWeight="600">Tổng thanh toán:</Text>
-          <Text fontSize="$7" fontWeight="900" color="red10">
+          <Text fontSize="$5" fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>Tổng thanh toán:</Text>
+          <Text fontSize="$7" fontWeight="900" color={isDark ? '#F87171' : '#DC2626'}>
             {totalPrice.toLocaleString('vi-VN')} đ
           </Text>
         </XStack>

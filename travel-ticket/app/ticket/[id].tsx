@@ -13,7 +13,8 @@ export default function TicketDetailScreen() {
   const dispatch = useDispatch();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams();
-  const reduxTicket = useSelector((state: RootState) => state.booking.selectedTicket);
+  const { selectedTicket: reduxTicket, themeMode } = useSelector((state: RootState) => state.booking);
+  const isDark = themeMode === 'dark';
 
   const { data: fetchedTicket } = useQuery({
     queryKey: ['ticket', id],
@@ -63,23 +64,23 @@ export default function TicketDetailScreen() {
         px="$4"
         py="$2.5"
         borderBottomWidth={1}
-        borderBottomColor="gray5"
+        borderBottomColor={isDark ? '#334155' : '#E2E8F0'}
         bg="$background"
       >
         <Button
           size="sm"
-          bg="gray3"
-          pressStyle={{ bg: 'gray5' }}
+          bg={isDark ? '#1E293B' : '#F1F5F9'}
+          pressStyle={{ bg: isDark ? '#334155' : '#E2E8F0' }}
           br="$10"
           px="$3"
           onPress={() => router.back()}
         >
-          <Text color="#0066FF" fontWeight="bold" fontSize="$3">
+          <Text color={isDark ? '#38BDF8' : '#0066FF'} fontWeight="bold" fontSize="$3">
             ❮ Quay lại
           </Text>
         </Button>
 
-        <Text fontSize="$5" fontWeight="bold" color="$color">
+        <Text fontSize="$5" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
           Chi tiết chuyến đi
         </Text>
 
@@ -92,39 +93,47 @@ export default function TicketDetailScreen() {
           <Card
             p="$4"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
+            bg={isDark ? '#1E293B' : '#FFFFFF'}
             br="$5"
             gap="$2.5"
           >
             <XStack jc="space-between" ai="center">
-              <YStack px="$2.5" py="$1" br="$10" bg="blue3">
-                <Text fontSize="$2" fontWeight="bold" color="blue10">
+              <YStack
+                px="$2.5"
+                py="$1"
+                br="$10"
+                bg={isDark ? '#1E3A8A' : '#EFF6FF'}
+                borderWidth={1}
+                borderColor={isDark ? '#1D4ED8' : '#BFDBFE'}
+              >
+                <Text fontSize="$2" fontWeight="bold" color={isDark ? '#93C5FD' : '#1D4ED8'}>
                   {ticket.brand}
                 </Text>
               </YStack>
-              <Text fontSize="$3" color="gray10" fontWeight="600">
+              <Text fontSize="$3" color={isDark ? '#CBD5E1' : '#64748B'} fontWeight="600">
                 Mã: {ticket.code}
               </Text>
             </XStack>
 
-            <Text fontSize="$7" fontWeight="900" color="$color">
+            <Text fontSize="$7" fontWeight="900" color={isDark ? '#F8FAFC' : '#0F172A'}>
               {ticket.from} ➔ {ticket.to}
             </Text>
 
-            <Separator borderColor="gray4" my="$1" />
+            <Separator borderColor={isDark ? '#334155' : '#E2E8F0'} my="$1" />
 
             <YStack gap="$2">
               <XStack jc="space-between">
-                <Text color="gray10" fontSize="$3">Giờ khởi hành:</Text>
-                <Text fontWeight="600" fontSize="$3">{ticket.departureTime}</Text>
+                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Giờ khởi hành:</Text>
+                <Text fontWeight="600" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>{ticket.departureTime}</Text>
               </XStack>
               <XStack jc="space-between">
-                <Text color="gray10" fontSize="$3">Thời gian di chuyển:</Text>
-                <Text fontWeight="600" fontSize="$3">{ticket.duration}</Text>
+                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Thời gian di chuyển:</Text>
+                <Text fontWeight="600" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>{ticket.duration}</Text>
               </XStack>
               <XStack jc="space-between">
-                <Text color="gray10" fontSize="$3">Số ghế còn trống:</Text>
-                <Text fontWeight="bold" color="green10" fontSize="$3">
+                <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">Số ghế còn trống:</Text>
+                <Text fontWeight="bold" color={isDark ? '#4ADE80' : '#16A34A'} fontSize="$3">
                   {ticket.availableSeats || 12} ghế
                 </Text>
               </XStack>
@@ -135,11 +144,12 @@ export default function TicketDetailScreen() {
           <Card
             p="$4"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
+            bg={isDark ? '#1E293B' : '#FFFFFF'}
             br="$5"
             gap="$2.5"
           >
-            <Text fontSize="$4" fontWeight="bold" color="$color">
+            <Text fontSize="$4" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
               📍 Lộ trình chuyến đi
             </Text>
 
@@ -147,13 +157,13 @@ export default function TicketDetailScreen() {
               <XStack ai="flex-start" gap="$2.5">
                 <Text fontSize="$4">🟢</Text>
                 <YStack f={1}>
-                  <Text fontWeight="bold" fontSize="$3">Điểm xuất phát: {ticket.from}</Text>
-                  <Text color="gray10" fontSize="$2.5">Bến xe / Sân bay trung tâm • Khởi hành {ticket.departureTime.split(' - ')[0] || 'đúng giờ'}</Text>
+                  <Text fontWeight="bold" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>Điểm xuất phát: {ticket.from}</Text>
+                  <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2.5">Bến xe / Sân bay trung tâm • Khởi hành {ticket.departureTime.split(' - ')[0] || 'đúng giờ'}</Text>
                 </YStack>
               </XStack>
 
-              <YStack ml="$2" pl="$2" borderLeftWidth={1.5} borderLeftColor="gray5" py="$1">
-                <Text color="blue10" fontSize="$2" fontWeight="600">
+              <YStack ml="$2" pl="$2" borderLeftWidth={1.5} borderLeftColor={isDark ? '#334155' : '#E2E8F0'} py="$1">
+                <Text color={isDark ? '#38BDF8' : '#0066FF'} fontSize="$2" fontWeight="600">
                   ⏱️ {ticket.duration} di chuyển êm ái, an toàn
                 </Text>
               </YStack>
@@ -161,8 +171,8 @@ export default function TicketDetailScreen() {
               <XStack ai="flex-start" gap="$2.5">
                 <Text fontSize="$4">🔴</Text>
                 <YStack f={1}>
-                  <Text fontWeight="bold" fontSize="$3">Điểm đến: {ticket.to}</Text>
-                  <Text color="gray10" fontSize="$2.5">Trả khách tại trung tâm thị xã / thành phố</Text>
+                  <Text fontWeight="bold" fontSize="$3" color={isDark ? '#F8FAFC' : '#0F172A'}>Điểm đến: {ticket.to}</Text>
+                  <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2.5">Trả khách tại trung tâm thị xã / thành phố</Text>
                 </YStack>
               </XStack>
             </YStack>
@@ -172,18 +182,18 @@ export default function TicketDetailScreen() {
           <XStack
             px="$3.5"
             py="$2.5"
-            bg="gray3"
+            bg={isDark ? '#1E293B' : '#F1F5F9'}
             br="$4"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
             ai="center"
             gap="$2"
           >
             <Text fontSize="$3.5">✨</Text>
-            <Text fontSize="$3" fontWeight="700" color="$color">
+            <Text fontSize="$3" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
               Tiện ích:
             </Text>
-            <Text fontSize="$2.5" color="gray11" f={1}>
+            <Text fontSize="$2.5" color={isDark ? '#94A3B8' : '#64748B'} f={1}>
               {amenities.join(' • ')}
             </Text>
           </XStack>
@@ -192,18 +202,18 @@ export default function TicketDetailScreen() {
           <XStack
             px="$3.5"
             py="$2.5"
-            bg="gray3"
+            bg={isDark ? '#1E293B' : '#F1F5F9'}
             br="$4"
             borderWidth={1}
-            borderColor="gray5"
+            borderColor={isDark ? '#334155' : '#E2E8F0'}
             ai="center"
             gap="$2"
           >
             <Text fontSize="$3.5">🛡️</Text>
-            <Text fontSize="$3" fontWeight="700" color="$color">
+            <Text fontSize="$3" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
               Bảo đảm:
             </Text>
-            <Text fontSize="$2.5" color="gray11" f={1}>
+            <Text fontSize="$2.5" color={isDark ? '#94A3B8' : '#64748B'} f={1}>
               Bảo hiểm hành khách • Hoàn 100% trước 24h
             </Text>
           </XStack>
@@ -214,18 +224,18 @@ export default function TicketDetailScreen() {
       <Card
         p="$4"
         borderWidth={1}
-        borderColor="gray5"
+        borderColor={isDark ? '#334155' : '#E2E8F0'}
         br="$5"
         gap="$2"
         mx="$4"
         mt="$1"
         mb={Math.max(insets.bottom, 12)}
-        bg="$background"
+        bg={isDark ? '#1E293B' : '#FFFFFF'}
       >
         <XStack jc="space-between" ai="center">
           <YStack>
-            <Text color="gray10" fontSize="$2">Giá vé trọn gói:</Text>
-            <Text fontSize="$8" color="red10" fontWeight="900">
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2">Giá vé trọn gói:</Text>
+            <Text fontSize="$8" color={isDark ? '#F87171' : '#DC2626'} fontWeight="900">
               {Number(ticket.price).toLocaleString('vi-VN')} đ
             </Text>
           </YStack>

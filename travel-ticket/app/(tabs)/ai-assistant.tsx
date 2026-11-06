@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { YStack, XStack, Input, Button, Text, ScrollView, Card, Spinner } from 'tamagui';
 import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 import { api, askTravelAI, DEFAULT_TICKETS } from '../../services/api';
 import { Sparkles } from '../../components/Icons';
 
 export default function AIAssistantScreen() {
+  const themeMode = useSelector((state: RootState) => state.booking.themeMode);
+  const isDark = themeMode === 'dark';
+
   const [prompt, setPrompt] = useState('');
   const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string }[]>([
     {
@@ -59,14 +64,20 @@ export default function AIAssistantScreen() {
   return (
     <YStack f={1} p="$3" bg="$background" gap="$3">
       {/* Header nhỏ */}
-      <Card p="$3" br="$4" bg="blue3" borderWidth={1} borderColor="blue5">
+      <Card
+        p="$3"
+        br="$4"
+        bg={isDark ? '#1E293B' : '#EFF6FF'}
+        borderWidth={1}
+        borderColor={isDark ? '#334155' : '#BFDBFE'}
+      >
         <XStack ai="center" gap="$2.5">
-          <Sparkles color="#0066FF" size={22} />
+          <Sparkles color={isDark ? '#38BDF8' : '#0066FF'} size={22} />
           <YStack f={1}>
-            <Text fontSize="$3" fontWeight="bold" color="blue10">
+            <Text fontSize="$3" fontWeight="bold" color={isDark ? '#38BDF8' : '#0066FF'}>
               Trợ lý AI Du lịch & Săn vé
             </Text>
-            <Text fontSize="$2" color="gray11">
+            <Text fontSize="$2" color={isDark ? '#94A3B8' : '#64748B'}>
               Hỗ trợ tư vấn lịch trình, so sánh giá vé và phương tiện tức thì
             </Text>
           </YStack>
@@ -81,19 +92,19 @@ export default function AIAssistantScreen() {
               key={index}
               p="$3.5"
               alignSelf={m.role === 'user' ? 'flex-end' : 'flex-start'}
-              bg={m.role === 'user' ? 'blue10' : 'gray3'}
+              bg={m.role === 'user' ? '#0066FF' : (isDark ? '#1E293B' : '#F1F5F9')}
               maxWidth="88%"
               borderWidth={1}
-              borderColor={m.role === 'user' ? 'blue10' : 'gray5'}
+              borderColor={m.role === 'user' ? '#0066FF' : (isDark ? '#334155' : '#E2E8F0')}
               br="$4"
             >
               {m.role === 'ai' && (
-                <Text fontSize="$2" fontWeight="bold" color="blue10" mb="$1">
+                <Text fontSize="$2" fontWeight="bold" color={isDark ? '#38BDF8' : '#0066FF'} mb="$1">
                   🤖 Trợ lý AI
                 </Text>
               )}
               <Text
-                color={m.role === 'user' ? 'white' : '$color'}
+                color={m.role === 'user' ? '#FFFFFF' : (isDark ? '#F8FAFC' : '#0F172A')}
                 fontSize="$3"
                 lineHeight={22}
               >
@@ -104,8 +115,8 @@ export default function AIAssistantScreen() {
 
           {loading && (
             <XStack ai="center" gap="$2" p="$2">
-              <Spinner size="small" color="blue10" />
-              <Text color="gray10" fontSize="$2">AI đang phân tích vé và lịch trình phù hợp...</Text>
+              <Spinner size="small" color="#0066FF" />
+              <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2">AI đang phân tích vé và lịch trình phù hợp...</Text>
             </XStack>
           )}
         </YStack>
@@ -118,13 +129,13 @@ export default function AIAssistantScreen() {
             key={idx}
             size="xs"
             br="$10"
-            bg="#F1F5F9"
+            bg={isDark ? '#1E293B' : '#F1F5F9'}
             borderWidth={1}
-            borderColor="#CBD5E1"
+            borderColor={isDark ? '#334155' : '#CBD5E1'}
             pressStyle={{ opacity: 0.8 }}
             onPress={() => handleSend(q)}
           >
-            <Text fontSize="$2" color="#1E293B" fontWeight="600">{q}</Text>
+            <Text fontSize="$2" color={isDark ? '#E2E8F0' : '#1E293B'} fontWeight="600">{q}</Text>
           </Button>
         ))}
       </XStack>
@@ -135,6 +146,10 @@ export default function AIAssistantScreen() {
           f={1}
           br="$10"
           px="$3.5"
+          bg={isDark ? '#1E293B' : '#FFFFFF'}
+          borderColor={isDark ? '#334155' : '#CBD5E1'}
+          color={isDark ? '#F8FAFC' : '#0F172A'}
+          placeholderTextColor={isDark ? '#94A3B8' : '#64748B'}
           placeholder="Nhập yêu cầu (VD: Đi Đà Lạt 2 ngày 1 đêm...)"
           value={prompt}
           onChangeText={setPrompt}
