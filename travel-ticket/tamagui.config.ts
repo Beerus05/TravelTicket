@@ -1,10 +1,94 @@
 import { getDefaultTamaguiConfig } from '@tamagui/config-default';
-import { createTamagui } from 'tamagui';
+import { createTamagui, createFont } from 'tamagui';
 
 const { animations: _animations, ...config } = getDefaultTamaguiConfig();
 
+const sizeScale = {
+  1: 11,
+  1.5: 12,
+  2: 13,
+  2.5: 14,
+  3: 15,
+  3.5: 16,
+  4: 17,
+  4.5: 18,
+  5: 19,
+  5.5: 20,
+  6: 22,
+  6.5: 24,
+  7: 26,
+  7.5: 28,
+  8: 30,
+  8.5: 32,
+  9: 36,
+  9.5: 40,
+  10: 44,
+  11: 48,
+  12: 56,
+  true: 15,
+  xs: 12,
+  sm: 14,
+  base: 16,
+  lg: 18,
+  xl: 20,
+};
+
+const lineHeightScale = {
+  1: 14,
+  1.5: 15,
+  2: 16,
+  2.5: 18,
+  3: 20,
+  3.5: 22,
+  4: 24,
+  4.5: 26,
+  5: 26,
+  5.5: 28,
+  6: 28,
+  6.5: 30,
+  7: 32,
+  7.5: 34,
+  8: 36,
+  8.5: 38,
+  9: 42,
+  9.5: 46,
+  10: 50,
+  11: 54,
+  12: 64,
+  true: 20,
+  xs: 16,
+  sm: 20,
+  base: 24,
+  lg: 28,
+  xl: 28,
+};
+
+const appFont = createFont({
+  family: 'System',
+  size: sizeScale,
+  lineHeight: lineHeightScale,
+  weight: {
+    1: '400',
+    4: '400',
+    6: '600',
+    7: '700',
+    8: '800',
+    9: '900',
+    true: '400',
+  },
+  letterSpacing: {
+    1: 0,
+    4: 0,
+    true: 0,
+  },
+});
+
 export const tamaguiConfig = createTamagui({
   ...config,
+  fonts: {
+    heading: appFont,
+    body: appFont,
+  },
   themes: {
     ...config.themes,
     light: {
