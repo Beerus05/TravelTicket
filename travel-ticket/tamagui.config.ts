@@ -95,6 +95,25 @@ export const tamaguiConfig = createTamagui({
       gray10: '#64748B',
       gray11: '#475569',
     },
+    radius: {
+      ...config.tokens.radius,
+      0: 0,
+      xs: 4,
+      sm: 6,
+      md: 9,
+      lg: 12,
+      xl: 16,
+      true: 9,
+    },
+    space: {
+      ...config.tokens.space,
+      xs: 4,
+      sm: 8,
+      md: 12,
+      lg: 16,
+      xl: 20,
+      true: 12,
+    },
     size: {
       ...config.tokens.size,
       xs: 28,
@@ -102,6 +121,7 @@ export const tamaguiConfig = createTamagui({
       md: 44,
       lg: 52,
       xl: 60,
+      true: 44,
     },
   },
   fonts: {

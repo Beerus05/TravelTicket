@@ -63,7 +63,7 @@ export default function SearchScreen() {
       {/* Ô tìm kiếm to gấp đôi */}
       <Input
         height={60}
-        fontSize="$5"
+        fontSize={16}
         px="$4"
         br="$4"
         borderWidth={2}

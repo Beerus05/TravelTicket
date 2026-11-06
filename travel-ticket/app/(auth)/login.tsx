@@ -79,7 +79,7 @@ export default function LoginScreen() {
             </Text>
             <Input
               height={48}
-              fontSize="$4"
+              fontSize={15}
               placeholder="Nhập họ và tên đầy đủ"
               value={name}
               onChangeText={setName}
@@ -98,7 +98,7 @@ export default function LoginScreen() {
             </Text>
             <Input
               height={48}
-              fontSize="$4"
+              fontSize={15}
               placeholder="Nhập email (VD: phi@student.iuh.edu.vn)"
               value={email}
               onChangeText={setEmail}
@@ -119,7 +119,7 @@ export default function LoginScreen() {
             </Text>
             <Input
               height={48}
-              fontSize="$4"
+              fontSize={15}
               placeholder="Nhập mật khẩu"
               value={password}
               onChangeText={setPassword}

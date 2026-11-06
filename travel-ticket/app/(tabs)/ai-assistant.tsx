@@ -7,10 +7,11 @@ import {
   ScrollView,
   StyleSheet,
   Text as RNText,
+  TextInput,
   View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Card, Input, Spinner, Text, XStack, YStack } from 'tamagui';
+import { Button, Card, Spinner, Text, XStack, YStack } from 'tamagui';
 import { Sparkles } from '../../components/Icons';
 import { TicketCard } from '../../components/TicketCard';
 import { askTravelAI, DEFAULT_TICKETS } from '../../services/api';
@@ -356,13 +357,14 @@ export default function AIAssistantScreen() {
           shadowOpacity={0.08}
           shadowRadius={6}
         >
-          <Input
-            f={1}
-            borderWidth={0}
-            bg="transparent"
-            px="$3"
-            fontSize={14}
-            color={isDark ? '#F8FAFC' : '#0F172A'}
+          <TextInput
+            style={{
+              flex: 1,
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              fontSize: 14,
+              color: isDark ? '#F8FAFC' : '#0F172A',
+            }}
             placeholderTextColor={isDark ? '#64748B' : '#94A3B8'}
             placeholder="Nhập yêu cầu (VD: Sóc Trăng, Đà Lạt, giá rẻ...)"
             value={prompt}
