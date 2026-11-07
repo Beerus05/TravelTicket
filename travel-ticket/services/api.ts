@@ -296,7 +296,13 @@ export interface AIResponse {
 }
 
 // 2. Hàm gọi AI Basic (Gemini API qua Axios với fallback thông minh)
-export const askTravelAI = async (prompt: string, availableTickets: any[]): Promise<AIResponse> => {
+export type AIAgentType = 'planner' | 'hunter' | 'booking';
+
+export const askTravelAI = async (
+  prompt: string,
+  availableTickets: any[],
+  agentType: AIAgentType = 'planner'
+): Promise<AIResponse> => {
   const normPrompt = normalizeVietnamese(prompt);
 
   // Tìm các chuyến khớp với điểm đến hoặc điểm xuất phát
@@ -364,14 +370,31 @@ Nếu trong hệ thống không có chuyến đến địa điểm người dùn
   if (matched.length > 0) {
     const topPick = matched[0];
     const priceFormatted = Number(topPick.price).toLocaleString('vi-VN');
-    return {
-      text: `🤖 [Trợ lý AI Travel Ticket]:
-Với nhu cầu "${prompt}", mình tìm thấy ${matched.length} chuyến đi rất phù hợp:
+    let agentText = '';
+    if (agentType === 'hunter') {
+      agentText = `⚡ [Agent Săn Vé Rẻ]:
+Với yêu cầu tìm giá tốt nhất cho "${prompt}":
+🎯 Đề xuất siêu tiết kiệm: **${topPick.from} ➔ ${topPick.to}** cùng **${topPick.brand}** (Mã: **${topPick.code}**)
+💰 Giá chỉ từ: **${priceFormatted} đ** (Còn ${topPick.availableSeats || 10} chỗ trống)
+💡 Mẹo săn vé: Hãy áp dụng mã giảm giá **IUH** (-100k) hoặc **TRAVEL50** (-50k) khi thanh toán để có giá rẻ nhất nhé!`;
+    } else if (agentType === 'booking') {
+      agentText = `🎫 [Agent Tư Vấn Ghế & Voucher]:
+Tư vấn đặt chỗ cho "${prompt}":
+🌟 Chuyến phù hợp: **${topPick.brand}** (${topPick.code}) tuyến **${topPick.from} ➔ ${topPick.to}**
+💺 Gợi ý chọn ghế: Nên chọn hàng đầu (A1, A2) hoặc dãy ghế cửa sổ ngắm cảnh để di chuyển êm ái nhất!
+🎁 Đừng quên nhập mã **IUH** để được giảm ngay 100.000 đ tại bước thanh toán nhé!`;
+    } else {
+      agentText = `🧭 [Agent Lập Lịch Trình]:
+Gợi ý lịch trình hoàn hảo cho "${prompt}":
 ✨ Tuyến: **${topPick.from} ➔ ${topPick.to}**
 🏢 Hãng: **${topPick.brand}** (Mã: **${topPick.code}**)
 🕒 Khởi hành: **${topPick.departureTime}** (${topPick.duration})
-💰 Giá vé: **${priceFormatted} đ** (Còn **${topPick.availableSeats || 10} / ${topPick.totalSeats || 12} ghế trống**)
-💡 Chạm trực tiếp vào thẻ chuyến đi bên dưới để xem chi tiết và đặt vé ngay nhé!`,
+💰 Giá vé: **${priceFormatted} đ** (Còn **${topPick.availableSeats || 10} ghế trống**)
+💡 Chạm trực tiếp vào thẻ chuyến đi bên dưới để xem chi tiết và đặt vé ngay nhé!`;
+    }
+
+    return {
+      text: agentText,
       tickets: matched.slice(0, 3),
     };
   }

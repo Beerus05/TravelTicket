@@ -55,7 +55,12 @@ export default function MyTicketsScreen() {
   }
 
   return (
-    <ScrollView f={1} p="$4" bg="$background">
+    <ScrollView
+      f={1}
+      bg="$background"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
+    >
       <YStack gap="$3">
         <XStack jc="space-between" ai="center">
           <Text fontSize="$6" fontWeight="bold" color={isDark ? '#F8FAFC' : '#0F172A'}>
@@ -85,7 +90,6 @@ export default function MyTicketsScreen() {
             <Button
               size="md"
               bg="#0066FF"
-              pressStyle={{ bg: '#0052CC' }}
               br="$4"
               onPress={() => router.push('/(tabs)/home')}
             >
@@ -161,7 +165,6 @@ export default function MyTicketsScreen() {
                   <Button
                     size="sm"
                     bg="#0066FF"
-                    pressStyle={{ bg: '#0052CC' }}
                     f={1}
                     br="$3"
                     onPress={() => router.push({ pathname: '/booking/e-ticket', params: { bookingId: b.id } })}
@@ -174,7 +177,6 @@ export default function MyTicketsScreen() {
                   <Button
                     size="sm"
                     bg={isCancelled ? (isDark ? '#334155' : '#F1F5F9') : '#DC2626'}
-                    pressStyle={{ bg: isCancelled ? (isDark ? '#334155' : '#F1F5F9') : '#B91C1C' }}
                     borderWidth={1}
                     borderColor={isCancelled ? (isDark ? '#475569' : '#CBD5E1') : '#DC2626'}
                     f={1}

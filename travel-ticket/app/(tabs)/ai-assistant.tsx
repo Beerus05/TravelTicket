@@ -8,16 +8,26 @@ import {
   StyleSheet,
   Text as RNText,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Card, Spinner, Text, XStack, YStack } from 'tamagui';
+import { Button, Spinner, Text, XStack, YStack } from 'tamagui';
 import { Sparkles } from '../../components/Icons';
 import { TicketCard } from '../../components/TicketCard';
-import { askTravelAI, DEFAULT_TICKETS } from '../../services/api';
+import { askTravelAI, DEFAULT_TICKETS, AIAgentType } from '../../services/api';
 import { ticketService } from '../../services/ticketService';
 import { setSelectedTicket, Ticket } from '../../store/bookingSlice';
 import { RootState } from '../../store/store';
+
+interface ChatMessage {
+  role: 'user' | 'ai';
+  text: string;
+  time: string;
+  agentName?: string;
+  agentIcon?: string;
+  tickets?: Ticket[];
+}
 
 export default function AIAssistantScreen() {
   const router = useRouter();
@@ -26,20 +36,69 @@ export default function AIAssistantScreen() {
   const isDark = themeMode === 'dark';
 
   const [prompt, setPrompt] = useState('');
-  const [messages, setMessages] = useState<{
-    role: 'user' | 'ai';
-    text: string;
-    time: string;
-    tickets?: Ticket[];
-  }[]>([
+  const [activeAgent, setActiveAgent] = useState<AIAgentType>('planner');
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'ai',
-      text: 'Xin chào! Mình là Trợ lý AI Du lịch Travel Ticket 🤖✨\nBạn muốn tìm chuyến đi đâu, khởi hành lúc nào và với ngân sách bao nhiêu? Hãy nhắn cho mình nhé!',
+      agentName: 'Agent Lập Lịch Trình',
+      agentIcon: '🧭',
+      text: 'Xin chào! Mình là Agent Lập Lịch Trình 🧭.\nBạn muốn đi Đà Lạt, Nha Trang hay Sapa? Cho mình biết số ngày bạn dự định đi để mình lên lộ trình tour trọn gói nhé!',
       time: '08:00',
     },
   ]);
   const [loading, setLoading] = useState(false);
   const scrollViewRef = useRef<any>(null);
+
+  const AGENT_PERSONAS = [
+    {
+      key: 'planner' as AIAgentType,
+      label: 'Lập lịch trình',
+      icon: '🧭',
+      name: 'Agent Lập Lịch Trình',
+      welcome:
+        'Xin chào! Mình là Agent Lập Lịch Trình 🧭.\nBạn muốn đi Đà Lạt, Nha Trang hay Sapa? Cho mình biết số ngày dự định đi để mình lên lộ trình chi tiết nhé!',
+    },
+    {
+      key: 'hunter' as AIAgentType,
+      label: 'Săn vé rẻ',
+      icon: '⚡',
+      name: 'Agent Săn Vé Rẻ',
+      welcome:
+        'Chào bạn! Mình là Agent Săn Vé Rẻ ⚡.\nNgân sách của bạn là bao nhiêu (VD: dưới 500k)? Mình sẽ so sánh xe khách, tàu hỏa và máy bay để tìm vé hời nhất cho sinh viên IUH!',
+    },
+    {
+      key: 'booking' as AIAgentType,
+      label: 'Ghế & Voucher',
+      icon: '🎫',
+      name: 'Agent Tư Vấn Ghế & Voucher',
+      welcome:
+        'Xin chào! Mình là Agent Tư Vấn Ghế & Voucher 🎫.\nBạn cần chọn ghế cửa sổ ngắm cảnh, phòng nằm êm ái hay muốn áp mã giảm độc quyền sinh viên IUH (-100K)?',
+    },
+  ];
+
+  const PROMPT_SUGGESTIONS: Record<AIAgentType, string[]> = {
+    planner: [
+      '🌸 Lịch trình Đà Lạt 2N1Đ',
+      '🏖️ Tour Nha Trang biển cuối tuần',
+      '🏔️ Đi Sapa săn mây Limousine',
+      '✈️ Bay Đà Nẵng ngắm Cầu Rồng',
+      '🚌 Xe đi Sóc Trăng / Cần Thơ',
+    ],
+    hunter: [
+      '💰 Tìm vé dưới 500k rẻ nhất',
+      '🚌 Xe khách Đà Lạt giá tốt nhất',
+      '🚆 Tàu hỏa Nha Trang tiết kiệm',
+      '🎓 Vé tiết kiệm cho sinh viên IUH',
+      '⚡ Chuyến đi rẻ nhất hôm nay',
+    ],
+    booking: [
+      '💺 Tàu SE4 nên chọn ghế nào đẹp?',
+      '🎁 Mã giảm giá IUH dùng ra sao?',
+      '🛋️ Tiện ích phòng Limousine VIP',
+      '🔒 Khóa chỗ tức thì không trùng ghế',
+      '📋 Chính sách đổi trả và hoàn vé',
+    ],
+  };
 
   const { data: tickets = DEFAULT_TICKETS } = useQuery({
     queryKey: ['tickets'],
@@ -52,7 +111,6 @@ export default function AIAssistantScreen() {
   };
 
   useEffect(() => {
-    // Tự động cuộn xuống cuối khi có tin nhắn mới hoặc đang phân tích
     const timer = setTimeout(() => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 100);
@@ -62,6 +120,24 @@ export default function AIAssistantScreen() {
   const handleSelectTicket = (ticketItem: Ticket) => {
     dispatch(setSelectedTicket(ticketItem));
     router.push(`/ticket/${ticketItem.id}`);
+  };
+
+  const handleSwitchAgent = (agentKey: AIAgentType) => {
+    if (agentKey === activeAgent) return;
+    setActiveAgent(agentKey);
+    const persona = AGENT_PERSONAS.find((a) => a.key === agentKey);
+    if (persona) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'ai',
+          agentName: persona.name,
+          agentIcon: persona.icon,
+          text: persona.welcome,
+          time: getCurrentTime(),
+        },
+      ]);
+    }
   };
 
   const handleSend = async (customPrompt?: string) => {
@@ -75,11 +151,14 @@ export default function AIAssistantScreen() {
     setLoading(true);
 
     try {
-      const reply = await askTravelAI(userMsg, tickets);
+      const reply = await askTravelAI(userMsg, tickets, activeAgent);
+      const persona = AGENT_PERSONAS.find((a) => a.key === activeAgent);
       setMessages((prev) => [
         ...prev,
         {
           role: 'ai',
+          agentName: persona?.name || 'Travel AI',
+          agentIcon: persona?.icon || '🤖',
           text: reply.text,
           time: getCurrentTime(),
           tickets: reply.tickets,
@@ -90,6 +169,8 @@ export default function AIAssistantScreen() {
         ...prev,
         {
           role: 'ai',
+          agentName: 'Travel AI',
+          agentIcon: '🤖',
           text: 'Gợi ý nhanh: Bạn có thể chọn vé xe Phương Trang (320.000đ) hoặc vé máy bay Vietnam Airlines (1.250.000đ) đi Đà Lạt!',
           time: getCurrentTime(),
           tickets: tickets.slice(0, 2),
@@ -101,28 +182,16 @@ export default function AIAssistantScreen() {
   };
 
   const handleResetChat = () => {
+    const persona = AGENT_PERSONAS.find((a) => a.key === activeAgent) || AGENT_PERSONAS[0];
     setMessages([
       {
         role: 'ai',
-        text: 'Cuộc trò chuyện đã được làm mới! Bạn muốn tìm chuyến xe, tàu hỏa hay máy bay đến thành phố nào hôm nay? ✈️🚌🚆',
+        agentName: persona.name,
+        agentIcon: persona.icon,
+        text: persona.welcome,
         time: getCurrentTime(),
       },
     ]);
-  };
-
-  const QUICK_PROMPTS = [
-    '🌸 Đi Đà Lạt dưới 500k',
-    '🏖️ Vé bay Đà Nẵng giá tốt',
-    '🚆 Tàu hỏa Nha Trang ngắm biển',
-    '🚌 Limousine Cần Thơ 165k',
-    '✈️ Vé máy bay TP.HCM ➔ Hà Nội',
-  ];
-
-  const getUserInitials = (name?: string) => {
-    if (!name) return 'BẠN';
-    const parts = name.trim().split(' ');
-    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   };
 
   return (
@@ -132,72 +201,100 @@ export default function AIAssistantScreen() {
       style={{ flex: 1 }}
     >
       <YStack f={1} bg="$background" p="$3" gap="$2.5">
-        {/* Header thông tin Trợ lý AI */}
-        <Card
-          p="$3.5"
-          br="$5"
-          bg={isDark ? '#1E293B' : '#FFFFFF'}
-          borderWidth={1}
-          borderColor={isDark ? '#334155' : '#E2E8F0'}
-          shadowColor={isDark ? '#000000' : '#64748B'}
-          shadowOpacity={0.06}
-          shadowRadius={8}
+        {/* Header chọn Multi-Agent chuyên sâu */}
+        <View
+          style={{
+            padding: 10,
+            borderRadius: 16,
+            backgroundColor: isDark ? '#1E293B' : '#FFFFFF',
+            borderWidth: 1,
+            borderColor: isDark ? '#334155' : '#E2E8F0',
+            shadowColor: '#000000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.05,
+            shadowRadius: 6,
+            elevation: 2,
+          }}
         >
-          <XStack ai="center" jc="space-between">
-            <XStack ai="center" gap="$3">
-              <YStack
-                w={42}
-                h={42}
-                br="$10"
-                bg={isDark ? '#1E3A8A' : '#EFF6FF'}
-                borderWidth={1.5}
-                borderColor={isDark ? '#38BDF8' : '#0066FF'}
-                jc="center"
-                ai="center"
-              >
-                <Sparkles color={isDark ? '#38BDF8' : '#0066FF'} size={22} />
-              </YStack>
-
-              <YStack>
-                <XStack ai="center" gap="$2">
-                  <Text fontSize={16} fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
-                    Trợ lý Du lịch AI
-                  </Text>
-                  <YStack px="$2" py="$0.5" br="$10" bg={isDark ? '#064E3B' : '#DCFCE7'}>
-                    <Text fontSize={11} fontWeight="bold" color={isDark ? '#4ADE80' : '#15803D'}>
-                      ● Trực tuyến
-                    </Text>
-                  </YStack>
-                </XStack>
-                <Text fontSize={12} color={isDark ? '#94A3B8' : '#64748B'}>
-                  Tư vấn lộ trình & so sánh vé tự động
-                </Text>
-              </YStack>
+          <XStack ai="center" jc="space-between" mb={8}>
+            <XStack ai="center" gap="$2">
+              <Sparkles color={isDark ? '#38BDF8' : '#0066FF'} size={18} />
+              <Text fontSize={14} fontWeight="800" color={isDark ? '#F8FAFC' : '#0F172A'}>
+                Hệ thống Multi-Agent AI
+              </Text>
             </XStack>
 
-            <Button
-              size="sm"
-              bg={isDark ? '#334155' : '#F1F5F9'}
-              borderWidth={1}
-              borderColor={isDark ? '#475569' : '#CBD5E1'}
-              pressStyle={{ opacity: 0.8 }}
-              br="$3"
-              px="$2.5"
-              py="$1"
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{
+                backgroundColor: isDark ? '#334155' : '#F1F5F9',
+                borderRadius: 8,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderWidth: 1,
+                borderColor: isDark ? '#475569' : '#CBD5E1',
+              }}
               onPress={handleResetChat}
             >
-              <Text fontSize={12} fontWeight="600" color={isDark ? '#CBD5E1' : '#475569'}>
+              <RNText style={{ fontSize: 11, fontWeight: '700', color: isDark ? '#CBD5E1' : '#475569' }}>
                 🔄 Làm mới
-              </Text>
-            </Button>
+              </RNText>
+            </TouchableOpacity>
           </XStack>
-        </Card>
+
+          {/* 3 Tab Agent lựa chọn */}
+          <XStack gap={6}>
+            {AGENT_PERSONAS.map((agent) => {
+              const isActive = activeAgent === agent.key;
+              return (
+                <TouchableOpacity
+                  key={agent.key}
+                  activeOpacity={0.7}
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 36,
+                    borderRadius: 10,
+                    borderWidth: 1,
+                    paddingHorizontal: 4,
+                    gap: 4,
+                    backgroundColor: isActive
+                      ? '#0066FF'
+                      : isDark
+                      ? '#0F172A'
+                      : '#F8FAFC',
+                    borderColor: isActive
+                      ? '#0066FF'
+                      : isDark
+                      ? '#334155'
+                      : '#E2E8F0',
+                  }}
+                  onPress={() => handleSwitchAgent(agent.key)}
+                >
+                  <RNText style={{ fontSize: 12 }}>{agent.icon}</RNText>
+                  <RNText
+                    style={{
+                      fontSize: 11,
+                      fontWeight: isActive ? '800' : '600',
+                      color: isActive ? '#FFFFFF' : isDark ? '#94A3B8' : '#475569',
+                    }}
+                    numberOfLines={1}
+                  >
+                    {agent.label}
+                  </RNText>
+                </TouchableOpacity>
+              );
+            })}
+          </XStack>
+        </View>
 
         {/* Khung cuộn tin nhắn dạng hội thoại chuẩn messaging */}
         <ScrollView
           ref={scrollViewRef}
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 4 }}
+          contentContainerStyle={{ paddingVertical: 8, paddingHorizontal: 2 }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
@@ -226,7 +323,7 @@ export default function AIAssistantScreen() {
                     },
                   ]}
                 >
-                  <RNText style={{ fontSize: 15 }}>🤖</RNText>
+                  <RNText style={{ fontSize: 14 }}>{m.agentIcon || '🤖'}</RNText>
                 </View>
 
                 <View style={styles.aiContentWrapper}>
@@ -241,7 +338,7 @@ export default function AIAssistantScreen() {
                   >
                     <View style={styles.aiHeader}>
                       <RNText style={[styles.aiName, { color: isDark ? '#38BDF8' : '#0066FF' }]}>
-                        Travel AI
+                        {m.agentName || 'Travel AI'}
                       </RNText>
                       <RNText style={[styles.aiTime, { color: isDark ? '#64748B' : '#94A3B8' }]}>
                         {m.time}
@@ -296,7 +393,7 @@ export default function AIAssistantScreen() {
                   },
                 ]}
               >
-                <RNText style={{ fontSize: 15 }}>🤖</RNText>
+                <RNText style={{ fontSize: 14 }}>🤖</RNText>
               </View>
               <View
                 style={[
@@ -317,29 +414,33 @@ export default function AIAssistantScreen() {
         </ScrollView>
 
         {/* Danh sách gợi ý câu hỏi nhanh (Gợi ý cuộn ngang tiện lợi) */}
-        <YStack gap="$1.5">
-          <Text fontSize={12} fontWeight="700" color={isDark ? '#94A3B8' : '#64748B'} px="$1">
-            💡 Gợi ý câu hỏi nhanh:
-          </Text>
+        <YStack gap="$1">
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <XStack gap="$2" px="$1">
-              {QUICK_PROMPTS.map((q, idx) => (
-                <Button
+            <XStack gap="$2" px="$1" py="$0.5">
+              {PROMPT_SUGGESTIONS[activeAgent].map((q, idx) => (
+                <TouchableOpacity
                   key={idx}
-                  size="sm"
-                  br="$10"
-                  bg={isDark ? '#1E293B' : '#FFFFFF'}
-                  borderWidth={1}
-                  borderColor={isDark ? '#334155' : '#CBD5E1'}
-                  pressStyle={{ bg: isDark ? '#334155' : '#EFF6FF', borderColor: '#0066FF' }}
-                  px="$3"
-                  py="$1.5"
+                  activeOpacity={0.7}
+                  style={{
+                    backgroundColor: isDark ? '#1E293B' : '#FFFFFF',
+                    borderRadius: 20,
+                    borderWidth: 1,
+                    borderColor: isDark ? '#334155' : '#CBD5E1',
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                  }}
                   onPress={() => handleSend(q)}
                 >
-                  <Text fontSize={12} color={isDark ? '#F8FAFC' : '#1E293B'} fontWeight="600">
+                  <RNText
+                    style={{
+                      fontSize: 11.5,
+                      fontWeight: '700',
+                      color: isDark ? '#93C5FD' : '#0066FF',
+                    }}
+                  >
                     {q}
-                  </Text>
-                </Button>
+                  </RNText>
+                </TouchableOpacity>
               ))}
             </XStack>
           </ScrollView>
@@ -362,7 +463,7 @@ export default function AIAssistantScreen() {
               flex: 1,
               paddingHorizontal: 12,
               paddingVertical: 8,
-              fontSize: 14,
+              fontSize: 13,
               color: isDark ? '#F8FAFC' : '#0F172A',
             }}
             placeholderTextColor={isDark ? '#64748B' : '#94A3B8'}
@@ -373,26 +474,29 @@ export default function AIAssistantScreen() {
             returnKeyType="send"
           />
 
-          <Button
-            w={40}
-            h={40}
-            br="$10"
-            bg={prompt.trim() ? '#0066FF' : (isDark ? '#334155' : '#E2E8F0')}
-            pressStyle={{ bg: '#0052CC' }}
-            jc="center"
-            ai="center"
-            p={0}
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: prompt.trim() ? '#0066FF' : isDark ? '#334155' : '#E2E8F0',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
             onPress={() => handleSend()}
             disabled={loading || !prompt.trim()}
           >
-            <Text
-              color={prompt.trim() ? '#FFFFFF' : (isDark ? '#64748B' : '#94A3B8')}
-              fontSize={15}
-              fontWeight="900"
+            <RNText
+              style={{
+                color: prompt.trim() ? '#FFFFFF' : isDark ? '#64748B' : '#94A3B8',
+                fontSize: 14,
+                fontWeight: '900',
+              }}
             >
               ➤
-            </Text>
-          </Button>
+            </RNText>
+          </TouchableOpacity>
         </XStack>
       </YStack>
     </KeyboardAvoidingView>
@@ -422,8 +526,8 @@ const styles = StyleSheet.create({
   },
   userText: {
     color: '#FFFFFF',
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 13.5,
+    lineHeight: 19,
     fontWeight: '500',
   },
   userTime: {
@@ -441,9 +545,9 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   aiAvatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     borderWidth: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
@@ -481,7 +585,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   aiText: {
-    fontSize: 13.5,
+    fontSize: 13,
     lineHeight: 19,
   },
   ticketContainer: {

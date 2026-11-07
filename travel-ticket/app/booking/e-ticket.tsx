@@ -106,7 +106,6 @@ export default function ETicketScreen() {
           mt="$3"
           size="lg"
           bg="#0066FF"
-          pressStyle={{ bg: '#0052CC' }}
           br="$4"
           onPress={() => router.replace('/(tabs)/my-tickets')}
         >

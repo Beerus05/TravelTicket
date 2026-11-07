@@ -79,7 +79,6 @@ export default function TicketDetailScreen() {
         <Button
           size="sm"
           bg={isDark ? '#1E293B' : '#F1F5F9'}
-          pressStyle={{ bg: isDark ? '#334155' : '#E2E8F0' }}
           br="$10"
           px="$3"
           onPress={() => router.back()}
@@ -252,7 +251,6 @@ export default function TicketDetailScreen() {
           <Button
             size="lg"
             bg="#0066FF"
-            pressStyle={{ bg: '#0052CC' }}
             br="$4"
             px="$4"
             onPress={handleContinue}

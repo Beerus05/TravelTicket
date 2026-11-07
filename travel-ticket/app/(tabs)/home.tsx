@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { useWindowDimensions } from 'react-native';
+import { useWindowDimensions, View, Text as RNText } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
-import { YStack, XStack, Text, Card, Button, Spinner, ScrollView } from 'tamagui';
+import { YStack, XStack, Text, Button, Spinner, ScrollView } from 'tamagui';
 import { DEFAULT_TICKETS } from '../../services/api';
 import { ticketService, getTicketWithDynamicSeats } from '../../services/ticketService';
 import { useRouter } from 'expo-router';
@@ -9,10 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { setSelectedTicket, Ticket } from '../../store/bookingSlice';
 import { TicketCard } from '../../components/TicketCard';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const { user, themeMode } = useSelector((state: RootState) => state.booking);
   const isDark = themeMode === 'dark';
@@ -54,7 +56,16 @@ export default function HomeScreen() {
   };
 
   return (
-    <ScrollView bg="$background" p="$4">
+    <ScrollView
+      f={1}
+      bg="$background"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingHorizontal: 16,
+        paddingTop: Math.max(insets.top + 8, 16),
+        paddingBottom: 28,
+      }}
+    >
       {/* Tiêu đề Travel Ticket & Lời chào */}
       <YStack mb="$3">
         <XStack ai="center" gap="$2" mb="$1">
@@ -73,32 +84,43 @@ export default function HomeScreen() {
         </Text>
       </YStack>
 
-      {/* Banner Khuyến Mãi */}
-      <Card
-        p="$4"
-        bg="#0066FF"
-        br="$5"
-        mb="$4"
-        gap="$2"
+      {/* Banner Khuyến Mãi (Khóa chặt chiều cao 118px, chống giãn dọc) */}
+      <View
+        style={{
+          backgroundColor: '#0066FF',
+          borderRadius: 16,
+          paddingHorizontal: 14,
+          paddingVertical: 12,
+          marginBottom: 16,
+          height: 118,
+          maxHeight: 125,
+          overflow: 'hidden',
+          justifyContent: 'space-between',
+          shadowColor: '#0066FF',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.25,
+          shadowRadius: 8,
+          elevation: 4,
+        }}
       >
-        <XStack ai="center" jc="space-between">
-          <YStack px="$2.5" py="$1" br="$10" bg="white">
-            <Text color="#0066FF" fontSize="$2" fontWeight="800">
-              ƯU ĐÃI ĐỘC QUYỀN
-            </Text>
-          </YStack>
-          <Text color="white" fontSize="$2" fontWeight="bold">
-            Mã: IUH (-100K)
-          </Text>
-        </XStack>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View style={{ backgroundColor: '#FFFFFF', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 }}>
+            <RNText style={{ color: '#0066FF', fontSize: 11, fontWeight: '800' }}>ƯU ĐÃI ĐỘC QUYỀN</RNText>
+          </View>
+          <RNText style={{ color: '#FFFFFF', fontSize: 12, fontWeight: '700' }}>Mã: IUH (-100K)</RNText>
+        </View>
 
-        <Text color="white" fontSize="$6" fontWeight="bold">
+        <RNText style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '800' }}>
           🎉 Mùa Du Lịch & Nghỉ Lễ 2026
-        </Text>
-        <Text color="white" opacity={0.9} fontSize="$3">
+        </RNText>
+
+        <RNText
+          style={{ color: 'rgba(255, 255, 255, 0.92)', fontSize: 11.5, lineHeight: 16 }}
+          numberOfLines={2}
+        >
           Giảm đến 30% cho các tuyến Đà Lạt, Nha Trang, Đà Nẵng, Sapa. Đặt sớm giữ chỗ ngay!
-        </Text>
-      </Card>
+        </RNText>
+      </View>
 
       {/* Danh mục phương tiện */}
       <Text fontSize="$4" fontWeight="bold" mb="$2" color={isDark ? '#F8FAFC' : '#0F172A'}>
@@ -121,7 +143,6 @@ export default function HomeScreen() {
               bg={isActive ? '#0066FF' : (isDark ? '#1E293B' : '#F1F5F9')}
               borderWidth={1.5}
               borderColor={isActive ? '#0066FF' : (isDark ? '#334155' : '#CBD5E1')}
-              pressStyle={{ opacity: 0.8 }}
               onPress={() => setFilterType(cat.key)}
             >
               <Text

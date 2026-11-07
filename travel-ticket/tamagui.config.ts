@@ -1,5 +1,6 @@
 import { getDefaultTamaguiConfig } from '@tamagui/config-default';
 import { createTamagui, createFont } from 'tamagui';
+import { Platform } from 'react-native';
 
 const { animations: _animations, ...config } = getDefaultTamaguiConfig();
 
@@ -64,7 +65,7 @@ const lineHeightScale = {
 };
 
 const appFont = createFont({
-  family: 'System',
+  family: Platform.OS === 'web' ? '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' : 'System',
   size: sizeScale,
   lineHeight: lineHeightScale,
   weight: {

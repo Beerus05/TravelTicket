@@ -50,12 +50,34 @@ export default function SeatSelectionScreen() {
   const totalPrice = validSelectedSeats.length * ticketPrice;
 
   const handleToggleSeat = (seat: string) => {
-    // Nếu ghế đã có người đặt -> không cho chọn
     if (bookedSeats.includes(seat)) {
       return;
     }
     dispatch(toggleSeat(seat));
   };
+
+  const getVehicleDetails = () => {
+    switch (selectedTicket?.type) {
+      case 'flight':
+        return {
+          title: '✈️ Sơ đồ chỗ ngồi Máy bay',
+          sub: 'Airbus A321 • Ghế cửa sổ & Ghế lối đi',
+        };
+      case 'train':
+        return {
+          title: '🚆 Sơ đồ Toa Giường nằm Tàu hỏa',
+          sub: 'Khoang 4 Giường nằm mềm • Hành lang ngắm cảnh',
+        };
+      case 'bus':
+      default:
+        return {
+          title: '🚌 Sơ đồ Phòng nằm Limousine',
+          sub: 'Cabin VIP • Tầng 1 (Dưới) & Tầng 2 (Trên)',
+        };
+    }
+  };
+
+  const vehicleInfo = getVehicleDetails();
 
   return (
     <YStack f={1} bg="$background" jc="space-between" pt={insets.top > 0 ? insets.top : 12}>
@@ -72,7 +94,6 @@ export default function SeatSelectionScreen() {
         <Button
           size="sm"
           bg={isDark ? '#1E293B' : '#F1F5F9'}
-          pressStyle={{ bg: isDark ? '#334155' : '#E2E8F0' }}
           br="$10"
           px="$3"
           onPress={() => router.back()}
@@ -89,11 +110,12 @@ export default function SeatSelectionScreen() {
         <YStack w={75} />
       </XStack>
 
-      <ScrollView f={1} px="$4" pt="$3">
-        <YStack gap="$4" ai="center">
+      <ScrollView f={1} px="$3" pt="$2.5" showsVerticalScrollIndicator={false}>
+        <YStack gap="$3" ai="center" pb="$4">
           <Card
-            p="$4"
+            p="$3.5"
             w="100%"
+            maxWidth={420}
             borderWidth={1}
             borderColor={isDark ? '#334155' : '#E2E8F0'}
             bg={isDark ? '#1E293B' : '#FFFFFF'}
@@ -120,16 +142,29 @@ export default function SeatSelectionScreen() {
             <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">
               Hãng: <Text fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>{selectedTicket?.brand || 'Phương Trang'}</Text>
             </Text>
-            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2">
-              Đã khóa: {bookedSeats.length} ghế • Còn trống: {Math.max(0, (selectedTicket?.totalSeats || 12) - bookedSeats.length)} / {selectedTicket?.totalSeats || 12} ghế
+            <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2.5">
+              Đã khóa: <Text fontWeight="bold" color="#DC2626">{bookedSeats.length}</Text> chỗ • Còn trống:{' '}
+              <Text fontWeight="bold" color="#16A34A">
+                {Math.max(0, (selectedTicket?.totalSeats || 12) - bookedSeats.length)} / {selectedTicket?.totalSeats || 12}
+              </Text>{' '}
+              chỗ
             </Text>
           </Card>
 
-          <Text fontSize="$6" fontWeight="bold" ta="center" color={isDark ? '#F8FAFC' : '#0F172A'}>
-            Sơ đồ chọn chỗ ngồi
-          </Text>
+          {/* Tiêu đề sơ đồ trực quan */}
+          <YStack ai="center" gap="$0.5">
+            <Text fontSize="$5" fontWeight="800" ta="center" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              {vehicleInfo.title}
+            </Text>
+            <Text fontSize="$2.5" color={isDark ? '#94A3B8' : '#64748B'} ta="center">
+              {vehicleInfo.sub}
+            </Text>
+          </YStack>
 
+          {/* Sơ đồ chỗ ngồi chuyên biệt theo loại phương tiện */}
           <SeatMap
+            vehicleType={selectedTicket?.type || 'bus'}
+            vehicleName={selectedTicket?.brand || selectedTicket?.code || ''}
             bookedSeats={bookedSeats}
             selectedSeats={validSelectedSeats}
             onToggleSeat={handleToggleSeat}
@@ -139,41 +174,40 @@ export default function SeatSelectionScreen() {
 
       {/* Tóm tắt thanh bên dưới */}
       <Card
-        p="$4"
+        p="$3.5"
         borderWidth={1}
         borderColor={isDark ? '#334155' : '#E2E8F0'}
         br="$5"
-        gap="$2.5"
-        mx="$4"
+        gap="$2"
+        mx="$3"
         mt="$1"
         mb={Math.max(insets.bottom, 12)}
         bg={isDark ? '#1E293B' : '#FFFFFF'}
       >
         <XStack jc="space-between" ai="center">
-          <Text fontSize="$4" color={isDark ? '#94A3B8' : '#64748B'}>Ghế đang chọn:</Text>
+          <Text fontSize="$3.5" color={isDark ? '#94A3B8' : '#64748B'}>Chỗ đang chọn:</Text>
           <Text fontSize="$4" fontWeight="800" color={isDark ? '#38BDF8' : '#0066FF'}>
             {validSelectedSeats.length > 0 ? validSelectedSeats.join(', ') : 'Chưa chọn'}
           </Text>
         </XStack>
 
         <XStack jc="space-between" ai="center">
-          <Text fontSize="$5" fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>Tổng thanh toán:</Text>
-          <Text fontSize="$7" fontWeight="900" color={isDark ? '#F87171' : '#DC2626'}>
+          <Text fontSize="$4.5" fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>Tổng thanh toán:</Text>
+          <Text fontSize="$6" fontWeight="900" color={isDark ? '#F87171' : '#DC2626'}>
             {totalPrice.toLocaleString('vi-VN')} đ
           </Text>
         </XStack>
 
         <Button
-          size="lg"
+          height={48}
           bg="#0066FF"
-          pressStyle={{ bg: '#0052CC' }}
           br="$4"
           disabled={validSelectedSeats.length === 0}
           opacity={validSelectedSeats.length === 0 ? 0.5 : 1}
           onPress={() => router.push('/booking/checkout')}
         >
-          <Text color="#FFFFFF" fontWeight="900" fontSize="$4">
-            Xác nhận & Thanh toán ({validSelectedSeats.length} ghế) ➔
+          <Text color="#FFFFFF" fontWeight="900" fontSize="$3.5">
+            Xác nhận & Thanh toán ({validSelectedSeats.length} chỗ) ➔
           </Text>
         </Button>
       </Card>

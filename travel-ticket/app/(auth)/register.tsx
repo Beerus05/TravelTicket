@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { YStack, XStack, Input, Button, Text, Card } from 'tamagui';
+import { YStack, XStack, Input, Button, Text, Card, ScrollView, Separator } from 'tamagui';
 import { useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser, clearBookingDraft } from '../../store/bookingSlice';
 import { RootState } from '../../store/store';
 import { useQueryClient } from '@tanstack/react-query';
 import { Ticket } from '../../components/Icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function RegisterScreen() {
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,41 +28,55 @@ export default function RegisterScreen() {
   };
 
   return (
-    <YStack f={1} jc="center" ai="center" p="$4" bg="$background">
+    <ScrollView
+      f={1}
+      bg="$background"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        flexGrow: 1,
+        alignItems: 'center',
+        paddingTop: Math.max(insets.top + 16, 28),
+        paddingBottom: Math.max(insets.bottom + 24, 36),
+        paddingHorizontal: 16,
+      }}
+    >
       <Card
         w="100%"
-        maxWidth={440}
-        p="$5"
+        maxWidth={420}
+        p="$4"
         borderWidth={1}
         borderColor={isDark ? '#334155' : '#E2E8F0'}
         bg={isDark ? '#1E293B' : '#FFFFFF'}
         br="$5"
-        gap="$4"
+        gap="$3.5"
       >
         {/* Header */}
-        <YStack ai="center" gap="$2">
-          <YStack w={56} h={56} br="$10" bg="#0066FF" jc="center" ai="center">
-            <Ticket color="#ffffff" size={28} />
+        <YStack ai="center" gap="$1.5" pt="$1">
+          <YStack w={52} h={52} br="$10" bg="#0066FF" jc="center" ai="center">
+            <Ticket color="#ffffff" size={26} />
           </YStack>
-          <Text fontSize="$8" fontWeight="900" color="#0066FF" ta="center">
+          <Text fontSize="$7" fontWeight="900" color="#0066FF" letterSpacing={0.5} ta="center">
             TRAVEL TICKET
           </Text>
-          <Text fontSize="$4" color={isDark ? '#94A3B8' : '#64748B'} ta="center">
-            Đăng ký tài khoản mới
+          <Text fontSize="$2.5" color={isDark ? '#94A3B8' : '#64748B'} ta="center">
+            Tạo tài khoản thành viên mới
           </Text>
         </YStack>
 
-        <YStack gap="$3">
+        <Separator borderColor={isDark ? '#334155' : '#E2E8F0'} />
+
+        <YStack gap="$2.5">
           <YStack gap="$1">
-            <Text fontSize="$3" fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>
-              Họ và tên
+            <Text fontSize="$2.5" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              👤 Họ và tên
             </Text>
             <Input
+              height={44}
+              fontSize={14}
               placeholder="Nhập họ và tên đầy đủ"
               value={name}
               onChangeText={setName}
-              size="$4"
-              br="$3"
+              br="$4"
               borderWidth={1.5}
               borderColor={isDark ? '#334155' : '#CBD5E1'}
               bg={isDark ? '#0F172A' : '#FFFFFF'}
@@ -70,15 +86,16 @@ export default function RegisterScreen() {
           </YStack>
 
           <YStack gap="$1">
-            <Text fontSize="$3" fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>
-              Địa chỉ Email
+            <Text fontSize="$2.5" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              ✉️ Địa chỉ Email
             </Text>
             <Input
+              height={44}
+              fontSize={14}
               placeholder="Nhập email"
               value={email}
               onChangeText={setEmail}
-              size="$4"
-              br="$3"
+              br="$4"
               borderWidth={1.5}
               borderColor={isDark ? '#334155' : '#CBD5E1'}
               bg={isDark ? '#0F172A' : '#FFFFFF'}
@@ -90,16 +107,17 @@ export default function RegisterScreen() {
           </YStack>
 
           <YStack gap="$1">
-            <Text fontSize="$3" fontWeight="600" color={isDark ? '#F8FAFC' : '#0F172A'}>
-              Mật khẩu
+            <Text fontSize="$2.5" fontWeight="700" color={isDark ? '#F8FAFC' : '#0F172A'}>
+              🔒 Mật khẩu
             </Text>
             <Input
+              height={44}
+              fontSize={14}
               placeholder="Tối thiểu 6 ký tự"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
-              size="$4"
-              br="$3"
+              br="$4"
               borderWidth={1.5}
               borderColor={isDark ? '#334155' : '#CBD5E1'}
               bg={isDark ? '#0F172A' : '#FFFFFF'}
@@ -110,31 +128,32 @@ export default function RegisterScreen() {
         </YStack>
 
         <Button
-          height={52}
+          height={48}
           bg="#0066FF"
-          pressStyle={{ bg: '#0052CC' }}
           onPress={handleRegister}
           br="$4"
         >
-          <Text color="#FFFFFF" fontWeight="900" fontSize="$4">
+          <Text color="#FFFFFF" fontWeight="900" fontSize="$3.5">
             TẠO TÀI KHOẢN & BẮT ĐẦU ➔
           </Text>
         </Button>
 
-        <XStack jc="center" ai="center" mt="$1">
-          <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$3">
+        <Separator borderColor={isDark ? '#334155' : '#E2E8F0'} />
+
+        <XStack jc="center" ai="center">
+          <Text color={isDark ? '#94A3B8' : '#64748B'} fontSize="$2.5">
             Đã có tài khoản?{' '}
           </Text>
           <Text
             color={isDark ? '#38BDF8' : '#0066FF'}
-            fontSize="$3"
+            fontSize="$2.5"
             fontWeight="bold"
             onPress={() => router.back()}
           >
-            Đăng nhập
+            Đăng nhập ngay
           </Text>
         </XStack>
       </Card>
-    </YStack>
+    </ScrollView>
   );
 }

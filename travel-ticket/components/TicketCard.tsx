@@ -50,7 +50,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, width = '100%', 
       br="$4"
       onPress={() => onSelect(ticket)}
       mb="$3"
-      pressStyle={{ opacity: 0.9 }}
       cursor="pointer"
     >
       {/* Hàng trên: Badge phương tiện & Mã chuyến */}
@@ -129,7 +128,6 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket, width = '100%', 
         <Button
           size="sm"
           bg="#0066FF"
-          pressStyle={{ bg: '#0052CC' }}
           br="$3"
           px="$3.5"
           onPress={() => onSelect(ticket)}
